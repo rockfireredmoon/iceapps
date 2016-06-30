@@ -1,0 +1,15 @@
+material SoundHelper
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				texture Sounds-Helper.png
+			}
+		}
+	}
+}

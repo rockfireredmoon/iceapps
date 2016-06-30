@@ -1,0 +1,8 @@
+Material My Material : MatDefs/Other/Invisible.j3md {
+     MaterialParameters {
+     }
+    AdditionalRenderState {
+      FaceCull FrontAndBack
+        Blend Off
+    }
+}

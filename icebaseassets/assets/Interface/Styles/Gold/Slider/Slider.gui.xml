@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="HorizontalSlider">
+		<font>
+			<property name="textPadding" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="25" />
+				<z value="25" />
+				<w value="0" />
+			</property>
+
+			<property name="thumbResizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="thumbSize" type="Vector2f">
+				<x value="26" />
+				<y value="24" />
+			</property>
+			<property name="thumbGap" type="float" value="25" />
+
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_track_x.png" />
+			<property name="thumbImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_thumb_x.png" />
+			<property name="thumbHoverImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_thumb_x_glow.png" />
+			<property name="thumbPressedImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_thumb_x_down.png" />
+		</images>
+		<effects></effects>
+	</element>
+	<element name="VerticalSlider">
+		<font>
+			<property name="textPadding" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="25" />
+				<y value="0" />
+				<z value="0" />
+				<w value="25" />
+			</property>
+
+			<property name="thumbResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="thumbSize" type="Vector2f">
+				<x value="24" />
+				<y value="26" />
+			</property>
+			<property name="thumbGap" type="float" value="25" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_track_y.png" />
+			<property name="thumbImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_thumb_y.png" />
+			<property name="thumbHoverImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_thumb_y_glow.png" />
+			<property name="thumbPressedImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_thumb_y_down.png" />
+		</images>
+		<effects></effects>
+	</element>
+</root>

@@ -1,0 +1,27 @@
+
+
+material Slow_Flowing
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 1.0 1.0 1.0 1 32
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture_alias Slow_A
+				scroll_anim -0.01 0.1
+			}
+
+			texture_unit
+			{
+				texture_alias Slow_B
+				scroll_anim 0.01 0.05
+
+			}
+		}
+	}
+}

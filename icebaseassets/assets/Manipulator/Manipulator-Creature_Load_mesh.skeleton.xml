@@ -1,0 +1,27 @@
+<skeleton blendmode="average">
+    <bones>
+        <bone id="0" name="Bone01">
+            <position x="0" y="0" z="0.311156" />
+            <rotation angle="1.5708">
+                <axis x="2.98023e-08" y="1" z="-2.98023e-08" />
+            </rotation>
+        </bone>
+        <bone id="1" name="Head">
+            <position x="0" y="-0.64967" z="0.798584" />
+            <rotation angle="1.5708">
+                <axis x="-0" y="1" z="0" />
+            </rotation>
+        </bone>
+        <bone id="2" name="Parent">
+            <position x="0" y="0" z="1.59956e-09" />
+            <rotation angle="0">
+                <axis x="1" y="0" z="0" />
+            </rotation>
+        </bone>
+    </bones>
+    <bonehierarchy>
+        <boneparent bone="Bone01" parent="Parent" />
+        <boneparent bone="Head" parent="Parent" />
+    </bonehierarchy>
+    <animations />
+</skeleton>

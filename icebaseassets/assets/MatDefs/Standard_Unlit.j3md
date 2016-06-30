@@ -1,0 +1,270 @@
+MaterialDef Standard_Unlit {
+
+    MaterialParameters {
+                
+        Float GlobalAnimSpeed   :   1
+    
+        // Diffuse maps and scrolling
+        Texture2D ColorMap
+        Float ScrollAnim1X  :   0
+        Float ScrollAnim1Y  :   0
+        Float Scroll1X      :   0
+        Float Scroll1Y      :   0
+        Float Scale1        :   1
+        Float Alpha1        :   1
+        Texture2D ColorMap2
+        Float ScrollAnim2X  :   0
+        Float ScrollAnim2Y  :   0
+        Float Scroll2X      :   0
+        Float Scroll2Y      :   0
+        Float Scale2        :   1
+        Float Alpha2        :   1
+        Texture2D ColorMap3
+        Float ScrollAnim3X  :   0
+        Float ScrollAnim3Y  :   0
+        Float Scroll3X      :   0
+        Float Scroll3Y      :   0
+        Float Scale3        :   1
+        Float Alpha3        :   1
+        Texture2D ColorMap4
+        Float ScrollAnim4X  :   0
+        Float ScrollAnim4Y  :   0
+        Float Scroll4X      :   0
+        Float Scroll4Y      :   0
+        Float Scale4        :   1
+        Float Alpha4        :   1
+        
+        
+        Texture2D IllumMap
+    
+        Texture2D LightMap
+        Color Color (Color)
+        Boolean VertexColor (UseVertexColor)
+        Boolean SeparateTexCoord
+
+        // Output alpha from the diffuse map
+        Boolean UseAlpha
+        
+        //Fading parameters (don't set these manually).
+        Float FadeEnd
+        Float FadeRange
+        Boolean FadeEnabled
+        
+        //Is the grass swaying or not?
+        Boolean Swaying
+        //The wind vector (determines direction and amplitude of the swaying function).
+        Vector2 Wind
+        //Combined vector for various fading data.
+        //x = The swaying frequency
+        //y = The swaying variation (how the offset varies between patches)
+        //z = Maximum swaying distance (grass beyond this distance does not move).
+        Vector3 SwayData
+
+        // Alpha noise
+        Texture2D AlphaNoiseMap
+
+        // Texture of the glowing parts of the material
+        Texture2D GlowMap
+        // The glow color of the object
+        Color GlowColor
+
+        // For hardware skinning
+        Int NumberOfBones
+        Matrix4Array BoneMatrices
+
+        // Alpha threshold for fragment discarding
+        Float AlphaDiscardThreshold (AlphaTestFallOff)
+        Float AlphaDiscardLimit
+
+        //Shadows
+        Int FilterMode
+        Boolean HardwareShadows
+
+        Texture2D ShadowMap0
+        Texture2D ShadowMap1
+        Texture2D ShadowMap2
+        Texture2D ShadowMap3
+        //pointLights
+        Texture2D ShadowMap4
+        Texture2D ShadowMap5
+        
+        Float ShadowIntensity
+        Vector4 Splits
+        Vector2 FadeInfo
+
+        Matrix4 LightViewProjectionMatrix0
+        Matrix4 LightViewProjectionMatrix1
+        Matrix4 LightViewProjectionMatrix2
+        Matrix4 LightViewProjectionMatrix3
+        //pointLight
+        Matrix4 LightViewProjectionMatrix4
+        Matrix4 LightViewProjectionMatrix5
+        Vector3 LightPos
+
+        Float PCFEdge
+
+        Float ShadowMapSize
+
+        // Tint map
+        Texture2D TintMap
+        Texture2D PaletteColors
+        Int PaletteSize
+
+    }
+
+    Technique {
+        VertexShader GLSL100:   MatDefs/Standard_Unlit.vert
+        FragmentShader GLSL100: MatDefs/Standard_Unlit.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldMatrix
+            CameraPosition
+            Time
+        }
+
+        Defines {
+        
+            SEPARATE_TEXCOORD : SeparateTexCoord
+            
+            HAS_COLORMAP : ColorMap
+            HAS_COLORMAP2 : ColorMap2
+            HAS_COLORMAP3 : ColorMap3
+            HAS_COLORMAP4 : ColorMap4
+        
+            HAS_LIGHTMAP : LightMap
+            HAS_VERTEXCOLOR : VertexColor
+            HAS_COLOR : Color
+            NUM_BONES : NumberOfBones
+            
+            DISCARD_ALPHA : AlphaDiscardThreshold            
+            LIMIT_ALPHA : AlphaDiscardLimit
+            
+            ILLUMMAP : IllumMap
+            TINTMAP : TintMap
+            PALETTE_SIZE : PaletteSize
+            
+            FADE_ENABLED : FadeEnabled
+            SWAYING : Swaying
+            INVERT : Invert
+        }
+    }
+
+    Technique PreNormalPass {
+
+          VertexShader GLSL100 :   Common/MatDefs/SSAO/normal.vert
+          FragmentShader GLSL100 : Common/MatDefs/SSAO/normal.frag
+
+          WorldParameters {
+              WorldViewProjectionMatrix
+              WorldViewMatrix
+              NormalMatrix
+          }
+
+          Defines {
+              NUM_BONES : NumberOfBones
+          }
+   }
+
+    Technique PreShadow {
+
+        VertexShader GLSL100 :   Common/MatDefs/Shadow/PreShadow.vert
+        FragmentShader GLSL100 : Common/MatDefs/Shadow/PreShadow.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldViewMatrix
+        }
+
+        Defines {
+            COLOR_MAP : ColorMap
+            DISCARD_ALPHA : AlphaDiscardThreshold
+            NUM_BONES : NumberOfBones
+        }
+
+        ForcedRenderState {
+            FaceCull Off
+            DepthTest On
+            DepthWrite On
+            PolyOffset 5 3
+            ColorWrite Off
+        }
+
+    }
+
+
+    Technique PostShadow15{
+        VertexShader GLSL150:   Common/MatDefs/Shadow/PostShadow.vert
+        FragmentShader GLSL150: Common/MatDefs/Shadow/PostShadow15.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldMatrix
+        }
+
+        Defines {
+            HARDWARE_SHADOWS : HardwareShadows
+            FILTER_MODE : FilterMode
+            PCFEDGE : PCFEdge
+            DISCARD_ALPHA : AlphaDiscardThreshold           
+            COLOR_MAP : ColorMap
+            SHADOWMAP_SIZE : ShadowMapSize
+            FADE : FadeInfo
+            PSSM : Splits
+            POINTLIGHT : LightViewProjectionMatrix5
+            NUM_BONES : NumberOfBones
+        }
+
+        ForcedRenderState {
+            Blend Modulate
+            DepthWrite Off                 
+            PolyOffset -0.1 0
+        }
+    }
+
+    Technique PostShadow{
+        VertexShader GLSL100:   Common/MatDefs/Shadow/PostShadow.vert
+        FragmentShader GLSL100: Common/MatDefs/Shadow/PostShadow.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldMatrix
+        }
+
+        Defines {
+            HARDWARE_SHADOWS : HardwareShadows
+            FILTER_MODE : FilterMode
+            PCFEDGE : PCFEdge
+            DISCARD_ALPHA : AlphaDiscardThreshold           
+            COLOR_MAP : ColorMap
+            SHADOWMAP_SIZE : ShadowMapSize
+            FADE : FadeInfo
+            PSSM : Splits
+            POINTLIGHT : LightViewProjectionMatrix5
+            NUM_BONES : NumberOfBones
+        }
+
+        ForcedRenderState {
+            Blend Modulate
+            DepthWrite Off   
+            PolyOffset -0.1 0  
+        }
+    }
+
+    Technique Glow {
+
+        VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
+        FragmentShader GLSL100: Common/MatDefs/Light/Glow.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+
+        Defines {
+            NEED_TEXCOORD1
+            HAS_GLOWMAP : GlowMap
+            HAS_GLOWCOLOR : GlowColor
+            NUM_BONES : NumberOfBones
+        }
+    }
+}

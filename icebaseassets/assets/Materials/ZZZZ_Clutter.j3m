@@ -1,0 +1,21 @@
+Material Clutter : MatDefs/Standard_Lit.j3md {
+     MaterialParameters {
+        FadeEnd : 500.0
+        FadeEnabled : true
+        UseMaterialColors: true
+        Diffuse: 0 0 0 1
+        Ambient: 0.1 0.1 0.1 1
+        UseAlpha : true
+        Shininess : 10
+        FadeRange : 250.0
+        AlphaNoiseMap : Textures/noise.png
+     }
+    AdditionalRenderState {
+      Blend Alpha
+      DepthTest On
+      DepthWrite On
+      FaceCull Off
+      ColorWrite On
+      Wireframe Off
+    }
+}

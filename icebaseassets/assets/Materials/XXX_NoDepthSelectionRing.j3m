@@ -1,0 +1,14 @@
+Material My Material : Common/MatDefs/Light/Lighting.j3md {
+     MaterialParameters {
+        DiffuseMap : Textures/Core/SelectionRing.png
+        Specular : 0 0 0 1
+        Ambient : 0.8 0.8 0.8 1
+        Diffuse : 1 1 1 1
+        GlowColor : 1 1 1 1
+     }
+    AdditionalRenderState {
+      Blend AlphaAdditive
+      DepthTest Off
+      DepthWrite On
+    }
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<root>
+    <audiofile key="button_pressed" path="Sounds/General/UIClick.ogg" />
+    <audiofile key="button_focus" path="Interface/Styles/Gold/Common/Audio/button_over.wav" />
+    <audiofile key="fade" path="Interface/Styles/Gold/Common/Audio/fade.wav" />
+    
+    <audiofile key="warning" path="Sounds/General/Warning.ogg" />
+    <audiofile key="tabTarget" path="Sounds/General/TabTarget.ogg" />
+    <audiofile key="enterGame" path="Sounds/General/EnterGame.ogg" />
+    <audiofile key="mapOpen" path="Sounds/General/MapOpen.ogg" />
+    <audiofile key="mapClose" path="Sounds/General/MapClose.ogg" />
+</root>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Font">
+		<font>
+			<property name="tinyFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_4.fnt" />
+			<property name="smallFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_8.fnt" />
+			<property name="defaultFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_8.fnt" />
+			<property name="defaultOutlineFont" type="String" value="Interface/Styles/Gold/Fonts/MaiandraOutline_8.fnt" />
+			<property name="largeFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_32.fnt" />
+			<property name="mediumFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_16.fnt" />
+			<property name="mediumOutlineFont" type="String" value="Interface/Styles/Gold/Fonts/MaiandraOutline_16.fnt" />
+			<property name="mediumStrongFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_16_bold.fnt" />
+			<property name="mediumStrongItalicFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_16_bold_italic.fnt" />
+			<property name="mediumItalicFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_16_italic.fnt" />
+			<property name="strongFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_8_bold.fnt" />
+			<property name="italicFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_16_italic.fnt" />
+			<property name="strongItalicFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_16_bold_italic.fnt" />
+		</font>
+		<attributes>
+			<property name="defaultFontSize" type="float" value="8" />
+		</attributes>
+		<images></images>
+		<effects></effects>
+	</element>
+</root>

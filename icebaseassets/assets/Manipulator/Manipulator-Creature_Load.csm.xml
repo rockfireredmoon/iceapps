@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<Component id="Manipulator-Creature_Load" xmlns="http://ee.ironrealms.com/CMS_XML.xsd">
+  <Entity mesh="Manipulator-Creature_Load.mesh" batch="false" />
+</Component>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <element name="ChatWindow">
+        <font></font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="350" />
+                <y value="200" />
+            </property>
+            <property name="clipPadding" type="float" value="6" />
+            <property name="buttonAreaHeight" type="float" value="40" />
+            <property name="showSound" type="String" value="fade" />
+            <property name="useShowSound" type="boolean" value="true" />
+            <property name="showSoundVolume" type="float" value="1" />
+            <property name="hideSound" type="String" value="fade" />
+            <property name="useHideSound" type="boolean" value="true" />
+            <property name="hideSoundVolume" type="float" value="1" />
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Black.png" />
+        </images>
+        <effects>
+            <property name="event0" type="Effect">
+                <event value="Show" />
+                <effect value="FadeIn" />
+                <speed value=".25" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Hide" />
+                <effect value="FadeOut" />
+                <speed value=".25" />
+            </property>
+        </effects>
+    </element>
+    
+    <element name="ChatBox">
+        <font>
+                <property name="fontSize" type="float" value="32" />
+                <property name="defaultFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_32.fnt" />
+                <property name="strongFont" type="String" value="Interface/Styles/Gold/Fonts/Maiandra_32_bold.fnt" />
+        </font>
+                
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="contentIndents" type="Vector4f">
+                <x value="1" />
+                <y value="1" />
+                <z value="1" />
+                <w value="1" />
+            </property>
+            <property name="minSize" type="Vector2f">
+                <x value="150" />
+                <y value="50" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="350" />
+                <y value="200" />
+            </property>
+            <property name="contentPadding" type="float" value="0" />
+            <property name="scrollAreaInsets" type="float" value="1"/>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Blank.png" />
+        </images>
+        <effects>
+        </effects>
+    </element>
+    
+    <element name="ChatTab">
+        <font></font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="contentIndents" type="Vector4f">
+                <x value="1" />
+                <y value="1" />
+                <z value="1" />
+                <w value="1" />
+            </property>
+            <property name="minSize" type="Vector2f">
+                <x value="150" />
+                <y value="50" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="350" />
+                <y value="200" />
+            </property>
+            <property name="contentPadding" type="float" value="0" />
+        </attributes>
+        <images>
+        </images>
+        <effects>
+        </effects>
+    </element>
+</root>

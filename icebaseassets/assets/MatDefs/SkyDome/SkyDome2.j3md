@@ -1,0 +1,71 @@
+MaterialDef SkyDome {
+
+    MaterialParameters {
+        Color FogColor
+        Color FogNightColor
+
+        Texture2D FogAlphaMap
+        Texture2D SkyMap
+        Boolean SkyMapUseAsMap : True
+        Float SkyMapScale : 1.0
+        Float SkyMapAlpha: 0.0
+        
+        Color Color
+
+        Boolean VertexColor
+        Boolean SeperateTexCoord        
+
+        Float CelestialBodyAlpha : 1.0
+        Texture2D CelestialBodyMap
+        Vector2 CelestialBodyDirection
+        Float CelestialBodySpeed
+        Float CelestialBodyStart
+    	Float CelestialBodyScale : 1
+
+        Texture2D CloudMap1
+        Float CloudsAlpha
+        Float CloudMap1Scale: 1
+        Boolean CloudMap1UseAsMap: True
+        
+        Texture2D AlphaMap
+        Float AlphaMapScale: 1
+        
+        Float GlobalAlpha   :   1
+        Float AlphaDiscardThreshold        :   0.01
+        
+
+        Color CloudColorRamp1
+        Float CloudDirection1
+        Float CloudSpeed1
+
+        Color CloudColorRamp2
+        Float CloudDirection2
+        Float CloudSpeed2
+    }
+
+    Technique {
+        VertexShader GLSL100:   Shaders/SkyDome/SkyDome2.vert
+        FragmentShader GLSL100: Shaders/SkyDome/SkyDome2.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            Time
+        }
+
+        Defines {
+            SEPERATE_TEXCOORD : SeperateTexCoord
+            HAS_VERTEXCOLOR : VertexColor
+            HAS_GLOWMAP : GlowMap
+            HAS_ALPHAMAP : AlphaMap
+            HAS_SKYMAPUSEASMAP : SkyMapUseAsMap
+            HAS_CLOUDMAP1USEASMAP : CloudMap1UseAsMap
+            HAS_CLOUDS1 : CloudSpeed1
+            HAS_CLOUDS2 : CloudSpeed2
+            HAS_COLORRAMP1 : CloudColorRamp1
+            HAS_COLORRAMP2 : CloudColorRamp2
+            HAS_CELESTIAL_BODY : CelestialBodyMap
+            HAS_FOGALPHAMAP : FogAlphaMap
+            HAS_SKYMAP : SkyMap
+        }
+    }
+}

@@ -1,0 +1,191 @@
+#ifdef HAS_CLOTHING_0
+uniform sampler2D m_ClothingTexture0;
+uniform sampler2D m_ClothingMapTexture0;
+uniform sampler2D m_ClothingTintTexture0;
+    #ifdef CLOTHING_TRUE_MAP_SIZE_0
+    uniform sampler2D m_ClothingTrueMapOrgColors0;
+    uniform sampler2D m_ClothingTrueMapNewColors0;
+    #else
+    uniform sampler2D m_ClothingPaletteColors0;
+    uniform int m_ClothingPaletteSize0;
+    #endif
+#endif
+
+#ifdef HAS_CLOTHING_1
+uniform sampler2D m_ClothingTexture1;
+uniform sampler2D m_ClothingMapTexture1;
+uniform sampler2D m_ClothingTintTexture1;
+    #ifdef CLOTHING_TRUE_MAP_SIZE_1
+    uniform sampler2D m_ClothingTrueMapOrgColors1;
+    uniform sampler2D m_ClothingTrueMapNewColors1;
+    #else
+    uniform sampler2D m_ClothingPaletteColors1;
+    uniform int m_ClothingPaletteSize1;
+    #endif
+#endif
+
+#ifdef HAS_CLOTHING_2
+uniform sampler2D m_ClothingTexture2;
+uniform sampler2D m_ClothingMapTexture2;
+uniform sampler2D m_ClothingTintTexture2;
+    #ifdef CLOTHING_TRUE_MAP_SIZE_2
+    uniform sampler2D m_ClothingTrueMapOrgColors2;
+    uniform sampler2D m_ClothingTrueMapNewColors2;
+    #else
+    uniform sampler2D m_ClothingPaletteColors2;
+    uniform int m_ClothingPaletteSize2;
+    #endif
+#endif
+
+#ifdef HAS_CLOTHING_3
+uniform sampler2D m_ClothingTexture3;
+uniform sampler2D m_ClothingMapTexture3;
+uniform sampler2D m_ClothingTintTexture3;
+    #ifdef CLOTHING_TRUE_MAP_SIZE_3
+    uniform sampler2D m_ClothingTrueMapOrgColors3;
+    uniform sampler2D m_ClothingTrueMapNewColors3;
+    #else
+    uniform sampler2D m_ClothingPaletteColors3;
+    uniform int m_ClothingPaletteSize3;
+    #endif
+#endif
+
+#ifdef HAS_CLOTHING_4
+uniform sampler2D m_ClothingTexture4;
+uniform sampler2D m_ClothingMapTexture4;
+uniform sampler2D m_ClothingTintTexture4;
+    #ifdef CLOTHING_TRUE_MAP_SIZE_4
+    uniform sampler2D m_ClothingTrueMapOrgColors4;
+    uniform sampler2D m_ClothingTrueMapNewColors4;
+    #else
+    uniform sampler2D m_ClothingPaletteColors4;
+    uniform int m_ClothingPaletteSize4;
+    #endif
+#endif
+
+#ifdef HAS_CLOTHING_5
+uniform sampler2D m_ClothingTexture5;
+uniform sampler2D m_ClothingMapTexture5;
+uniform sampler2D m_ClothingTintTexture5;
+    #ifdef CLOTHING_TRUE_MAP_SIZE_5
+    uniform sampler2D m_ClothingTrueMapOrgColors5;
+    uniform sampler2D m_ClothingTrueMapNewColors5;
+    #else
+    uniform sampler2D m_ClothingPaletteColors5;
+    uniform int m_ClothingPaletteSize5;
+    #endif
+#endif
+
+#ifdef HAS_CLOTHING_6
+uniform sampler2D m_ClothingTexture6;
+uniform sampler2D m_ClothingMapTexture6;
+uniform sampler2D m_ClothingTintTexture6;
+    #ifdef CLOTHING_TRUE_MAP_SIZE_6
+    uniform sampler2D m_ClothingTrueMapOrgColors6;
+    uniform sampler2D m_ClothingTrueMapNewColors6;
+    #else
+    uniform sampler2D m_ClothingPaletteColors6;
+    uniform int m_ClothingPaletteSize6;
+    #endif
+#endif
+
+
+#ifdef HAS_CLOTHING_7
+uniform sampler2D m_ClothingTexture7;
+uniform sampler2D m_ClothingMapTexture7;
+uniform sampler2D m_ClothingTintTexture7;
+    #ifdef CLOTHING_TRUE_MAP_SIZE_7
+    uniform sampler2D m_ClothingTrueMapOrgColors7;
+    uniform sampler2D m_ClothingTrueMapNewColors7;
+    #else
+    uniform sampler2D m_ClothingPaletteColors7;
+    uniform int m_ClothingPaletteSize7;
+    #endif
+#endif
+
+vec4 textureClothingLayer(in vec2 clothTexCoord, in sampler2D m_ClothingTexture, in sampler2D m_ClothingMapTexture, in sampler2D m_ClothingTintTexture, in sampler2D m_ClothingPaletteColors, in int m_ClothingPaletteSize, in vec4 baseDiffuse) {
+    vec4 clothTex = texture2D(m_ClothingTexture, clothTexCoord.xy);
+    vec4 clothMapTex = texture2D(m_ClothingMapTexture, clothTexCoord.xy);
+    vec4 clothTintTex = texture2D(m_ClothingTintTexture, clothTexCoord.xy);
+    vec4 clothMixed = clothTex * texture2D(m_ClothingPaletteColors, vec2(clothTintTex.a, 0.0));
+    baseDiffuse = mix( baseDiffuse, clothMixed,  clothTex.a * clothMapTex.a  );
+    return baseDiffuse;
+}
+
+vec4 textureClothingLayerTrue(in vec2 clothTexCoord, in sampler2D m_ClothingTexture, in sampler2D m_ClothingMapTexture, in sampler2D m_ClothingTintTexture, in sampler2D m_ClothingTrueMapOrgColors, in sampler2D m_ClothingTrueMapNewColors, in int m_ClothingTrueMapSize, in vec4 baseDiffuse) {
+    vec4 clothTex = texture2D(m_ClothingTexture, clothTexCoord.xy);
+    vec4 clothMapTex = texture2D(m_ClothingMapTexture, clothTexCoord.xy);
+    vec4 clothTintTex = texture2D(m_ClothingTintTexture, clothTexCoord.xy);
+    // TODO not right
+    for(int i=0; i < m_ClothingTrueMapSize;i++) {
+        float f1 = float(i) / float(m_ClothingTrueMapSize);
+        vec2 v1 = vec2( f1, 0 );
+        vec4 org = texture2D(m_ClothingTrueMapOrgColors, v1);
+        if(baseDiffuse == org) {
+            vec4 new = texture2D(m_ClothingTrueMapNewColors, vec2(float(i) / float(m_ClothingTrueMapSize), 0));
+            vec4 clothMixed = clothTex * new;
+            baseDiffuse = mix( baseDiffuse, clothMixed,  clothTex.a * clothMapTex.a  );
+        }
+    }
+    return baseDiffuse;
+}
+
+vec4 textureClothing(in vec2 clothTexCoord, in vec4 baseDiffuse) {
+    #ifdef HAS_CLOTHING_0
+        #ifdef CLOTHING_TRUE_MAP_SIZE_0
+            baseDiffuse = textureClothingLayerTrue(clothTexCoord, m_ClothingTexture0, m_ClothingMapTexture0, m_ClothingTintTexture0, m_ClothingTrueMapOrgColors0, m_ClothingTrueMapNewColors0,  CLOTHING_TRUE_MAP_SIZE_0, baseDiffuse);
+        #else
+            baseDiffuse = textureClothingLayer(clothTexCoord, m_ClothingTexture0, m_ClothingMapTexture0, m_ClothingTintTexture0, m_ClothingPaletteColors0,  m_ClothingPaletteSize0, baseDiffuse);
+        #endif
+    #endif
+    #ifdef HAS_CLOTHING_1
+        #ifdef CLOTHING_TRUE_MAP_SIZE_1
+            baseDiffuse = textureClothingLayerTrue(clothTexCoord, m_ClothingTexture1, m_ClothingMapTexture1, m_ClothingTintTexture1, m_ClothingTrueMapOrgColors1, m_ClothingTrueMapNewColors1,  CLOTHING_TRUE_MAP_SIZE_1, baseDiffuse);
+        #else
+            baseDiffuse = textureClothingLayer(clothTexCoord, m_ClothingTexture1, m_ClothingMapTexture1, m_ClothingTintTexture1, m_ClothingPaletteColors1,  m_ClothingPaletteSize1, baseDiffuse);
+        #endif
+    #endif
+    #ifdef HAS_CLOTHING_2
+        #ifdef CLOTHING_TRUE_MAP_SIZE_2
+            baseDiffuse = textureClothingLayerTrue(clothTexCoord, m_ClothingTexture2, m_ClothingMapTexture2, m_ClothingTintTexture2, m_ClothingTrueMapOrgColors2, m_ClothingTrueMapNewColors2,  CLOTHING_TRUE_MAP_SIZE_2, baseDiffuse);
+        #else
+            baseDiffuse = textureClothingLayer(clothTexCoord, m_ClothingTexture2, m_ClothingMapTexture2, m_ClothingTintTexture2, m_ClothingPaletteColors2,  m_ClothingPaletteSize2, baseDiffuse);
+        #endif
+    #endif
+    #ifdef HAS_CLOTHING_3
+        #ifdef CLOTHING_TRUE_MAP_SIZE_3
+            baseDiffuse = textureClothingLayerTrue(clothTexCoord, m_ClothingTexture3, m_ClothingMapTexture3, m_ClothingTintTexture3, m_ClothingTrueMapOrgColors3, m_ClothingTrueMapNewColors3,  CLOTHING_TRUE_MAP_SIZE_3, baseDiffuse);
+        #else
+            baseDiffuse = textureClothingLayer(clothTexCoord, m_ClothingTexture3, m_ClothingMapTexture3, m_ClothingTintTexture3, m_ClothingPaletteColors3,  m_ClothingPaletteSize3, baseDiffuse);
+        #endif
+    #endif
+    #ifdef HAS_CLOTHING_4
+        #ifdef CLOTHING_TRUE_MAP_SIZE_4
+            baseDiffuse = textureClothingLayerTrue(clothTexCoord, m_ClothingTexture4, m_ClothingMapTexture4, m_ClothingTintTexture4, m_ClothingTrueMapOrgColors4, m_ClothingTrueMapNewColors4,  CLOTHING_TRUE_MAP_SIZE_4, baseDiffuse);
+        #else
+            baseDiffuse = textureClothingLayer(clothTexCoord, m_ClothingTexture4, m_ClothingMapTexture4, m_ClothingTintTexture4, m_ClothingPaletteColors4,  m_ClothingPaletteSize4, baseDiffuse);
+        #endif
+    #endif
+    #ifdef HAS_CLOTHING_5
+        #ifdef CLOTHING_TRUE_MAP_SIZE_5
+            baseDiffuse = textureClothingLayerTrue(clothTexCoord, m_ClothingTexture5, m_ClothingMapTexture5, m_ClothingTintTexture5, m_ClothingTrueMapOrgColors5, m_ClothingTrueMapNewColors5,  CLOTHING_TRUE_MAP_SIZE_5, baseDiffuse);
+        #else
+            baseDiffuse = textureClothingLayer(clothTexCoord, m_ClothingTexture5, m_ClothingMapTexture5, m_ClothingTintTexture5, m_ClothingPaletteColors5,  m_ClothingPaletteSize5, baseDiffuse);
+        #endif
+    #endif
+    #ifdef HAS_CLOTHING_6
+        #ifdef CLOTHING_TRUE_MAP_SIZE_6
+            baseDiffuse = textureClothingLayerTrue(clothTexCoord, m_ClothingTexture6, m_ClothingMapTexture6, m_ClothingTintTexture6, m_ClothingTrueMapOrgColors6, m_ClothingTrueMapNewColors6,  CLOTHING_TRUE_MAP_SIZE_6, baseDiffuse);
+        #else
+            baseDiffuse = textureClothingLayer(clothTexCoord, m_ClothingTexture6, m_ClothingMapTexture6, m_ClothingTintTexture6, m_ClothingPaletteColors6,  m_ClothingPaletteSize6, baseDiffuse);
+        #endif
+    #endif
+    #ifdef HAS_CLOTHING_7
+        #ifdef CLOTHING_TRUE_MAP_SIZE_7
+            baseDiffuse = textureClothingLayerTrue(clothTexCoord, m_ClothingTexture7, m_ClothingMapTexture7, m_ClothingTintTexture7, m_ClothingTrueMapOrgColors7, m_ClothingTrueMapNewColors7,  CLOTHING_TRUE_MAP_SIZE_7, baseDiffuse);
+        #else
+            baseDiffuse = textureClothingLayer(clothTexCoord, m_ClothingTexture7, m_ClothingMapTexture7, m_ClothingTintTexture7, m_ClothingPaletteColors7,  m_ClothingPaletteSize7, baseDiffuse);
+        #endif
+    #endif
+    return baseDiffuse;
+}

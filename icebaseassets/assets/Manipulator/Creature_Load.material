@@ -1,0 +1,24 @@
+material Creature_Load
+{
+	lod_distances 0.15 0.18
+
+	technique
+	{
+		lod_index 0
+		queue_bias 2
+		pass
+		{
+			cull_hardware none
+			emissive 1.0 1.0 1.0 0.6
+			diffuse 1.0 1.0 1.0 0.6
+			scene_blend alpha_blend
+			max_lights 8
+			depth_write off
+			texture_unit
+			{
+				texture Manipulator-Creature_Load.png
+			}
+		}
+	}
+
+}

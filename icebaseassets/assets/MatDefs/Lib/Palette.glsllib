@@ -1,0 +1,18 @@
+uniform sampler2D m_TintMap; // Texture to tint
+uniform sampler2D m_Palette; // Palette image (palette size wide, 1 high, alpha channel only)
+uniform sampler2D m_PaletteColors;
+
+vec4 adjustPalette(in vec2 difTexCoord, in vec4 texDiffuse) {
+    // Get the index of the color in the tint image
+    vec4 pixel  = texture2D( m_TintMap, difTexCoord.xy); 
+
+    // Get the amount to multiply the final colour by from the Red channel of the texture image
+    float amount = texDiffuse.r;
+
+    // Get the colour to use from the palette
+    vec4 texel = texture2D(m_PaletteColors, vec2(pixel.a, 0.0));
+
+    // The color naked
+    return texel * amount;
+}
+

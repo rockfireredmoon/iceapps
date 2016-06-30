@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="ScrollArea">
+		<font>
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Top" />
+			<property name="textWrap" type="String" value="Word" />
+			<property name="textPadding" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="320" />
+				<y value="120" />
+			</property>
+			<property name="gap" type="float" value="4" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Window/panel_x_inner.png" />
+		</images>
+		<effects></effects>
+	</element>
+	<element name="ScrollArea#VScrollBar">
+		<font></font>
+		<attributes>
+			<property name="defaultControlSize" type="float" value="24" />
+			<property name="trackResizeBorders" type="Vector4f">
+				<x value="25" />
+				<y value="0" />
+				<z value="0" />
+				<w value="25" />
+			</property>
+			<property name="thumbResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnUpResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnDownResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="useBtnUpArrowIcon" type="boolean" value="true" />
+			<property name="useBtnDownArrowIcon" type="boolean" value="true" />
+		</attributes>
+		<images>
+			<property name="trackImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_track_y.png" />
+			<property name="thumbImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="thumbHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="thumbPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+			<property name="btnUpImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="btnUpHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="btnUpPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+			<property name="btnDownImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="btnDownHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="btnDownPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+		</images>
+		<effects></effects>
+	</element>
+
+
+	<element name="ScrollArea#HScrollBar">
+		<font></font>
+		<attributes>
+			<property name="defaultControlSize" type="float" value="20" />
+			<property name="trackResizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="25" />
+				<z value="25" />
+				<w value="0" />
+			</property>
+			<property name="thumbResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnLeftResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnRightResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="useBtnLeftArrowIcon" type="boolean" value="true" />
+			<property name="useBtnRightArrowIcon" type="boolean" value="true" />
+			<property name="gap" type="float" value="4" />
+		</attributes>
+		<images>
+			<property name="trackImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_track_x.png" />
+			<property name="thumbImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="thumbHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="thumbPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+			<property name="btnLeftImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="btnLeftHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="btnLeftUpPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+			<property name="btnRightImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="btnRightHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="btnRightPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+		</images>
+		<effects></effects>
+	</element>
+
+	<element name="ScrollPanel">
+		<font>
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Top" />
+			<property name="textWrap" type="String" value="Word" />
+			<property name="textPadding" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+		</font>
+		<attributes>
+			<property name="scrollPadding" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="scrollBoundsClipPadding" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="gap" type="float" value="1" />
+			<property name="scrollSize" type="float" value="16" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Window/panel_x_inner_thin.png" />
+		</images>
+		<effects></effects>
+	</element>
+	<element name="ScrollPanel#VScrollBar">
+		<font></font>
+		<attributes>
+			<property name="defaultControlSize" type="float" value="20" />
+			<property name="trackResizeBorders" type="Vector4f">
+				<x value="25" />
+				<y value="0" />
+				<z value="0" />
+				<w value="25" />
+			</property>
+			<property name="btnIncTextPadding" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="btnDecTextPadding" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="thumbResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnIncResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnDecResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="useBtnIncArrowIcon" type="boolean" value="true" />
+			<property name="useBtnDecArrowIcon" type="boolean" value="true" />
+			<property name="scrollSize" type="float" value="16" />
+			<property name="gap" type="float" value="4" />
+		</attributes>
+		<images>
+			<property name="trackImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_track_y.png" />
+			<property name="thumbImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="thumbHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="thumbPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+			<property name="btnIncImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="btnIncHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="btnIncPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+			<property name="btnDecImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="btnDecHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="btnDecPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+		</images>
+		<effects></effects>
+	</element>
+
+
+	<element name="ScrollPanel#HScrollBar">
+		<font></font>
+		<attributes>
+			<property name="btnIncTextPadding" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="btnDecTextPadding" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="defaultControlSize" type="float" value="20" />
+			<property name="trackResizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="25" />
+				<z value="25" />
+				<w value="0" />
+			</property>
+			<property name="thumbResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnDecResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnIncResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="useBtnIncArrowIcon" type="boolean" value="true" />
+			<property name="useBtnDecArrowIcon" type="boolean" value="true" />
+			<property name="gap" type="float" value="4" />
+			<property name="scrollSize" type="float" value="16" />
+		</attributes>
+		<images>
+			<property name="trackImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_track_x.png" />
+			<property name="thumbImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="thumbHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="thumbPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+			<property name="btnDecImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="btnDecHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="btnDecUpPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+			<property name="btnIncImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="btnIncHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="btnIncPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+		</images>
+		<effects></effects>
+	</element>
+
+	<element name="SelectArea">
+		<font>
+			<property name="textPadding" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="scrollPadding" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+		</font>
+		<attributes>
+			<property name="highlightColor" type="ColorRGBA">
+				<r value="0.7" />
+				<g value="0.7" />
+				<b value="0.7" />
+				<a value="0.5" />
+			</property>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Window/panel_x_inner_thin.png" />
+		</images>
+	</element>
+
+	<element name="SelectArea#SelectableItem">
+		<font>
+		</font>
+		<attributes>
+			<property name="textPadding" type="Vector4f">
+				<x value="12" />
+				<y value="12" />
+				<z value="12" />
+				<w value="12" />
+			</property>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="8" />
+				<y value="12" />
+				<z value="12" />
+				<w value="12" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Unhighlight.png" />
+			<property name="selectedImg" type="String"
+				value="Interface/Styles/Gold/Highlight.png" />
+		</images>
+		<effects>
+		</effects>
+	</element>
+</root>

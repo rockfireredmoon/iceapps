@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<Component id="Manipulator-SpawnPoint" xmlns="http://ee.ironrealms.com/CMS_XML.xsd">
+  <Entity mesh="Manipulator-SpawnPoint.mesh" p="0 2.5 0" vf="4" />
+</Component>

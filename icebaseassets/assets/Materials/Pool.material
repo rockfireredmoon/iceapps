@@ -1,0 +1,27 @@
+
+
+material Pool
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture_alias Pool_A
+				scale 0.9 1
+				rotate_anim 0.02
+			}
+
+			texture_unit
+			{
+				texture_alias Pool_B
+				scroll_anim 0.03 0
+			}
+		}
+	}
+}

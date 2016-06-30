@@ -1,0 +1,8 @@
+Material toon : MatDefs/ToonBlow/ToonBlow.j3md {
+     MaterialParameters {
+        DiffuseMap : Flip Models/ToonBlow/toon.png
+
+     }
+    AdditionalRenderState {
+    }
+}

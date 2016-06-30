@@ -1,0 +1,31 @@
+material Portal
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 0.8 0.8 0.8 0.8
+			scene_blend add
+			alpha_rejection greater 35
+
+			texture_unit
+			{
+				texture_alias Portal1
+				filtering linear linear none
+				scroll_anim 0.3 0.0
+			}
+
+			texture_unit
+			{
+				texture_alias Portal2
+				filtering linear linear none
+				scroll_anim 0.1 0.0
+			}
+		}
+
+	}
+
+}

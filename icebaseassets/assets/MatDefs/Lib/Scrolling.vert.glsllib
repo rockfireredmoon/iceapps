@@ -1,0 +1,52 @@
+uniform float m_GlobalAnimSpeed;
+
+#if defined(DIFFUSEMAP) || defined(HAS_COLORMAP)
+uniform float m_ScrollAnim1X;
+uniform float m_ScrollAnim1Y;
+uniform float m_Scroll1X;
+uniform float m_Scroll1Y;
+#endif
+
+#if defined(DIFFUSEMAP2) || defined(HAS_COLORMAP2)
+uniform float m_ScrollAnim2X;
+uniform float m_ScrollAnim2Y;
+uniform float m_Scroll2X;
+uniform float m_Scroll2Y;
+varying vec2 scrollCoord2;
+#endif
+
+#if defined(DIFFUSEMAP3) || defined(HAS_COLORMAP3)
+uniform float m_ScrollAnim3X;
+uniform float m_ScrollAnim3Y;
+uniform float m_Scroll3X;
+uniform float m_Scroll3Y;
+varying vec2 scrollCoord3;
+#endif
+
+#if defined(DIFFUSEMAP4) || defined(HAS_COLORMAP4)
+uniform float m_ScrollAnim4X;
+uniform float m_ScrollAnim4Y;
+uniform float m_Scroll4X;
+uniform float m_Scroll4Y;
+varying vec2 scrollCoord4;
+#endif
+
+
+void scroll(out vec2 mainTexCoord) {
+	#if defined(DIFFUSEMAP) || defined(HAS_COLORMAP)
+    mainTexCoord = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim1X * m_GlobalAnimSpeed) + m_Scroll1X , 1),
+            inTexCoord[1] + mod((g_Time * m_ScrollAnim1Y * m_GlobalAnimSpeed ) + m_Scroll1Y , 1));
+    #endif
+	#if defined(DIFFUSEMAP2) || defined(HAS_COLORMAP2)
+    scrollCoord2 = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim2X * m_GlobalAnimSpeed ) + m_Scroll2X , 1),
+            inTexCoord[1] + mod((g_Time * m_ScrollAnim2Y * m_GlobalAnimSpeed ) + m_Scroll2Y , 1));
+    #endif
+	#if defined(DIFFUSEMAP3) || defined(HAS_COLORMAP3)
+    scrollCoord3 = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim3X * m_GlobalAnimSpeed ) + m_Scroll3X , 1),
+            inTexCoord[1] + mod((g_Time * m_ScrollAnim3Y * m_GlobalAnimSpeed ) + m_Scroll3Y , 1));
+    #endif
+	#if defined(DIFFUSEMAP4) || defined(HAS_COLORMAP4)
+    scrollCoord4 = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim4X * m_GlobalAnimSpeed ) + m_Scroll4X , 1),
+            inTexCoord[1] + mod((g_Time * m_ScrollAnim4Y * m_GlobalAnimSpeed ) + m_Scroll4Y , 1));
+    #endif
+}

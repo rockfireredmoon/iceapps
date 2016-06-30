@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="TextField">
+		<font>
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="textPadding" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="caretPadding" type="Vector4f">
+				<x value="5" />
+				<y value="5" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="minSize" type="Vector2f">
+				<x value="120" />
+				<y value="20" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="120" />
+				<y value="20" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="Interface/Styles/Gold/TextField/text_field_x.png" />
+		</images>
+                <effects/>
+<!--		<effects>
+			<property name="event0" type="Effect">
+				<event value="TabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="1" />
+			</property>
+		</effects>-->
+	</element>
+</root>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+
+	<element name="HorizontalSpinner">
+		<font>
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="textPadding" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="incTextPadding" type="Vector4f">
+				<x value="2" />
+				<y value="2" />
+				<z value="2" />
+				<w value="2" />
+			</property>
+			<property name="decTextPadding" type="Vector4f">
+				<x value="2" />
+				<y value="2" />
+				<z value="2" />
+				<w value="2" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="1" />
+				<z value="1" />
+				<w value="0" />
+			</property>
+			<property name="incResizeBorders" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="decResizeBorders" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/TextField/text_field_open_x.png" />
+
+			<property name="incImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u_left.png" />
+			<property name="incHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h_left.png" />
+			<property name="incPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d_left.png" />
+
+			<property name="decImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u_right.png" />
+			<property name="decHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h_right.png" />
+			<property name="decPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d_right.png" />
+		</images>
+		<effects />
+	</element>
+
+	<element name="VerticalSpinner">
+		<font>
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="textPadding" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="caretPadding" type="Vector4f">
+				<x value="5" />
+				<y value="5" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="incTextPadding" type="Vector4f">
+				<x value="2" />
+				<y value="2" />
+				<z value="2" />
+				<w value="2" />
+			</property>
+			<property name="decTextPadding" type="Vector4f">
+				<x value="2" />
+				<y value="2" />
+				<z value="2" />
+				<w value="2" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="2" />
+				<y value="2" />
+				<z value="2" />
+				<w value="2" />
+			</property>
+			<property name="incResizeBorders" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="decResizeBorders" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+		</attributes>
+		<images>
+
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/TextField/text_field_open_x.png" />
+
+			<property name="incImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u_left.png" />
+			<property name="incHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h_left.png" />
+			<property name="incPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d_left.png" />
+
+			<property name="decImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u_right.png" />
+			<property name="decHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h_right.png" />
+			<property name="decPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d_right.png" />
+		</images>
+		<effects />
+	</element>
+
+
+	<element name="Spinner">
+		<font></font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="2" />
+				<y value="2" />
+				<z value="2" />
+				<w value="2" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="150" />
+				<y value="24" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Scrolling/scroll_track_x.png" />
+		</images>
+		<effects></effects>
+	</element>
+
+
+</root>

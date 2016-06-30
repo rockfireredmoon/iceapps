@@ -1,0 +1,107 @@
+
+material Multi_Texture/Multi_1
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0.0 0.0 0.0 1 10
+
+			texture_unit
+			{
+				texture_alias Multi_1
+			}
+		}
+
+	}
+
+}
+
+material Multi_Texture/Multi_2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0.0 0.0 0.0 1 10
+
+			texture_unit
+			{
+				texture_alias Multi_2
+			}
+		}
+
+	}
+
+}
+
+
+material Multi_Texture/Multi_1_Illum
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+
+			texture_unit
+			{
+				texture_alias Multi_1_Diffuse
+			}
+		}
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Multi_1_Illuminated
+			}
+		}
+
+	}
+
+}
+
+material Multi_Texture/Multi_2_Illum
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+
+			texture_unit
+			{
+				texture_alias Multi_2_Diffuse
+			}
+		}
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Multi_2_Illuminated
+			}
+		}
+
+	}
+
+}

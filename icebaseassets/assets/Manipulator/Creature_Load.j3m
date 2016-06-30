@@ -1,0 +1,14 @@
+Material My Material : MatDefs/MOB_Lit.j3md {
+     MaterialParameters {
+        DiffuseMap : Manipulator/Manipulator-Creature_Load.png	
+        Ambient : 1 1 1 0.6
+        Diffuse : 1 1 1 0.6
+        GlowColor : 1 1 1 0.6
+     }
+    AdditionalRenderState {
+      Blend AlphaAdditive
+      DepthTest Off
+      DepthWrite On
+      FaceCull Off
+    }
+}

@@ -1,0 +1,17 @@
+
+material Widget
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0
+			specular 0 0 0 1 10
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+	}
+}

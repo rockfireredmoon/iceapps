@@ -1,0 +1,31 @@
+
+
+material Fountain
+{
+	technique
+	{
+		pass
+		{
+			ambient 1 1 1
+			specular 0 0 0 1 10
+			alpha_rejection greater_equal 100
+			cull_hardware none
+
+			texture_unit
+			{
+				texture_alias Fountain_A
+				filtering linear linear none
+				scroll_anim 0.0 0.6
+			}
+
+			texture_unit
+			{
+				texture_alias Fountain_B
+				filtering linear linear none
+				scroll_anim 0.2 0.4
+			}
+		}
+
+	}
+
+}

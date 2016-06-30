@@ -1,0 +1,319 @@
+MaterialDef Unshaded {
+
+    MaterialParameters {
+        Texture2D ColorMap
+        Texture2D IllumMap
+        Texture2D LightMap
+        
+        Color Color (Color)
+        Boolean VertexColor (UseVertexColor)
+        Boolean SeparateTexCoord
+
+        // Texture of the glowing parts of the material
+        Texture2D GlowMap
+        // The glow color of the object
+        Color GlowColor
+
+        // For hardware skinning
+        Int NumberOfBones
+        Matrix4Array BoneMatrices
+
+        // Alpha threshold for fragment discarding
+        Float AlphaDiscardThreshold (AlphaTestFallOff)
+        Float AlphaDiscardLimit
+
+        //Shadows
+        Int FilterMode
+        Boolean HardwareShadows
+
+        Texture2D ShadowMap0
+        Texture2D ShadowMap1
+        Texture2D ShadowMap2
+        Texture2D ShadowMap3
+        //pointLights
+        Texture2D ShadowMap4
+        Texture2D ShadowMap5
+        
+        Float ShadowIntensity
+        Vector4 Splits
+        Vector2 FadeInfo
+
+        Matrix4 LightViewProjectionMatrix0
+        Matrix4 LightViewProjectionMatrix1
+        Matrix4 LightViewProjectionMatrix2
+        Matrix4 LightViewProjectionMatrix3
+        //pointLight
+        Matrix4 LightViewProjectionMatrix4
+        Matrix4 LightViewProjectionMatrix5
+        Vector3 LightPos
+
+        Float PCFEdge
+
+        Float ShadowMapSize
+        
+
+        // Tint map
+        Texture2D TintMap
+        Texture2D PaletteColors
+        Int PaletteSize
+
+        // Clothing
+        Texture2D ClothingTexture0
+        Texture2D ClothingTexture1
+        Texture2D ClothingTexture2
+        Texture2D ClothingTexture3
+        Texture2D ClothingTexture4
+        Texture2D ClothingTexture5
+        Texture2D ClothingTexture6
+        Texture2D ClothingTexture7
+
+        Texture2D ClothingMapTexture0
+        Texture2D ClothingMapTexture1
+        Texture2D ClothingMapTexture2
+        Texture2D ClothingMapTexture3
+        Texture2D ClothingMapTexture4
+        Texture2D ClothingMapTexture5
+        Texture2D ClothingMapTexture6
+        Texture2D ClothingMapTexture7
+
+        Texture2D ClothingTintTexture0
+        Texture2D ClothingTintTexture1
+        Texture2D ClothingTintTexture2
+        Texture2D ClothingTintTexture3
+        Texture2D ClothingTintTexture4
+        Texture2D ClothingTintTexture5
+        Texture2D ClothingTintTexture6
+        Texture2D ClothingTintTexture7
+
+        // For indexed tint images
+        Texture2D ClothingPaletteColors0
+        Int ClothingPaletteSize0
+
+        Texture2D ClothingPaletteColors1
+        Int ClothingPaletteSize1
+
+        Texture2D ClothingPaletteColors2
+        Int ClothingPaletteSize2
+
+        Texture2D ClothingPaletteColors3
+        Int ClothingPaletteSize3
+
+        Texture2D ClothingPaletteColors4
+        Int ClothingPaletteSize4
+
+        Texture2D ClothingPaletteColors5
+        Int ClothingPaletteSize5
+
+        Texture2D ClothingPaletteColors6
+        Int ClothingPaletteSize6
+
+        Texture2D ClothingPaletteColors7
+        Int ClothingPaletteSize7
+
+        // For full colour tint images
+        Texture2D ClothingTrueMapOrgColors0
+        Texture2D ClothingTrueMapNewColors0
+        Int ClothingTrueMapSize0
+
+        Texture2D ClothingTrueMapOrgColors1
+        Texture2D ClothingTrueMapNewColors1
+        Int ClothingTrueMapSize1
+
+        Texture2D ClothingTrueMapOrgColors2
+        Texture2D ClothingTrueMapNewColors2
+        Int ClothingTrueMapSize2
+
+        Texture2D ClothingTrueMapOrgColors3
+        Texture2D ClothingTrueMapNewColors3
+        Int ClothingTrueMapSize3
+
+        Texture2D ClothingTrueMapOrgColors4
+        Texture2D ClothingTrueMapNewColors4
+        Int ClothingTrueMapSize4
+
+        Texture2D ClothingTrueMapOrgColors5
+        Texture2D ClothingTrueMapNewColors5
+        Int ClothingTrueMapSize5
+
+        Texture2D ClothingTrueMapOrgColors6
+        Texture2D ClothingTrueMapNewColors6
+        Int ClothingTrueMapSize6
+
+        Texture2D ClothingTrueMapOrgColors7
+        Texture2D ClothingTrueMapNewColors7
+        Int ClothingTrueMapSize7
+    }
+
+    Technique {
+        VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
+        FragmentShader GLSL100: MatDefs/MOB_Unlit.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+
+        Defines {
+            SEPARATE_TEXCOORD : SeparateTexCoord
+            HAS_COLORMAP : ColorMap
+            HAS_LIGHTMAP : LightMap
+            ILLUMMAP : IllumMap
+            HAS_VERTEXCOLOR : VertexColor
+            HAS_COLOR : Color
+            NUM_BONES : NumberOfBones
+            
+            DISCARD_ALPHA : AlphaDiscardThreshold            
+            LIMIT_ALPHA : AlphaDiscardLimit
+            
+            TINTMAP : TintMap
+            PALETTE_SIZE : PaletteSize
+
+            CLOTHING_PALETTE_SIZE_0 : ClothingPaletteSize0
+            CLOTHING_PALETTE_SIZE_1 : ClothingPaletteSize1
+            CLOTHING_PALETTE_SIZE_2 : ClothingPaletteSize2
+            CLOTHING_PALETTE_SIZE_3 : ClothingPaletteSize3
+            CLOTHING_PALETTE_SIZE_4 : ClothingPaletteSize4
+            CLOTHING_PALETTE_SIZE_5 : ClothingPaletteSize5
+            CLOTHING_PALETTE_SIZE_6 : ClothingPaletteSize6
+            CLOTHING_PALETTE_SIZE_7 : ClothingPaletteSize7
+
+            CLOTHING_TRUE_MAP_SIZE_0 : ClothingTrueMapSize0
+            CLOTHING_TRUE_MAP_SIZE_1 : ClothingTrueMapSize1
+            CLOTHING_TRUE_MAP_SIZE_2 : ClothingTrueMapSize2
+            CLOTHING_TRUE_MAP_SIZE_3 : ClothingTrueMapSize3
+            CLOTHING_TRUE_MAP_SIZE_4 : ClothingTrueMapSize4
+            CLOTHING_TRUE_MAP_SIZE_5 : ClothingTrueMapSize5
+            CLOTHING_TRUE_MAP_SIZE_6 : ClothingTrueMapSize6
+            CLOTHING_TRUE_MAP_SIZE_7 : ClothingTrueMapSize7
+
+            HAS_CLOTHING_0 : ClothingTexture0
+            HAS_CLOTHING_1 : ClothingTexture1
+            HAS_CLOTHING_2 : ClothingTexture2
+            HAS_CLOTHING_3 : ClothingTexture3
+            HAS_CLOTHING_4 : ClothingTexture4
+            HAS_CLOTHING_5 : ClothingTexture5
+            HAS_CLOTHING_6 : ClothingTexture6
+            HAS_CLOTHING_7 : ClothingTexture7
+        }
+    }
+
+    Technique {
+    }
+
+    Technique PreNormalPass {
+
+          VertexShader GLSL100 :   Common/MatDefs/SSAO/normal.vert
+          FragmentShader GLSL100 : Common/MatDefs/SSAO/normal.frag
+
+          WorldParameters {
+              WorldViewProjectionMatrix
+              WorldViewMatrix
+              NormalMatrix
+          }
+
+          Defines {
+              NUM_BONES : NumberOfBones
+          }
+   }
+
+    Technique PreShadow {
+
+        VertexShader GLSL100 :   Common/MatDefs/Shadow/PreShadow.vert
+        FragmentShader GLSL100 : Common/MatDefs/Shadow/PreShadow.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldViewMatrix
+        }
+
+        Defines {
+            COLOR_MAP : ColorMap
+            DISCARD_ALPHA : AlphaDiscardThreshold
+            NUM_BONES : NumberOfBones
+        }
+
+        ForcedRenderState {
+            FaceCull Off
+            DepthTest On
+            DepthWrite On
+            PolyOffset 5 3
+            ColorWrite Off
+        }
+
+    }
+
+
+    Technique PostShadow15{
+        VertexShader GLSL150:   Common/MatDefs/Shadow/PostShadow.vert
+        FragmentShader GLSL150: Common/MatDefs/Shadow/PostShadow15.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldMatrix
+        }
+
+        Defines {
+            HARDWARE_SHADOWS : HardwareShadows
+            FILTER_MODE : FilterMode
+            PCFEDGE : PCFEdge
+            DISCARD_ALPHA : AlphaDiscardThreshold           
+            COLOR_MAP : ColorMap
+            SHADOWMAP_SIZE : ShadowMapSize
+            FADE : FadeInfo
+            PSSM : Splits
+            POINTLIGHT : LightViewProjectionMatrix5
+            NUM_BONES : NumberOfBones
+        }
+
+        ForcedRenderState {
+            Blend Modulate
+            DepthWrite Off                 
+            PolyOffset -0.1 0
+        }
+    }
+
+    Technique PostShadow{
+        VertexShader GLSL100:   Common/MatDefs/Shadow/PostShadow.vert
+        FragmentShader GLSL100: Common/MatDefs/Shadow/PostShadow.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldMatrix
+        }
+
+        Defines {
+            HARDWARE_SHADOWS : HardwareShadows
+            FILTER_MODE : FilterMode
+            PCFEDGE : PCFEdge
+            DISCARD_ALPHA : AlphaDiscardThreshold           
+            COLOR_MAP : ColorMap
+            SHADOWMAP_SIZE : ShadowMapSize
+            FADE : FadeInfo
+            PSSM : Splits
+            POINTLIGHT : LightViewProjectionMatrix5
+            NUM_BONES : NumberOfBones
+        }
+
+        ForcedRenderState {
+            Blend Modulate
+            DepthWrite Off   
+            PolyOffset -0.1 0  
+        }
+    }
+
+    Technique Glow {
+
+        VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
+        FragmentShader GLSL100: Common/MatDefs/Light/Glow.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+
+        Defines {
+            NEED_TEXCOORD1
+            HAS_GLOWMAP : GlowMap
+            HAS_GLOWCOLOR : GlowColor
+            NUM_BONES : NumberOfBones
+        }
+    }
+}

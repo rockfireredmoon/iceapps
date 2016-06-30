@@ -1,0 +1,13 @@
+Material toon : MatDefs/ToonBlow/ToonBlow.j3md {
+     MaterialParameters {
+        DiffuseMap : Flip Models/ToonBlow/toon.png
+        Shininess : 5.0
+
+
+        Specular_Lighting : true
+        SpecIntensity : 1.0
+
+     }
+    AdditionalRenderState {
+    }
+}

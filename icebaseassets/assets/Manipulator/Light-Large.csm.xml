@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<Component id="Light-Large">
+  <Entity meshClass="org.icescene.scene.Sphere" batch="false" />
+  <Light type="point" radius="250" defaultColor="#ffffffff"/>
+</Component>

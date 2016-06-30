@@ -1,0 +1,1716 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <element name="Window">
+        <font></font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="5" />
+                <y value="5" />
+                <z value="5" />
+                <w value="5" />
+            </property>
+            <property name="minSize" type="Vector2f">
+                <x value="150" />
+                <y value="50" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="350" />
+                <y value="200" />
+            </property>
+            <property name="contentIndents" type="Vector4f">
+                <x value="5" />
+                <y value="5" />
+                <z value="5" />
+                <w value="5" />
+            </property>
+            <property name="textPadding" type="Vector4f">
+                <x value="3" />
+                <y value="3" />
+                <z value="3" />
+                <w value="3" />
+            </property>
+            <property name="clipPadding" type="float" value="3" />
+            <property name="buttonAreaHeight" type="float" value="40" />
+            <property name="showSound" type="String" value="fade" />
+            <property name="useShowSound" type="boolean" value="true" />
+            <property name="showSoundVolume" type="float" value="1" />
+            <property name="hideSound" type="String" value="fade" />
+            <property name="useHideSound" type="boolean" value="true" />
+            <property name="hideSoundVolume" type="float" value="1" />
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/panel_x.png" />
+        </images>
+        <effects>
+            <!--
+            <property name="event0" type="Effect">
+                <event value="Show" />
+                <effect value="FadeIn" />
+                <speed value=".25" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Hide" />
+                <effect value="FadeOut" />
+                <speed value=".25" />
+            </property>
+            -->
+        </effects>
+    </element>
+
+    <element name="Window#Dragbar">
+        <font>
+            <property name="fontName" type="String" value="mediumFont" />
+            <property name="fontSize" type="float" value="12" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+            <property name="textAlign" type="String" value="Left" />
+            <property name="textVAlign" type="String" value="Center" />
+            <property name="textWrap" type="String" value="NoWrap" />
+            <property name="textPadding" type="float" value="3" />
+        </font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="6" />
+                <y value="6" />
+                <z value="6" />
+                <w value="6" />
+            </property>
+            <property name="indents" type="Vector4f">
+                <x value="7" />
+                <y value="7" />
+                <z value="7" />
+                <w value="7" />
+            </property>
+            <property name="defaultControlSize" type="float" value="25" />
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/dragbar_x.png" />
+        </images>
+        <effects></effects>
+    </element>
+    
+    <element name="SpeechBubble">
+        <font>            
+            <property name="fontName" type="String" value="defaultFont" />
+            <property name="fontSize" type="float" value="8" />
+        </font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="3" />
+                <y value="3" />
+                <z value="3" />
+                <w value="12" />
+            </property>
+            <property name="minSize" type="Vector2f">
+                <x value="120" />
+                <y value="50" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="200" />
+                <y value="120" />
+            </property>
+            <property name="clipPadding" type="float" value="6" />
+            <property name="useShowSound" type="boolean" value="false" />
+            <property name="useHideSound" type="boolean" value="false" />
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/chat_billboard.png" />
+        </images>
+        <effects>
+            <!--
+            <property name="event0" type="Effect">
+                <event value="Show" />
+                <effect value="FadeIn" />
+                <speed value=".25" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Hide" />
+                <effect value="FadeOut" />
+                <speed value=".25" />
+            </property>
+            -->
+        </effects>
+    </element>
+        
+    <element name="FancyWindowLarge">
+        <font></font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="minSize" type="Vector2f">
+                <x value="150" />
+                <y value="50" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="350" />
+                <y value="200" />
+            </property>
+            <property name="textPadding" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="clipPadding" type="float" value="0" />
+            <property name="buttonAreaHeight" type="float" value="36" />
+            <property name="showSound" type="String" value="fade" />
+            <property name="useShowSound" type="boolean" value="true" />
+            <property name="showSoundVolume" type="float" value="1" />
+            <property name="hideSound" type="String" value="fade" />
+            <property name="useHideSound" type="boolean" value="true" />
+            <property name="hideSoundVolume" type="float" value="1" />
+        </attributes>
+        <effects>
+            <!--
+            <property name="event0" type="Effect">
+                <event value="Show" />
+                <effect value="FadeIn" />
+                <speed value="0.5" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Hide" />
+                <effect value="FadeOut" />
+                <speed value="0.5" />
+            </property>
+            -->
+        </effects>
+        <images/>
+    </element>
+        
+    <element name="FancyWindowLarge#Content">
+        <font></font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="9" />
+                <y value="8" />
+                <z value="8" />
+                <w value="1" />
+            </property>
+            <property name="textPadding" type="Vector4f">
+                <x value="11" />
+                <y value="11" />
+                <z value="12" />
+                <w value="9" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/fancytitlecontent.png" />
+        </images>
+        <effects/>
+    </element>
+
+    <element name="FancyWindowLarge#Dragbar">
+        <font>
+            <property name="fontName" type="String" value="mediumFont" />
+            <property name="fontSize" type="float" value="16" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+            <property name="textAlign" type="String" value="Center" />
+            <property name="textVAlign" type="String" value="Center" />
+            <property name="textWrap" type="String" value="NoWrap" />
+            <property name="textPadding" type="float" value="0" />
+            <property name="textPosX" type="float" value="0" />
+            <property name="textPosY" type="float" value="0" />
+        </font>
+        <attributes>
+            <property name="buttonsOffset" type="Vector2f">
+                <x value="-14" />
+                <y value="10" />
+            </property>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="-10" />
+            </property>
+            <property name="indents" type="Vector4f">
+                <x value="0" />
+                <y value="65" />
+                <z value="65" />
+                <w value="0" />
+            </property>
+            <property name="defaultControlSize" type="float" value="47" />
+        </attributes>
+        <images>
+            <property name="leftImg" type="String" value="Interface/Styles/Gold/Window/fancytitleleft.png" />
+            <property name="centerImg" type="String" value="Interface/Styles/Gold/Window/fancytitlecenter.png" />
+            <property name="rightImg" type="String" value="Interface/Styles/Gold/Window/fancytitleright.png" />
+            <property name="leftImgSelected" type="String" value="Interface/Styles/Gold/Window/fancytitleleft_selected.png" />
+            <property name="centerImgSelected" type="String" value="Interface/Styles/Gold/Window/fancytitlecenter_selected.png" />
+            <property name="rightImgSelected" type="String" value="Interface/Styles/Gold/Window/fancytitleright_selected.png" />
+        </images>
+        <effects></effects>
+    </element>
+    
+    
+    
+    <element name="FancyWindowLarge#CloseButton">
+        <font>
+            <property name="fontName" type="String" value="smallFont" />
+            <property name="fontSize" type="float" value="8" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="0.8" />
+                <g value="0.8" />
+                <b value="0.8" />
+                <a value="1.0" />
+            </property>
+            <property name="textAlign" type="String" value="Center" />
+            <property name="textVAlign" type="String" value="Center" />
+            <property name="textWrap" type="String" value="NoWrap" />
+            <property name="hoverColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+            <property name="pressedColor" type="ColorRGBA">
+                <r value="0.6" />
+                <g value="0.6" />
+                <b value="0.6" />
+                <a value="1.0" />
+            </property>
+        </font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="20" />
+                <y value="20" />
+            </property>
+            <property name="pressedSound" type="String" value="button_pressed" />
+            <property name="usePressedSound" type="boolean" value="true" />
+            <property name="pressedSoundVolume" type="float" value="1" />
+            <property name="hoverSound" type="String" value="button_focus" />
+            <property name="useHoverSound" type="boolean" value="true" />
+            <property name="hoverSoundVolume" type="float" value=".5" />
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Button/close.png" />
+            <property name="hoverImg" type="String" value="Interface/Styles/Gold/Button/closeHover.png" />
+            <property name="pressedImg" type="String" value="Interface/Styles/Gold/Button/closePressed.png" />
+        </images>
+        <effects>
+            <property name="event0" type="Effect">
+                <event value="Hover" />
+                <effect value="Pulse" />
+                <speed value=".3" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Press" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event2" type="Effect">
+                <event value="LoseFocus" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event3" type="Effect">
+                <event value="TabFocus" />
+                <effect value="PulseColor" />
+                <speed value=".3" />
+            </property>
+            <property name="event4" type="Effect">
+                <event value="LoseTabFocus" />
+                <effect value="ColorSwap" />
+                <speed value="0" />
+            </property>
+        </effects>
+    </element>
+    <element name="FancyWindowLarge#MinimizeButton">
+        <font>
+            <property name="fontName" type="String" value="smallFont" />
+            <property name="fontSize" type="float" value="8" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="0.8" />
+                <g value="0.8" />
+                <b value="0.8" />
+                <a value="1.0" />
+            </property>
+            <property name="textAlign" type="String" value="Center" />
+            <property name="textVAlign" type="String" value="Center" />
+            <property name="textWrap" type="String" value="NoWrap" />
+            <property name="hoverColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+            <property name="pressedColor" type="ColorRGBA">
+                <r value="0.6" />
+                <g value="0.6" />
+                <b value="0.6" />
+                <a value="1.0" />
+            </property>
+        </font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="20" />
+                <y value="20" />
+            </property>
+            <property name="pressedSound" type="String" value="button_pressed" />
+            <property name="usePressedSound" type="boolean" value="true" />
+            <property name="pressedSoundVolume" type="float" value="1" />
+            <property name="hoverSound" type="String" value="button_focus" />
+            <property name="useHoverSound" type="boolean" value="true" />
+            <property name="hoverSoundVolume" type="float" value=".5" />
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Button/minimize.png" />
+            <property name="hoverImg" type="String" value="Interface/Styles/Gold/Button/minimizeHover.png" />
+            <property name="pressedImg" type="String" value="Interface/Styles/Gold/Button/minimizePressed.png" />
+        </images>
+        <effects>
+            <property name="event0" type="Effect">
+                <event value="Hover" />
+                <effect value="Pulse" />
+                <speed value=".3" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Press" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event2" type="Effect">
+                <event value="LoseFocus" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event3" type="Effect">
+                <event value="TabFocus" />
+                <effect value="PulseColor" />
+                <speed value=".3" />
+            </property>
+            <property name="event4" type="Effect">
+                <event value="LoseTabFocus" />
+                <effect value="ColorSwap" />
+                <speed value="0" />
+            </property>
+        </effects>
+    </element>
+    
+    <element name="FancyWindowLarge#MaximizeButton">
+        <font>
+            <property name="fontName" type="String" value="smallFont" />
+            <property name="fontSize" type="float" value="8" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="0.8" />
+                <g value="0.8" />
+                <b value="0.8" />
+                <a value="1.0" />
+            </property>
+            <property name="textAlign" type="String" value="Center" />
+            <property name="textVAlign" type="String" value="Center" />
+            <property name="textWrap" type="String" value="NoWrap" />
+            <property name="hoverColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+            <property name="pressedColor" type="ColorRGBA">
+                <r value="0.6" />
+                <g value="0.6" />
+                <b value="0.6" />
+                <a value="1.0" />
+            </property>
+        </font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="20" />
+                <y value="20" />
+            </property>
+            <property name="pressedSound" type="String" value="button_pressed" />
+            <property name="usePressedSound" type="boolean" value="true" />
+            <property name="pressedSoundVolume" type="float" value="1" />
+            <property name="hoverSound" type="String" value="button_focus" />
+            <property name="useHoverSound" type="boolean" value="true" />
+            <property name="hoverSoundVolume" type="float" value=".5" />
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Button/maximize.png" />
+            <property name="hoverImg" type="String" value="Interface/Styles/Gold/Button/maximizeHover.png" />
+            <property name="pressedImg" type="String" value="Interface/Styles/Gold/Button/maximizePressed.png" />
+        </images>
+        <effects>
+            <property name="event0" type="Effect">
+                <event value="Hover" />
+                <effect value="Pulse" />
+                <speed value=".3" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Press" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event2" type="Effect">
+                <event value="LoseFocus" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event3" type="Effect">
+                <event value="TabFocus" />
+                <effect value="PulseColor" />
+                <speed value=".3" />
+            </property>
+            <property name="event4" type="Effect">
+                <event value="LoseTabFocus" />
+                <effect value="ColorSwap" />
+                <speed value="0" />
+            </property>
+        </effects>
+    </element>
+    
+    <element name="FancyWindow#CloseButton">
+        <font>
+            <property name="fontName" type="String" value="smallFont" />
+            <property name="fontSize" type="float" value="8" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="0.8" />
+                <g value="0.8" />
+                <b value="0.8" />
+                <a value="1.0" />
+            </property>
+            <property name="textAlign" type="String" value="Center" />
+            <property name="textVAlign" type="String" value="Center" />
+            <property name="textWrap" type="String" value="NoWrap" />
+            <property name="hoverColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+            <property name="pressedColor" type="ColorRGBA">
+                <r value="0.6" />
+                <g value="0.6" />
+                <b value="0.6" />
+                <a value="1.0" />
+            </property>
+        </font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="15" />
+                <y value="15" />
+            </property>
+            <property name="pressedSound" type="String" value="button_pressed" />
+            <property name="usePressedSound" type="boolean" value="true" />
+            <property name="pressedSoundVolume" type="float" value="1" />
+            <property name="hoverSound" type="String" value="button_focus" />
+            <property name="useHoverSound" type="boolean" value="true" />
+            <property name="hoverSoundVolume" type="float" value=".5" />
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Button/close.png" />
+            <property name="hoverImg" type="String" value="Interface/Styles/Gold/Button/closeHover.png" />
+            <property name="pressedImg" type="String" value="Interface/Styles/Gold/Button/closePressed.png" />
+        </images>
+        <effects>
+            <property name="event0" type="Effect">
+                <event value="Hover" />
+                <effect value="Pulse" />
+                <speed value=".3" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Press" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event2" type="Effect">
+                <event value="LoseFocus" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event3" type="Effect">
+                <event value="TabFocus" />
+                <effect value="PulseColor" />
+                <speed value=".3" />
+            </property>
+            <property name="event4" type="Effect">
+                <event value="LoseTabFocus" />
+                <effect value="ColorSwap" />
+                <speed value="0" />
+            </property>
+        </effects>
+    </element>
+    <element name="FancyWindow#MinimizeButton">
+        <font>
+            <property name="fontName" type="String" value="smallFont" />
+            <property name="fontSize" type="float" value="8" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="0.8" />
+                <g value="0.8" />
+                <b value="0.8" />
+                <a value="1.0" />
+            </property>
+            <property name="textAlign" type="String" value="Center" />
+            <property name="textVAlign" type="String" value="Center" />
+            <property name="textWrap" type="String" value="NoWrap" />
+            <property name="hoverColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+            <property name="pressedColor" type="ColorRGBA">
+                <r value="0.6" />
+                <g value="0.6" />
+                <b value="0.6" />
+                <a value="1.0" />
+            </property>
+        </font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="15" />
+                <y value="15" />
+            </property>
+            <property name="pressedSound" type="String" value="button_pressed" />
+            <property name="usePressedSound" type="boolean" value="true" />
+            <property name="pressedSoundVolume" type="float" value="1" />
+            <property name="hoverSound" type="String" value="button_focus" />
+            <property name="useHoverSound" type="boolean" value="true" />
+            <property name="hoverSoundVolume" type="float" value=".5" />
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Button/minimize.png" />
+            <property name="hoverImg" type="String" value="Interface/Styles/Gold/Button/minimizeHover.png" />
+            <property name="pressedImg" type="String" value="Interface/Styles/Gold/Button/minimizePressed.png" />
+        </images>
+        <effects>
+            <property name="event0" type="Effect">
+                <event value="Hover" />
+                <effect value="Pulse" />
+                <speed value=".3" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Press" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event2" type="Effect">
+                <event value="LoseFocus" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event3" type="Effect">
+                <event value="TabFocus" />
+                <effect value="PulseColor" />
+                <speed value=".3" />
+            </property>
+            <property name="event4" type="Effect">
+                <event value="LoseTabFocus" />
+                <effect value="ColorSwap" />
+                <speed value="0" />
+            </property>
+        </effects>
+    </element>
+    
+    <element name="FancyWindow#MaximizeButton">
+        <font>
+            <property name="fontName" type="String" value="smallFont" />
+            <property name="fontSize" type="float" value="8" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="0.8" />
+                <g value="0.8" />
+                <b value="0.8" />
+                <a value="1.0" />
+            </property>
+            <property name="textAlign" type="String" value="Center" />
+            <property name="textVAlign" type="String" value="Center" />
+            <property name="textWrap" type="String" value="NoWrap" />
+            <property name="hoverColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+            <property name="pressedColor" type="ColorRGBA">
+                <r value="0.6" />
+                <g value="0.6" />
+                <b value="0.6" />
+                <a value="1.0" />
+            </property>
+        </font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="15" />
+                <y value="15" />
+            </property>
+            <property name="pressedSound" type="String" value="button_pressed" />
+            <property name="usePressedSound" type="boolean" value="true" />
+            <property name="pressedSoundVolume" type="float" value="1" />
+            <property name="hoverSound" type="String" value="button_focus" />
+            <property name="useHoverSound" type="boolean" value="true" />
+            <property name="hoverSoundVolume" type="float" value=".5" />
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Button/maximize.png" />
+            <property name="hoverImg" type="String" value="Interface/Styles/Gold/Button/maximizeHover.png" />
+            <property name="pressedImg" type="String" value="Interface/Styles/Gold/Button/maximizePressed.png" />
+        </images>
+        <effects>
+            <property name="event0" type="Effect">
+                <event value="Hover" />
+                <effect value="Pulse" />
+                <speed value=".3" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Press" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event2" type="Effect">
+                <event value="LoseFocus" />
+                <effect value="ImageSwap" />
+                <speed value="0" />
+            </property>
+            <property name="event3" type="Effect">
+                <event value="TabFocus" />
+                <effect value="PulseColor" />
+                <speed value=".3" />
+            </property>
+            <property name="event4" type="Effect">
+                <event value="LoseTabFocus" />
+                <effect value="ColorSwap" />
+                <speed value="0" />
+            </property>
+        </effects>
+    </element>
+    
+    <element name="FancyWindow">
+        <font></font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="textPadding" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="minSize" type="Vector2f">
+                <x value="150" />
+                <y value="50" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="350" />
+                <y value="200" />
+            </property>
+            <property name="clipPadding" type="float" value="0" />
+            <property name="buttonAreaHeight" type="float" value="40" />
+            <property name="showSound" type="String" value="fade" />
+            <property name="useShowSound" type="boolean" value="true" />
+            <property name="showSoundVolume" type="float" value="1" />
+            <property name="hideSound" type="String" value="fade" />
+            <property name="useHideSound" type="boolean" value="true" />
+            <property name="hideSoundVolume" type="float" value="1" />
+        </attributes>
+        <effects>
+            <!--
+            <property name="event0" type="Effect">
+                <event value="Show" />
+                <effect value="FadeIn" />
+                <speed value=".25" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Hide" />
+                <effect value="FadeOut" />
+                <speed value=".25" />
+            </property>
+            -->
+        </effects>
+        <images/>
+    </element>
+        
+    <element name="FancyWindow#Content">
+        <font></font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="9" />
+                <y value="8" />
+                <z value="8" />
+                <w value="1" />
+            </property>
+            <property name="textPadding" type="Vector4f">
+                <x value="7" />
+                <y value="7" />
+                <z value="0" />
+                <w value="7" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/fancytitlecontent.png" />
+        </images>
+        <effects/>
+    </element>
+
+    <element name="FancyWindow#Dragbar">
+        <font>
+            <property name="fontName" type="String" value="mediumFont" />
+            <property name="fontSize" type="float" value="12" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+            <property name="textAlign" type="String" value="Center" />
+            <property name="textVAlign" type="String" value="Center" />
+            <property name="textWrap" type="String" value="NoWrap" />
+            <property name="textPadding" type="float" value="1" />
+            <property name="textPosX" type="float" value="0" />
+            <property name="textPosY" type="float" value="0" />
+        </font>
+        <attributes>
+            <property name="buttonsOffset" type="Vector2f">
+                <x value="-8" />
+                <y value="3" />
+            </property>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="2" />
+                <y value="2" />
+                <z value="2" />
+                <w value="2" />
+            </property>
+            <property name="indents" type="Vector4f">
+                <x value="2" />
+                <y value="34" />
+                <z value="34" />
+                <w value="2" />
+            </property>
+            <property name="defaultControlSize" type="float" value="26" />
+        </attributes>
+        <images>
+            <property name="leftImg" type="String" value="Interface/Styles/Gold/Window/smallfancytitleleft.png" />
+            <property name="centerImg" type="String" value="Interface/Styles/Gold/Window/smallfancytitlecenter.png" />
+            <property name="rightImg" type="String" value="Interface/Styles/Gold/Window/smallfancytitleright.png" />
+            <property name="leftImgSelected" type="String" value="Interface/Styles/Gold/Window/smallfancytitleleft_selected.png" />
+            <property name="centerImgSelected" type="String" value="Interface/Styles/Gold/Window/smallfancytitlecenter_selected.png" />
+            <property name="rightImgSelected" type="String" value="Interface/Styles/Gold/Window/smallfancytitleright_selected.png" />
+        </images>
+        <effects></effects>
+    </element>
+    
+    
+    <element name="Minimap">
+        <font> 
+            <property name="directionButtonFontName" type="String" value="defaultOutlineFont" />
+            <property name="directionButtonFontSize" type="float" value="8" />
+            <property name="directionButtonFontColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+        </font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="minSize" type="Vector2f">
+                <x value="179" />
+                <y value="195" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="179" />
+                <y value="195" />
+            </property>
+            <property name="clipPadding" type="float" value="0" />
+            <property name="buttonAreaHeight" type="float" value="40" />
+            <property name="showSound" type="String" value="fade" />
+            <property name="useShowSound" type="boolean" value="true" />
+            <property name="showSoundVolume" type="float" value="1" />
+            <property name="hideSound" type="String" value="fade" />
+            <property name="useHideSound" type="boolean" value="true" />
+            <property name="hideSoundVolume" type="float" value="1" />
+            <property name="directionButtonSize" type="Vector2f">
+                <x value="24" />
+                <y value="24" />
+            </property>
+            <property name="directionButtonResizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="northPosition" type="Vector2f">
+                <x value="73" />
+                <y value="-3" />
+            </property>
+            <property name="southPosition" type="Vector2f">
+                <x value="73" />
+                <y value="144" />
+            </property>
+            <property name="westPosition" type="Vector2f">
+                <x value="-7" />
+                <y value="70" />
+            </property>
+            <property name="eastPosition" type="Vector2f">
+                <x value="152" />
+                <y value="70" />
+            </property>
+            
+            <property name="worldMapButtonPosition" type="Vector2f">
+                <x value="13" />
+                <y value="16" />
+            </property>
+            <property name="worldMapButtonResizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="worldMapButtonSize" type="Vector2f">
+                <x value="20" />
+                <y value="20" />
+            </property>
+            
+            <property name="zoomInButtonPosition" type="Vector2f">
+                <x value="131" />
+                <y value="12" />
+            </property>
+            <property name="zoomInButtonResizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="zoomInButtonSize" type="Vector2f">
+                <x value="20" />
+                <y value="20" />
+            </property>
+            
+            <property name="zoomOutButtonPosition" type="Vector2f">
+                <x value="150" />
+                <y value="34" />
+            </property>
+            <property name="zoomOutButtonResizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="zoomOutButtonSize" type="Vector2f">
+                <x value="20" />
+                <y value="20" />
+            </property>
+        </attributes>
+        <effects>
+            <property name="event0" type="Effect">
+                <event value="Show" />
+                <effect value="FadeIn" />
+                <speed value=".25" />
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Hide" />
+                <effect value="FadeOut" />
+                <speed value=".25" />
+            </property>
+        </effects>
+        <images>
+            <property name="directionButtonImg" type="String" value="Interface/Styles/Gold/Window/direction.png" />
+            <property name="zoomInImg" type="String" value="Interface/Styles/Gold/Window/zoomin.png" />
+            <property name="zoomInHoverImg" type="String" value="Interface/Styles/Gold/Window/zoominhighlight.png" />
+            <property name="zoomOutImg" type="String" value="Interface/Styles/Gold/Window/zoomout.png" />
+            <property name="zoomOutHoverImg" type="String" value="Interface/Styles/Gold/Window/zoomouthighlight.png" />
+            <property name="worldMapImg" type="String" value="Interface/Styles/Gold/Window/openmap.png" />
+            <property name="worldMapHoverImg" type="String" value="Interface/Styles/Gold/Window/openmaphighlight.png" />
+            <property name="worldMapPressedImg" type="String" value="Interface/Styles/Gold/Window/openmaplowlight.png" />
+            <property name="blankImg" type="String" value="Interface/Styles/Gold/Window/minimapblank.png" />
+            <property name="overlayImg" type="String" value="Interface/Styles/Gold/Window/minimapoverlay.png" />
+        </images>
+    </element>
+        
+    <element name="Minimap#Content">
+        <font></font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="5" />
+                <y value="5" />
+                <z value="5" />
+                <w value="5" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/minimapcontent.png" />
+        </images>
+        <effects/>
+    </element>
+
+    <element name="Minimap#Dragbar">
+        <font>
+            <property name="fontName" type="String" value="smallFont" />
+            <property name="fontSize" type="float" value="8" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+            <property name="textAlign" type="String" value="Center" />
+            <property name="textVAlign" type="String" value="Center" />
+            <property name="textWrap" type="String" value="NoWrap" />
+            <property name="textPadding" type="float" value="1" />
+            <property name="textPosX" type="float" value="0" />
+            <property name="textPosY" type="float" value="0" />
+        </font>
+        <attributes>
+            <property name="closeButtonOffset" type="Vector2f">
+                <x value="-10" />
+                <y value="2" />
+            </property>
+            <property name="closeButtonSize" type="Vector2f">
+                <x value="20" />
+                <y value="20" />
+            </property>
+            <property name="closeButtonResizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="2" />
+                <y value="2" />
+                <z value="2" />
+                <w value="2" />
+            </property>
+            <property name="indents" type="Vector4f">
+                <x value="0" />
+                <y value="26" />
+                <z value="26" />
+                <w value="0" />
+            </property>
+            <property name="defaultControlSize" type="float" value="22" />
+        </attributes>
+        <images>
+            <property name="closeImg" type="String" value="Interface/Styles/Gold/Window/close.png" />
+            <property name="closeHoverImg" type="String" value="Interface/Styles/Gold/Window/closehighlight.png" />
+            <property name="closePressedImg" type="String" value="Interface/Styles/Gold/Window/closelowlight.png" />
+            <property name="leftImg" type="String" value="Interface/Styles/Gold/Window/minimaptitleleft.png" />
+            <property name="centerImg" type="String" value="Interface/Styles/Gold/Window/minimaptitlecenter.png" />
+            <property name="rightImg" type="String" value="Interface/Styles/Gold/Window/minimaptitleright.png" />
+            <property name="leftImgSelected" type="String" value="Interface/Styles/Gold/Window/minimaptitleleft.png" />
+            <property name="centerImgSelected" type="String" value="Interface/Styles/Gold/Window/minimaptitlecenter.png" />
+            <property name="rightImgSelected" type="String" value="Interface/Styles/Gold/Window/minimaptitleright.png" />
+        </images>
+        <effects></effects>
+    </element> 
+    
+    <element name="InventoryWindow">
+        <font></font>
+        <attributes>
+            <property name="bagsResizeBorders" type="Vector4f">
+                <x value="1" />
+                <y value="27" />
+                <z value="27" />
+                <w value="1" />
+            </property>
+            <property name="bagsOffset" type="Vector2f">
+                <x value="0" />
+                <y value="-3" />
+            </property>
+            <property name="minSize" type="Vector2f">
+                <x value="196" />
+                <y value="150" />
+            </property>
+        </attributes>
+        <images>
+            <property name="bagsDefaultImg" type="String" value="Interface/Styles/Gold/Window/inventorybottom.png" />
+        </images>
+        <effects/>
+    </element>
+    
+    <element name="Console">
+        <font></font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="10" />
+                <y value="12" />
+                <z value="12" />
+                <w value="1" />
+            </property>
+            <property name="minSize" type="Vector2f">
+                <x value="150" />
+                <y value="50" />
+            </property>
+            <property name="defaultHeight" type="float" value="200"/>
+            <property name="clipPadding" type="float" value="6" />
+            <property name="buttonAreaHeight" type="float" value="40" />
+            <property name="showSound" type="String" value="fade" />
+            <property name="useShowSound" type="boolean" value="true" />
+            <property name="showSoundVolume" type="float" value="1" />
+            <property name="hideSound" type="String" value="fade" />
+            <property name="useHideSound" type="boolean" value="true" />
+            <property name="hideSoundVolume" type="float" value="1" />
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/fancytitlecontent.png" />
+        </images>
+        <effects>
+            <property name="event0" type="Effect">
+                <event value="Show" />
+                <effect value="SlideIn" />
+                <speed value=".25" />
+                <direction value="Top"/>
+            </property>
+            <property name="event1" type="Effect">
+                <event value="Hide" />
+                <effect value="SlideOut" />
+                <speed value=".25" />
+                <direction value="Top"/>
+            </property>
+        </effects>
+    </element>
+    
+    <element name="Console#Error">
+        <font>
+            <property name="fontName" type="String" value="defaultOutlineFont" />
+            <property name="fontSize" type="float" value="8" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="0.0" />
+                <b value="0.0" />
+                <a value="1.0" />
+            </property>
+        </font>
+        <attributes/>
+        <images/>
+        <effects/>
+    </element>
+    
+    <element name="Console#Standard">
+        <font>
+            <property name="fontName" type="String" value="defaultOutlineFont" />
+            <property name="fontSize" type="float" value="8" />
+            <property name="fontColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+        </font>
+        <attributes/>
+        <images/>
+        <effects/>
+    </element>
+    
+    <element name="Equipment">
+        <font/>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="139" />
+                <y value="286" />
+            </property>
+            <property name="positionCHEST" type="Vector2f">
+                <x value="52" />
+                <y value="90" />
+            </property>
+            <property name="positionLEGS" type="Vector2f">
+                <x value="52" />
+                <y value="169" />
+            </property>
+            <property name="positionFEET" type="Vector2f">
+                <x value="52" />
+                <y value="208" />
+            </property>
+            <property name="positionAMULET" type="Vector2f">
+                <x value="11" />
+                <y value="49" />
+            </property>
+            <property name="positionARMS" type="Vector2f">
+                <x value="11" />
+                <y value="109" />
+            </property>
+            <property name="positionRING_1" type="Vector2f">
+                <x value="11" />
+                <y value="185" />
+            </property>
+            <property name="positionHEAD" type="Vector2f">
+                <x value="51" />
+                <y value="10" />
+            </property>
+            <property name="positionHEAD" type="Vector2f">
+                <x value="52" />
+                <y value="10" />
+            </property>
+            <property name="positionNECK" type="Vector2f">
+                <x value="52" />
+                <y value="49" />
+            </property>
+            <property name="positionSHOULDERS" type="Vector2f">
+                <x value="92" />
+                <y value="74" />
+            </property>
+            <property name="positionWAIST" type="Vector2f">
+                <x value="52" />
+                <y value="129" />
+            </property>
+            <property name="positionHANDS" type="Vector2f">
+                <x value="92" />
+                <y value="145" />
+            </property>
+            <property name="positionRING_2" type="Vector2f">
+                <x value="92" />
+                <y value="185" />
+            </property>
+            <property name="positionWEAPON_1" type="Vector2f">
+                <x value="11" />
+                <y value="246" />
+            </property>
+            <property name="positionWEAPON_2" type="Vector2f">
+                <x value="52" />
+                <y value="246" />
+            </property>
+            <property name="positionWEAPON_3" type="Vector2f">
+                <x value="93" />
+                <y value="246" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/equipslots.png" />
+        </images>
+        <effects/>
+    </element>
+    <element name="Charms">
+        <font/>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="7" />
+                <y value="7" />
+                <z value="7" />
+                <w value="7" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="139" />
+                <y value="286" />
+            </property>
+            <property name="positionRED_CHARM" type="Vector2f">
+                <x value="53" />
+                <y value="40" />
+            </property>
+            <property name="positionORANGE_CHARM" type="Vector2f">
+                <x value="23" />
+                <y value="104" />
+            </property>
+            <property name="positionPURPLE_CHARM" type="Vector2f">
+                <x value="83" />
+                <y value="104" />
+            </property>
+            <property name="positionYELLOW_CHARM" type="Vector2f">
+                <x value="15" />
+                <y value="172" />
+            </property>
+            <property name="positionBLUE_CHARM" type="Vector2f">
+                <x value="91" />
+                <y value="172" />
+            </property>
+            <property name="positionGREEN_CHARM" type="Vector2f">
+                <x value="53" />
+                <y value="233" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/charms.png" />
+        </images>
+        <effects/>
+    </element>
+    <element name="Mods">
+        <font/>
+        <attributes>
+            <property name="defaultSize" type="Vector2f">
+                <x value="159" />
+                <y value="306" />
+            </property>
+        </attributes>
+        <images>
+        </images>
+        <effects/>
+    </element>
+    <element name="LoginWindow">
+        <font/>
+        <attributes>
+            <property name="busyIconResizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="busyIconSize" type="Vector2f">
+                <x value="64" />
+                <y value="64" />
+            </property>
+            <property name="logoSize" type="Vector2f">
+                <x value="350" />
+                <y value="137" />
+            </property>
+            <property name="bannerSize" type="Vector2f">
+                <x value="750" />
+                <y value="106" />
+            </property>
+        </attributes>
+        <images>
+            <property name="busyIconImg" type="String" value="Interface/Styles/Gold/Progress_0.png" />
+            <property name="bannerImg" type="String" value="Interface/Styles/Gold/bannersmaller.png" />
+            <property name="logoImg" type="String" value="Interface/Styles/Gold/Login_EE_Title.png" />
+        </images>
+        <effects/>
+    </element>
+    <element name="MainToolBar">
+        <font>            
+            <property name="barFontName" type="String" value="tinyFont" />
+            <property name="barFontSize" type="float" value="4" />
+            <property name="barFontColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+        </font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="765" />
+                <y value="82" />
+            </property>
+            <property name="coinHoverAreaPosition" type="Vector2f">
+                <x value="710" />
+                <y value="57" />
+            </property>
+            <property name="coinHoverAreaSize" type="Vector2f">
+                <x value="17" />
+                <y value="17" />
+            </property>
+            <property name="creditsHoverAreaPosition" type="Vector2f">
+                <x value="710" />
+                <y value="33" />
+            </property>
+            <property name="creditsHoverAreaSize" type="Vector2f">
+                <x value="15" />
+                <y value="16" />
+            </property>
+            <property name="reagentsHoverAreaPosition" type="Vector2f">
+                <x value="728" />
+                <y value="42" />
+            </property>
+            <property name="reagentsHoverAreaSize" type="Vector2f">
+                <x value="11" />
+                <y value="17" />
+            </property>
+            <property name="barAreaPosition" type="Vector2f">
+                <x value="62" />
+                <y value="75" />
+            </property>
+            <property name="barAreaSize" type="Vector2f">
+                <x value="640" />
+                <y value="7" />
+            </property>
+            <property name="quickBarTogglerRevealAreaSize" type="Vector2f">
+                <x value="32" />
+                <y value="32" />
+            </property>
+            <property name="quickBarTogglerRevealAreaPosition" type="Vector2f">
+                <x value="54" />
+                <y value="42" />
+            </property>
+            <property name="quickBarTogglerSize" type="Vector2f">
+                <x value="227" />
+                <y value="29" />
+            </property>
+            <property name="quickBarTogglerPosition" type="Vector2f">
+                <x value="416" />
+                <y value="9" />
+            </property>
+            <property name="quickBarTogglerResizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="quickBarTogglerButtonGap" type="float" value="10" />            
+            <property name="quickBarTogglerButtonsPosition" type="Vector2f">
+                <x value="7" />
+                <y value="4" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/maintools.png" />
+            <property name="lowerImg" type="String" value="Interface/Styles/Gold/Window/maintools_lower.png" />
+            <property name="barImg" type="String" value="Interface/Styles/Gold/Window/xpbar.png" />
+            <property name="quickBarTogglerImg" type="String" value="Interface/Styles/Gold/Window/quickbarselgold.png" />
+        </images>
+        <effects/>
+    </element>
+    
+    <element name="BuildToolBar">
+        <font>            
+            <property name="barFontName" type="String" value="tinyFont" />
+            <property name="barFontSize" type="float" value="4" />
+            <property name="barFontColor" type="ColorRGBA">
+                <r value="1.0" />
+                <g value="1.0" />
+                <b value="1.0" />
+                <a value="1.0" />
+            </property>
+        </font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="765" />
+                <y value="85" />
+            </property>
+            <property name="coinHoverAreaPosition" type="Vector2f">
+                <x value="710" />
+                <y value="57" />
+            </property>
+            <property name="coinHoverAreaSize" type="Vector2f">
+                <x value="17" />
+                <y value="17" />
+            </property>
+            <property name="creditsHoverAreaPosition" type="Vector2f">
+                <x value="710" />
+                <y value="33" />
+            </property>
+            <property name="creditsHoverAreaSize" type="Vector2f">
+                <x value="15" />
+                <y value="16" />
+            </property>
+            <property name="reagentsHoverAreaPosition" type="Vector2f">
+                <x value="728" />
+                <y value="42" />
+            </property>
+            <property name="reagentsHoverAreaSize" type="Vector2f">
+                <x value="11" />
+                <y value="17" />
+            </property>
+            <property name="barAreaPosition" type="Vector2f">
+                <x value="62" />
+                <y value="78" />
+            </property>
+            <property name="barAreaSize" type="Vector2f">
+                <x value="640" />
+                <y value="7" />
+            </property>
+            <property name="quickBarTogglerRevealAreaSize" type="Vector2f">
+                <x value="32" />
+                <y value="32" />
+            </property>
+            <property name="quickBarTogglerRevealAreaPosition" type="Vector2f">
+                <x value="54" />
+                <y value="42" />
+            </property>
+            <property name="quickBarTogglerSize" type="Vector2f">
+                <x value="227" />
+                <y value="29" />
+            </property>
+            <property name="quickBarTogglerPosition" type="Vector2f">
+                <x value="416" />
+                <y value="9" />
+            </property>
+            <property name="quickBarTogglerResizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="quickBarTogglerButtonGap" type="float" value="10" />            
+            <property name="quickBarTogglerButtonsPosition" type="Vector2f">
+                <x value="7" />
+                <y value="4" />
+            </property>
+            <property name="propSearchPosition" type="Vector2f">
+                <x value="100" />
+                <y value="40" />
+            </property>
+            <property name="propSearchSize" type="Vector2f">
+                <x value="280" />
+                <y value="32" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/buildtools.png" />
+            <property name="lowerImg" type="String" value="Interface/Styles/Gold/Window/maintools_lower.png" />
+            <property name="barImg" type="String" value="Interface/Styles/Gold/Window/xpbar.png" />
+            <property name="quickBarTogglerImg" type="String" value="Interface/Styles/Gold/Window/quickbarselgold.png" />
+        </images>
+        <effects/>
+    </element>
+    
+    <element name="MainTools1">
+        <font/>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="256" />
+                <y value="36" />
+            </property>
+            <property name="defaultPosition" type="Vector2f">
+                <x value="88" />
+                <y value="40" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/bgz.jpg" />
+        </images>
+        <effects/>
+    </element>
+    <element name="MainTools2">
+        <font/>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="256" />
+                <y value="36" />
+            </property>
+            <property name="defaultPosition" type="Vector2f">
+                <x value="401" />
+                <y value="12" />
+            </property>
+        </attributes>
+        <images>
+        </images>
+        <effects/>
+    </element>
+    <element name="BuildTools">
+        <font/>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="0" />
+                <z value="0" />
+                <w value="0" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="256" />
+                <y value="36" />
+            </property>
+            <property name="defaultPosition" type="Vector2f">
+                <x value="401" />
+                <y value="41" />
+            </property>
+        </attributes>
+        <images>
+        </images>
+        <effects/>
+    </element>
+    <element name="ToolWindow">
+        <font/>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="5" />
+                <y value="5" />
+                <z value="5" />
+                <w value="5" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="120" />
+                <y value="24" />
+            </property>
+            <property name="defaultPosition" type="Vector2f">
+                <x value="0" />
+                <y value="0" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/panel_x.png" />
+        </images>
+        <effects/>
+    </element>
+    <element name="Preview">
+        <font/>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="1" />
+                <y value="1" />
+                <z value="1" />
+                <w value="1" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="200" />
+                <y value="300" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/panel_x_inner_thin.png" />
+        </images>
+        <effects/>
+    </element>
+    
+    <element name="SplitPanel">
+        <font></font>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="1" />
+                <y value="1" />
+                <z value="1" />
+                <w value="1" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="350" />
+                <y value="200" />
+            </property>
+            <property name="dividerGap" type="float" value="1" />
+            <property name="dividerSize" type="int" value="16" />
+            <property name="clipPadding" type="float" value="6" />
+            <property name="buttonAreaHeight" type="float" value="40" />
+        </attributes>
+        <images>
+        </images>
+        <effects>
+        </effects>
+    </element>
+    
+    <element name="SplitPanel#Expander#HORIZONTAL">
+        <font/>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="11" />
+                <y value="0" />
+                <z value="0" />
+                <w value="11" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Common/separator_fancy_vertical.png" />
+        </images>
+        <effects></effects>
+    </element>
+    
+    <element name="SplitPanel#Divider#HORIZONTAL">
+        <font/>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="11" />
+                <y value="0" />
+                <z value="0" />
+                <w value="11" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Common/separator_fancy_vertical.png" />
+        </images>
+        <effects></effects>
+    </element>
+    
+    <element name="SplitPanel#Divider#VERTICAL">
+        <font/>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="0" />
+                <y value="11" />
+                <z value="11" />
+                <w value="0" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Common/separator_fancy.png" />
+        </images>
+        <effects></effects>
+    </element>
+    
+    
+    <element name="XHTML">
+        <font/>
+        <attributes>
+            <property name="resizeBorders" type="Vector4f">
+                <x value="1" />
+                <y value="1" />
+                <z value="1" />
+                <w value="1" />
+            </property>
+            <property name="defaultSize" type="Vector2f">
+                <x value="200" />
+                <y value="300" />
+            </property>
+            <property name="contentIndents" type="Vector4f">
+                <x value="2" />
+                <y value="2" />
+                <z value="2" />
+                <w value="2" />
+            </property>
+        </attributes>
+        <images>
+            <property name="defaultImg" type="String" value="Interface/Styles/Gold/Window/panel_x_inner_thin.png" />
+        </images>
+        <effects/>
+        
+    </element>
+</root>

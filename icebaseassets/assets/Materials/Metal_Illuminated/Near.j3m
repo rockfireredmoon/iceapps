@@ -1,0 +1,11 @@
+Material Metal : MatDefs/Standard_Lit.j3md {
+     MaterialParameters {
+        Ambient : 0.8 0.8 0.8 1
+        Specular : 1 1 1 1
+        Shininess : 32.0
+        VertexLighting : true
+     }
+    AdditionalRenderState {
+      Wireframe Off
+    }
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<Component id="Manipulator-PathNode" xmlns="http://ee.ironrealms.com/CMS_XML.xsd">
+  <Entity mesh="Manipulator-PathNode.mesh" p="0 2.5 0" vf="4" />
+</Component>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Table">
+		<font>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="highlightResizeBorders" type="Vector4f">
+				<x value="8" />
+				<y value="12" />
+				<z value="12" />
+				<w value="8" />
+			</property>
+			<property name="textPadding" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="gap" type="float" value="1"/>
+			<property name="headerGap" type="float" value="0"/>
+			<property name="tablePadding" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Window/panel_x_inner_thin.png" />
+			<property name="highlightImg" type="String"
+				value="Interface/Styles/Gold/Highlight.png" />
+		</images>
+		<effects>
+		</effects>
+	</element>
+
+	<element name="Table#Row">
+		<font>
+		</font>
+		<attributes>
+			<property name="defaultSize" type="Vector2f">
+				<x value="100" />
+				<y value="24" />
+			</property>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+		</attributes>
+		<images>
+		</images>
+		<effects>
+		</effects>
+	</element>
+
+	<element name="Table#Header">
+		<font>
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="textPadding" type="float" value="0" />
+		</font>
+		<attributes>
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="100" />
+				<y value="24" />
+			</property>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="2" />
+				<y value="2" />
+				<z value="2" />
+				<w value="2" />
+			</property>
+			<property name="arrowSize" type="Vector2f">
+				<x value="12" />
+				<y value="12" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+			<property name="arrowUpImg" type="String"
+				value="Interface/Styles/Gold/Common/Arrows/arrow_up.png" />
+			<property name="arrowDownImg" type="String"
+				value="Interface/Styles/Gold/Common/Arrows/arrow_down.png" />
+			<property name="noArrowImg" type="String"
+				value="Interface/Styles/Gold/Blank.png" />
+		</images>
+		<effects>
+		</effects>
+	</element>
+
+	<element name="Table#Cell">
+		<font>
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="Clip" />
+			<property name="textPadding" type="float" value="3" />
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="100" />
+				<y value="24" />
+			</property>
+			<property name="arrowResizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="arrowSize" type="Vector2f">
+				<x value="12" />
+				<y value="12" />
+			</property>
+		</attributes>
+		<images>
+			<property name="expandImg" type="String"
+				value="Interface/Styles/Gold/Common/Arrows/arrow_right.png" />
+			<property name="collapseImg" type="String"
+				value="Interface/Styles/Gold/Common/Arrows/arrow_down.png" />
+		</images>
+		<effects>
+		</effects>
+	</element>
+</root>

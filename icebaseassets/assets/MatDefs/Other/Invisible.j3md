@@ -1,0 +1,10 @@
+MaterialDef Scroll Texture {
+ 
+    MaterialParameters {
+    }
+ 
+    Technique {
+        FragmentShader GLSL100: MatDefs/Other/Invisible.frag
+    }
+ 
+}

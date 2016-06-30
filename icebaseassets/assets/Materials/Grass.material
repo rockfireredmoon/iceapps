@@ -1,0 +1,55 @@
+
+material Grass
+{
+	// Fancy-pants animated technique
+	technique
+	{
+		pass
+		{
+			ambient 0.9 0.9 0.9
+			cull_hardware none
+			cull_software none
+			scene_blend alpha_blend
+			//depth_write off
+
+			alpha_rejection greater 0
+
+			vertex_program_ref VP_Grass
+			{
+				// ...
+			}
+
+			fragment_program_ref FP_Grass
+			{
+				// ...
+			}
+
+			texture_unit
+			{
+				filtering linear linear none
+				texture_alias Diffuse
+			}
+		}
+	}
+
+	// Fixed function technique
+	technique
+	{
+		pass
+		{
+			ambient 0.9 0.9 0.9
+			diffuse 0 0 0 1
+			specular 0 0 0 1 10
+			cull_hardware none
+			cull_software none
+			alpha_rejection greater_equal 180
+
+			texture_unit
+			{
+				filtering linear linear none
+				texture_alias Diffuse
+			}
+		}
+	}
+
+}

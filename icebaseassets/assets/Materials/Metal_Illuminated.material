@@ -1,0 +1,257 @@
+
+material Metal_Illuminated/Near
+{
+	lod_distances 0.08 0.11
+
+	// Normal technique. This renders the object as usual
+	technique
+	{
+		lod_index 0
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 1.0 1.0 1.0 1 32
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+
+	// Fading-out technique. This will fade the object out over a distance
+	technique
+	{
+		lod_index 1
+
+		force_transparent_sorting true
+		queue_bias 10
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 1.0 1.0 1.0 1 32
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+
+			vertex_program_ref VP_Standard_Fade
+			{
+				param_named minDistance float 0.08
+				param_named fadeDistance float 10.0
+			}
+
+			fragment_program_ref FP_Standard_Fade
+			{
+				// ...
+			}
+		}
+	}
+
+	// Culled technique. This just renders nothing
+	technique
+	{
+		lod_index 2
+
+		disabled true
+	}	
+}
+
+material Metal_Illuminated/Medium
+{
+	lod_distances 0.15 0.18
+
+	// Normal technique. This renders the object as usual
+	technique
+	{
+		lod_index 0
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 1.0 1.0 1.0 1 32
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+
+	// Fading-out technique. This will fade the object out over a distance
+	technique
+	{
+		lod_index 1
+
+		force_transparent_sorting true
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 1.0 1.0 1.0 1 32
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+
+			vertex_program_ref VP_Standard_Fade
+			{
+				param_named minDistance float 0.15
+				param_named fadeDistance float 20.0
+			}
+
+			fragment_program_ref FP_Standard_Fade
+			{
+				// ...
+			}
+		}
+	}
+
+	// Culled technique. This just renders nothing
+	technique
+	{
+		lod_index 2
+
+		disabled true
+	}	
+}
+
+material Metal_Illuminated/Far
+{
+	lod_distances 0.30 0.40
+
+	// Normal technique. This renders the object as usual
+	technique
+	{
+		lod_index 0
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 1.0 1.0 1.0 1 32
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+
+	// Fading-out technique. This will fade the object out over a distance
+	technique
+	{
+		lod_index 1
+
+		force_transparent_sorting true
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 1.0 1.0 1.0 1 32
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+
+			vertex_program_ref VP_Standard_Fade
+			{
+				param_named minDistance float 0.30
+				param_named fadeDistance float 50.0
+			}
+
+			fragment_program_ref FP_Standard_Fade
+			{
+				// ...
+			}
+		}
+	}
+
+	// Culled technique. This just renders nothing
+	technique
+	{
+		lod_index 2
+
+		disabled true
+	}	
+}
+
+material Metal_Illuminated
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 1.0 1.0 1.0 1 32
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+}

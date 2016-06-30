@@ -1,0 +1,84 @@
+
+#if defined(DIFFUSEMAP) || defined(HAS_COLORMAP)
+uniform float m_Scale1;
+uniform float m_Alpha1;
+#endif
+
+#ifdef DIFFUSEMAP2
+uniform sampler2D m_DiffuseMap2;
+#endif
+#ifdef HAS_COLORMAP2
+uniform sampler2D m_ColorMap2;
+#endif
+#if defined(DIFFUSEMAP2) || defined(HAS_COLORMAP2)
+varying vec2 scrollCoord2;
+uniform float m_Scale2;
+uniform float m_Alpha2;
+#endif
+
+#ifdef DIFFUSEMAP3
+uniform sampler2D m_DiffuseMap3;
+#endif
+#ifdef HAS_COLORMAP3
+uniform sampler2D m_ColorMap3;
+#endif
+#if defined(DIFFUSEMAP3) || defined(HAS_COLORMAP3)
+varying vec2 scrollCoord3;
+uniform float m_Scale3;
+uniform float m_Alpha3;
+#endif
+
+#ifdef DIFFUSEMAP4
+uniform sampler2D m_DiffuseMap4;
+#endif
+#ifdef HAS_COLORMAP4
+uniform sampler2D m_ColorMap4;
+#endif
+#if defined(DIFFUSEMAP4) || defined(HAS_COLORMAP4)
+varying vec2 scrollCoord4;
+uniform float m_Scale4;
+uniform float m_Alpha4;
+#endif
+
+vec4 mixAllDiffuse(in vec2 mainTexCoord) {
+    vec4 diffuseColor;
+	
+    #ifdef DIFFUSEMAP
+		vec4 tex1 = texture2D(m_DiffuseMap, mainTexCoord.xy / m_Scale1);
+		diffuseColor = mix( diffuseColor, tex1, m_Alpha1 );
+    #endif
+    #ifdef HAS_COLORMAP
+		vec4 tex1 = texture2D(m_ColorMap, mainTexCoord.xy / m_Scale1);
+		diffuseColor = mix( diffuseColor, tex1, m_Alpha1 );
+    #endif
+    
+    #ifdef DIFFUSEMAP2
+	    vec4 tex2    = texture2D( m_DiffuseMap2, scrollCoord2.xy / m_Scale2 );
+	    diffuseColor = mix( diffuseColor, tex2, 0.5 );
+    #endif
+    #ifdef HAS_COLORMAP2
+	    vec4 tex2    = texture2D(m_ColorMap2, scrollCoord2.xy / m_Scale2 );
+	    diffuseColor = mix( diffuseColor, tex2, 0.5 );
+    #endif
+    
+    #ifdef DIFFUSEMAP3
+	    vec4 tex3    = texture2D( m_DiffuseMap3, scrollCoord3.xy / m_Scale3 );
+	    diffuseColor = mix( diffuseColor, tex3, 0.5 );
+    #endif
+    #ifdef HAS_COLORMAP3
+	    vec4 tex3    = texture2D( m_ColorMap3, scrollCoord3.xy / m_Scale3 );
+	    diffuseColor = mix( diffuseColor, tex3, 0.5 );
+    #endif
+    
+    
+    #ifdef DIFFUSEMAP4
+	    vec4 tex4    = texture2D( m_DiffuseMap4, scrollCoord4.xy / m_Scale4 );
+	    diffuseColor = mix( diffuseColor, tex4, 0.5);
+    #endif
+    #ifdef HAS_COLORMAP4
+	    vec4 tex4    = texture2D( m_ColorMap4, scrollCoord4.xy / m_Scale4 );
+	    diffuseColor = mix( diffuseColor, tex4, 0.5);
+    #endif
+    
+    return diffuseColor;
+}

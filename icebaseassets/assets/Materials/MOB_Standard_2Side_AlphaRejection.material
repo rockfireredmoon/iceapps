@@ -1,0 +1,24 @@
+material MOB_Standard_2Side_AlphaRejection
+{
+
+	technique
+	{
+		pass
+		{
+			diffuse 1.1 1.1 1.1
+			ambient 0.9 0.9 0.9
+			specular 0.0 0.0 0.0 1 10
+			emissive 0.20 0.20 0.20 1
+			cull_hardware none
+			cull_software none
+			alpha_rejection greater_equal 180
+
+			max_lights 8
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+	}
+}

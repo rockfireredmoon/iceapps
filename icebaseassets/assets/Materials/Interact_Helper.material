@@ -1,0 +1,19 @@
+material Interact_Helper
+{
+   technique
+   {
+   	  disabled true
+      pass
+      {
+			lighting off
+			scene_blend add
+			depth_check on
+			depth_write on
+			cull_hardware none
+			texture_unit
+			{
+            colour_op_ex source1 src_manual src_current 0.2 0 0.2
+			}
+      }
+   }
+}

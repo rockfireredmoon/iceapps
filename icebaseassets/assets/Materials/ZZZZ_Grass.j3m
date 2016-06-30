@@ -1,0 +1,26 @@
+Material Grass : MatDefs/Terrain/TerrainVegetationLighting.j3md {
+     MaterialParameters {
+        Swaying : true
+        FadeEnd : 500.0
+        Wind : 1 5
+        SwayData : 1.5 1 10
+        Invert : true
+        FadeEnabled : true
+        UseMaterialColors: true
+        Diffuse: 0 0 0 1
+        Ambient: 0.1 0.1 0.1 1
+        UseAlpha : true
+        Shininess : 10
+        FadeRange : 250.0
+        AlphaDiscardLimit : 0.70588
+        AlphaNoiseMap : Textures/noise.png
+     }
+    AdditionalRenderState {
+      Blend Alpha
+      DepthTest On
+      DepthWrite On
+      FaceCull Off
+      ColorWrite On
+      Wireframe Off
+    }
+}

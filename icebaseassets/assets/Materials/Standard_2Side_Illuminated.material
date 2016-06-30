@@ -1,0 +1,282 @@
+
+material Standard_2Side_Illuminated/Near
+{
+	lod_distances 0.08 0.11
+
+	// Normal technique. This renders the object as usual
+	technique
+	{
+		lod_index 0
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+
+	// Fading-out technique. This will fade the object out over a distance
+	technique
+	{
+		lod_index 1
+		priority_bias 1
+
+		force_transparent_sorting true
+		queue_bias 10
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+
+	// Culled technique. This just renders nothing
+	technique
+	{
+		lod_index 2
+
+		disabled true
+	}	
+}
+
+material Standard_2Side_Illuminated/Medium
+{
+	lod_distances 0.10 0.15
+
+	// Normal technique. This renders the object as usual
+	technique
+	{
+		lod_index 0
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+
+	// Fading-out technique. This will fade the object out over a distance
+	technique
+	{
+		lod_index 1
+		priority_bias 1
+
+		force_transparent_sorting true
+		queue_bias 10
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+
+	// Culled technique. This just renders nothing
+	technique
+	{
+		lod_index 2
+
+		disabled true
+	}	
+}
+
+material Standard_2Side_Illuminated/Far
+{
+	lod_distances 0.40 0.50
+
+	// Normal technique. This renders the object as usual
+	technique
+	{
+		lod_index 0
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+
+	// Fading-out technique. This will fade the object out over a distance
+	technique
+	{
+		lod_index 1
+		priority_bias 1
+
+		force_transparent_sorting true
+		queue_bias 10
+
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+
+	// Culled technique. This just renders nothing
+	technique
+	{
+		lod_index 2
+
+		disabled true
+	}	
+}
+
+material Standard_2Side_Illuminated
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 0.7 0.7 0.7 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+}

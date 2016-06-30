@@ -1,0 +1,37 @@
+MaterialDef FakeParticleBlow {
+ 
+    MaterialParameters {
+        Texture2D MaskMap
+        Texture2D AniTexMap
+        Float TimeSpeed
+        Color BaseColor
+        Boolean Animation_Y
+        Boolean Animation_X
+        Boolean Change_Direction
+        
+    }
+ 
+    Technique {
+          VertexShader GLSL100:   Shaders/FakeParticleBlow/FakeParticleBlow.vert
+          FragmentShader GLSL100: Shaders/FakeParticleBlow/FakeParticleBlow.frag
+ 
+        WorldParameters {
+            WorldViewProjectionMatrix
+            Time
+            
+        }
+ 
+        Defines {
+
+        ANY_DIR_Y : Animation_Y
+        ANY_DIR_X : Animation_X
+        CHANGE_DIR : Change_Direction
+
+
+        }
+    }
+ 
+    Technique FixedFunc {
+    }
+ 
+}

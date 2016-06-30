@@ -1,0 +1,101 @@
+<mesh>
+    <submeshes>
+        <submesh material="Standard" usesharedvertices="false" use32bitindexes="false" operationtype="triangle_list">
+            <faces count="8">
+                <face v1="0" v2="2" v3="3" />
+                <face v1="0" v2="4" v3="1" />
+                <face v1="0" v2="3" v3="4" />
+                <face v1="5" v2="1" v3="4" />
+                <face v1="5" v2="3" v3="2" />
+                <face v1="5" v2="4" v3="3" />
+                <face v1="5" v2="2" v3="1" />
+                <face v1="0" v2="1" v3="2" />
+            </faces>
+            <geometry vertexcount="6">
+                <vertexbuffer positions="true">
+                    <vertex>
+                        <position x="-1.55788e-08" y="8.82903" z="-1.14338e-08" />
+                    </vertex>
+                    <vertex>
+                        <position x="-1.31316e-07" y="6.30771" z="-2.64776" />
+                    </vertex>
+                    <vertex>
+                        <position x="-2.64776" y="6.30771" z="2.20041e-07" />
+                    </vertex>
+                    <vertex>
+                        <position x="1.59954e-08" y="6.30771" z="2.64776" />
+                    </vertex>
+                    <vertex>
+                        <position x="2.64776" y="6.30771" z="-4.74383e-07" />
+                    </vertex>
+                    <vertex>
+                        <position x="-1.55788e-08" y="0.548774" z="-1.14338e-08" />
+                    </vertex>
+                </vertexbuffer>
+                <vertexbuffer normals="true">
+                    <vertex>
+                        <normal x="0" y="1" z="2.49947e-08" />
+                    </vertex>
+                    <vertex>
+                        <normal x="-1.17061e-07" y="0.225461" z="-0.974252" />
+                    </vertex>
+                    <vertex>
+                        <normal x="-0.974252" y="0.225461" z="7.02365e-08" />
+                    </vertex>
+                    <vertex>
+                        <normal x="7.02365e-08" y="0.225461" z="0.974252" />
+                    </vertex>
+                    <vertex>
+                        <normal x="0.974252" y="0.225461" z="-7.02365e-08" />
+                    </vertex>
+                    <vertex>
+                        <normal x="-4.81965e-08" y="-1" z="-4.81965e-08" />
+                    </vertex>
+                </vertexbuffer>
+                <vertexbuffer colours_diffuse="true">
+                    <vertex>
+                        <colour_diffuse value="1 1 1 1" />
+                    </vertex>
+                    <vertex>
+                        <colour_diffuse value="1 1 1 1" />
+                    </vertex>
+                    <vertex>
+                        <colour_diffuse value="1 1 1 1" />
+                    </vertex>
+                    <vertex>
+                        <colour_diffuse value="1 1 1 1" />
+                    </vertex>
+                    <vertex>
+                        <colour_diffuse value="1 1 1 1" />
+                    </vertex>
+                    <vertex>
+                        <colour_diffuse value="1 1 1 1" />
+                    </vertex>
+                </vertexbuffer>
+                <vertexbuffer texture_coord_dimensions_0="float2" texture_coords="1">
+                    <vertex>
+                        <texcoord u="0.970337" v="0.0268241" />
+                    </vertex>
+                    <vertex>
+                        <texcoord u="0.967663" v="0.964987" />
+                    </vertex>
+                    <vertex>
+                        <texcoord u="0.019241" v="0.0234584" />
+                    </vertex>
+                    <vertex>
+                        <texcoord u="0.967663" v="0.964987" />
+                    </vertex>
+                    <vertex>
+                        <texcoord u="0.027671" v="0.0331048" />
+                    </vertex>
+                    <vertex>
+                        <texcoord u="0.0199305" v="0.985341" />
+                    </vertex>
+                </vertexbuffer>
+            </geometry>
+        </submesh>
+    </submeshes>
+    <submeshnames>
+        <submeshname name="Standard" index="0" />
+    </submeshnames>
+</mesh>

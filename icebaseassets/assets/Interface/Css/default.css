@@ -1,0 +1,56 @@
+* {
+	font-family: defaultFont;
+	font-size: 8px;
+	color: #cccccc;
+}
+
+.SLabel {
+	clip: rect(5px,5px,5px,5px);
+}
+
+
+/*
+.Panel {
+	padding: 40px;
+	background: url(bgw.jpg) #ff0000 no-repeat;
+	border: 40px;
+	min-width: 300px;
+	min-height: 300px;
+}
+
+.Panel .ButtonAdapter {
+	font-family: tinyFont;
+	color: green;
+	clip: rect(5, 5, 5, 5);
+}
+
+.Panel .ButtonAdapter:hover {
+	background-image: url(bgx.jpg);
+}
+
+.Panel .ButtonAdapter:active {
+	background-image: url(bgz.jpg);
+}
+
+.Panel .Label {
+	text-align: right;
+	font-family: tinyFont;
+}
+
+.Panel .CheckBox {
+	font-size: 20px;
+	font-family: tinyFont;
+}
+
+.Panel .TextField {
+	padding: 20px;
+	font-size: 20px;
+}
+
+.Panel .RadioButton {
+	padding: 20px;
+	color: red;
+	font-family: tinyFont;
+}
+
+*/

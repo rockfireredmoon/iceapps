@@ -1,0 +1,22 @@
+Material Standard : MatDefs/Standard_Lit.j3md {
+     MaterialParameters {
+        Ambient : 0.8 0.8 0.8 1
+        Specular : 0 0 0 1
+        Shininess : 10.0
+        FadeEnd : 500.0
+        FadeEnabled : true
+        UseAlpha : true
+        Shininess : 1.0
+        FadeRange : 250.0
+        AlphaNoiseMap : Textures/noise.png
+     }
+    AdditionalRenderState {
+      AlphaTestFalloff 0.1
+      Blend Alpha
+      DepthTest On
+      DepthWrite On
+      FaceCull Off
+      ColorWrite On
+      Wireframe Off
+    }
+}

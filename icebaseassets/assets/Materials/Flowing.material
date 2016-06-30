@@ -1,0 +1,28 @@
+
+
+material Flowing
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture_alias Flow_A
+				scroll_anim 0.1 0.2
+			}
+
+			texture_unit
+			{
+				texture_alias Flow_B
+				scroll_anim 0.2 0.3
+			}
+		}
+
+	}
+
+}

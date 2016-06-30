@@ -1,0 +1,25 @@
+
+material NoDepthDecal
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			diffuse 1 1 1 1
+			specular 0 0 0 1
+			
+			scene_blend alpha_blend
+			depth_write off
+			depth_check off
+			// This keeps it from flickering
+			depth_bias 1.5 1.5
+
+			texture_unit
+			{
+				texture_alias Diffuse
+				texture SelectionBox.png
+			}
+		}
+	}
+}

@@ -1,0 +1,25 @@
+material Fog
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+			emissive 0.25 0.25 0.25
+			cull_hardware none
+			cull_software none
+			scene_blend alpha_blend
+			depth_write off
+			fog_override none
+
+			texture_unit
+			{
+				texture_alias Diffuse
+				rotate_anim 0.01
+				filtering linear linear none
+			}
+		}
+		queue_bias 1
+	}
+}

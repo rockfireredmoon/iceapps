@@ -1,0 +1,1284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+
+	<element name="ToolBar">
+		<font>
+		</font>
+		<attributes>
+			<property name="gap" type="float" value="1" />
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="2" />
+			</property>
+			<property name="textPadding" type="Vector4f">
+				<x value="4" />
+				<y value="4" />
+				<z value="3" />
+				<w value="6" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/toolbar.png" />
+		</images>
+	</element>
+	<element name="FancyButton">
+		<font>
+			<property name="fontName" type="String" value="defaultOutlineFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="5" />
+				<y value="12" />
+				<z value="12" />
+				<w value="5" />
+			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="usePressedSound" type="boolean" value="true" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="useHoverSound" type="boolean" value="true" />
+			<property name="hoverSoundVolume" type="float" value=".5" />
+			<property name="textPadding" type="Vector4f">
+				<x value="12" />
+				<y value="12" />
+				<z value="6" />
+				<w value="6" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/button_x_u.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_x_h.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_x_d.png" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+	</element>
+	<element name="Button">
+		<font>
+			<property name="fontName" type="String" value="smallFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			
+
+			<!-- Text padding attributes seem to be in a different order to resize 
+				borders -->
+			<property name="textPadding" type="Vector4f">
+				<x value="8" />
+				<y value="8" />
+				<z value="2" />
+				<w value="2" />
+			</property>
+			
+			<property name="resizeBorders" type="Vector4f">
+				<x value="1" />
+				<y value="1" />
+				<z value="1" />
+				<w value="1" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="32" />
+				<y value="22" />
+			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="usePressedSound" type="boolean" value="true" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="useHoverSound" type="boolean" value="true" />
+			<property name="hoverSoundVolume" type="float" value=".5" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+	</element>
+	<element name="ColorButton">
+		<font>
+			<property name="fontName" type="String" value="smallFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="4" />
+				<y value="4" />
+				<z value="4" />
+				<w value="4" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="20" />
+				<y value="20" />
+			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="usePressedSound" type="boolean" value="true" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="useHoverSound" type="boolean" value="true" />
+			<property name="hoverSoundVolume" type="float" value=".5" />
+			<property name="textPadding" type="float" value="3" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+	</element>
+	<element name="PickerButton">
+		<font>
+			<property name="fontName" type="String" value="smallFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="2" />
+				<y value="2" />
+				<z value="2" />
+				<w value="2" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="22" />
+				<y value="22" />
+			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="usePressedSound" type="boolean" value="true" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="useHoverSound" type="boolean" value="true" />
+			<property name="hoverSoundVolume" type="float" value=".5" />
+			<property name="textPadding" type="float" value="3" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_u.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_h.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/button_c_d.png" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+	</element>
+	<element name="CancelButton">
+		<font>
+			<property name="fontName" type="String" value="defaultOutlineFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="12" />
+				<y value="12" />
+				<z value="5" />
+				<w value="5" />
+			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="usePressedSound" type="boolean" value="true" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="useHoverSound" type="boolean" value="true" />
+			<property name="hoverSoundVolume" type="float" value=".5" />
+			<property name="textPadding" type="Vector4f">
+				<x value="12" />
+				<y value="12" />
+				<z value="6" />
+				<w value="6" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/red_button_x_u.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/red_button_x_h.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/red_button_x_d.png" />
+		</images>
+		<effects>
+		</effects>
+	</element>
+	<element name="BigButton">
+		<font>
+			<property name="fontName" type="String" value="mediumOutlineFont" />
+			<property name="fontSize" type="float" value="16" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.94" />
+				<g value="0.94" />
+				<b value="0.76" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="5" />
+				<y value="15" />
+				<z value="15" />
+				<w value="5" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="225" />
+				<y value="48" />
+			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="usePressedSound" type="boolean" value="true" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="useHoverSound" type="boolean" value="true" />
+			<property name="hoverSoundVolume" type="float" value=".5" />
+
+			<!-- Text padding attributes seem to be in a different order to resize 
+				borders -->
+			<property name="textPadding" type="Vector4f">
+				<x value="40" />
+				<y value="40" />
+				<z value="5" />
+				<w value="5" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/big_button_u.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/big_button_h.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/big_button_d.png" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+	</element>
+	<element name="UIButton">
+		<font>
+			<property name="fontName" type="String" value="defaultFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Top" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="6" />
+				<y value="6" />
+				<z value="6" />
+				<w value="6" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="38" />
+				<y value="38" />
+			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="usePressedSound" type="boolean" value="true" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="useHoverSound" type="boolean" value="true" />
+			<property name="hoverSoundVolume" type="float" value=".5" />
+			<property name="textPadding" type="float" value="10" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/ui_button_u.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/ui_button_h.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/ui_button_u.png" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+	</element>
+	<element name="SlotButton">
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="2" />
+				<y value="2" />
+				<z value="3" />
+				<w value="2" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="36" />
+				<y value="36" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Icons/Icon-32-Icon_Holder2.png" />
+			<property name="plugImg" type="String" value="Icons/Icon-32-Icon_Plug1.png" />
+		</images>
+		<effects />
+		<font />
+	</element>
+	<element name="ToolButton">
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="2" />
+				<y value="2" />
+				<z value="2" />
+				<w value="2" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="32" />
+				<y value="32" />
+			</property>
+			<property name="toolResizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="toolDefaultSize" type="Vector2f">
+				<x value="32" />
+				<y value="32" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Icons/Icon-32-Icon_Holder2.png" />
+		</images>
+		<effects />
+		<font />
+	</element>
+	<element name="OptionButton">
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="32" />
+				<y value="32" />
+			</property>
+			<property name="toolResizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="toolDefaultSize" type="Vector2f">
+				<x value="32" />
+				<y value="32" />
+			</property>
+		</attributes>
+		<images>
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/optionhover.png" />
+		</images>
+		<effects />
+		<font />
+	</element>
+	<element name="BuildButton">
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="32" />
+				<y value="32" />
+			</property>
+			<property name="toolResizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="toolDefaultSize" type="Vector2f">
+				<x value="32" />
+				<y value="32" />
+			</property>
+		</attributes>
+		<images></images>
+		<effects />
+		<font />
+	</element>
+	<element name="ItemDroppable">
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="32" />
+				<y value="32" />
+			</property>
+		</attributes>
+		<images>
+		</images>
+		<effects />
+		<font />
+	</element>
+	<element name="ContainerDroppable">
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="32" />
+				<y value="32" />
+			</property>
+			<property name="containerResizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="containerDefaultSize" type="Vector2f">
+				<x value="32" />
+				<y value="32" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Icons/Icon-64-Equip-Storage.png" />
+		</images>
+		<effects />
+		<font />
+	</element>
+	<element name="ZoomInButton">
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="19" />
+				<y value="19" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/zoomin.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/zoominhighlight.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/zoominhighlight.png" />
+		</images>
+		<effects />
+		<font />
+	</element>
+
+	<element name="ZoomOutButton">
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="19" />
+				<y value="19" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/zoomout.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/zoomouthighlight.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/zoomouthighlight.png" />
+		</images>
+		<effects />
+		<font />
+	</element>
+	<element name="CheckBox">
+		<font>
+			<property name="fontName" type="String" value="defaultFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="gap" type="float" value="2" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="16" />
+				<y value="16" />
+			</property>
+			<property name="textPadding" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/checkbox_x_u.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/checkbox_x_d.png" />
+		</images>
+		<effects>
+			<!-- <property name="event0" type="Effect"> <event value="Press" /> <effect 
+				value="ImageSwap" /> <speed value="1" /> </property> -->
+			<!-- <property name="event1" type="Effect"> <event value="LoseFocus" /> 
+				<effect value="ImageSwap" /> <speed value="1" /> </property> -->
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+	</element>
+	<element name="RadioButton">
+		<font>
+			<property name="fontName" type="String" value="defaultFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Top" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="gap" type="float" value="4" />
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="15" />
+				<y value="15" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/radio_button_x_u.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/radio_button_x_h.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/radio_button_x_d.png" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+	</element>
+
+	<element name="QuickBarButton">
+		<font>
+			<property name="fontName" type="String" value="defaultOutlineFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="22" />
+				<y value="19" />
+			</property>
+			<property name="textPadding" type="float" value="0" />
+			<property name="useHoverSound" type="boolean" value="false" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSoundVolume" type="float" value="0" />
+			<property name="usePressedSound" type="boolean" value="false" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/quickbarbutton_l.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/quickbarbutton_h.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/quickbarbutton.png" />
+		</images>
+		<effects />
+
+	</element>
+
+	<element name="RotateLeftButton">
+		<font>
+			<property name="fontName" type="String" value="defaultFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="60" />
+				<y value="46" />
+			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="textPadding" type="float" value="0" />
+			<property name="useHoverSound" type="boolean" value="false" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSoundVolume" type="float" value="1" />
+			<property name="usePressedSound" type="boolean" value="false" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/rotate-left.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/rotate-left-hover.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/rotate-left-pressed.png" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+
+	</element>
+	<element name="RotateRightButton">
+		<font>
+			<property name="fontName" type="String" value="defaultFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="60" />
+				<y value="46" />
+			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="textPadding" type="float" value="0" />
+			<property name="useHoverSound" type="boolean" value="false" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSoundVolume" type="float" value="1" />
+			<property name="usePressedSound" type="boolean" value="false" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String"
+				value="Interface/Styles/Gold/Button/rotate-right.png" />
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/rotate-right-hover.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/rotate-right-pressed.png" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+
+	</element>
+
+	<element name="ClassButton">
+		<font>
+			<property name="fontName" type="String" value="defaultFont" />
+			<property name="fontSize" type="float" value="8" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="72" />
+				<y value="72" />
+			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="textPadding" type="float" value="0" />
+			<property name="useHoverSound" type="boolean" value="true" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSoundVolume" type="float" value="1" />
+			<property name="usePressedSound" type="boolean" value="true" />
+		</attributes>
+		<images>
+			<property name="rogueImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Rogue.png" />
+			<property name="mageImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Mage.png" />
+			<property name="druidImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Druid.png" />
+			<property name="knightImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Warrior.png" />
+
+			<property name="hoverImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Select.png" />
+			<property name="pressedImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Select.png" />
+
+			<!-- Hopefully temporary overkill - http://hub.jmonkeyengine.org/forum/topic/hover-effect-that-doesnt-replace-the-default-image/ -->
+			<property name="rogueHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Rogue_Sel.png" />
+			<property name="mageHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Mage_Sel.png" />
+			<property name="druidHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Druid_Sel.png" />
+			<property name="knightHoverImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Warrior_Sel.png" />
+
+			<property name="roguePressedImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Rogue_Sel.png" />
+			<property name="magePressedImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Mage_Sel.png" />
+			<property name="druidPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Druid_Sel.png" />
+			<property name="knightPressedImg" type="String"
+				value="Interface/Styles/Gold/Button/CC_Class_Warrior_Sel.png" />
+
+		</images>
+
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+
+	</element>
+
+</root>

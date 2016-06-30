@@ -1,0 +1,32 @@
+#ifdef FADE_ENABLED
+uniform float m_FadeEnd;
+uniform float m_FadeRange;
+#endif
+
+#ifdef SWAYING
+uniform vec2 m_Wind;
+uniform vec3 m_SwayData;
+#endif
+
+
+vec4 fadeAndSway(in vec4 worldPos, in vec4 pos, out float tz, in vec2 tc) {
+
+    #if defined(FADE_ENABLED) || defined(SWAYING)
+    float dist = distance(g_CameraPosition.xz, worldPos.xz);
+    #endif
+
+    #ifdef FADE_ENABLED
+    tz = clamp((m_FadeEnd - dist)/(m_FadeRange),0.0,1.0);
+    #endif
+
+    #ifdef SWAYING
+    float angle = (g_Time + pos.x*m_SwayData.y) * m_SwayData.x;
+        #ifdef INVERT
+            pos.xz += 0.1*m_Wind*(1 - tc.y)*sin(angle);
+        #else
+            pos.xz += 0.1*m_Wind*tc.y*sin(angle);
+        #endif
+    #endif
+    
+    return pos;
+}

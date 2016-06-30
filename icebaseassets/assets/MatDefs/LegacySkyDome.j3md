@@ -1,0 +1,36 @@
+MaterialDef LegacySkyDome {
+ 
+    MaterialParameters {
+
+        Float GlobalAnimSpeed   :   5
+
+        Texture2D AlphaMap
+        Float AlphaScale    :   1
+
+        Texture2D ColorMap
+        Float ScrollAnimX  :   0
+        Float ScrollAnimY  :   0
+        Float ScrollX      :   0
+        Float ScrollY      :   0
+        Float Scale   :   1
+        Float GlobalAlpha   :   1
+        Float AlphaDiscardThreshold        :   0
+
+
+    }
+ 
+    Technique {
+        VertexShader GLSL100:   MatDefs/LegacySkyDome.vert
+        FragmentShader GLSL100: MatDefs/LegacySkyDome.frag
+ 
+        WorldParameters {
+            WorldViewProjectionMatrix
+            Time
+        }
+ 
+ 		Defines {
+            ALPHAMAP : AlphaMap
+        }
+    }
+ 
+}

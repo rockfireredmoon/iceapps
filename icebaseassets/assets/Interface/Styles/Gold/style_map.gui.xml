@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<cursors path="Interface/Styles/Gold/Common/Cursors/Cursors.gui.xml" />
+	<audio path="Interface/Styles/Gold/Common/Audio/Audio.gui.xml" />
+	<style control="Font" path="Interface/Styles/Gold/Fonts/Fonts.gui.xml" />
+	<style control="Common" path="Interface/Styles/Gold/Common/Common.gui.xml" />
+	<style control="Scrolling" path="Interface/Styles/Gold/Scrolling/Scrolling.gui.xml" />
+	<style control="Window" path="Interface/Styles/Gold/Window/Window.gui.xml" />
+	<style control="Button" path="Interface/Styles/Gold/Button/Button.gui.xml" />
+	<style control="Dial" path="Interface/Styles/Gold/Dial/Dial.gui.xml" />
+	<style control="Menu" path="Interface/Styles/Gold/Menu/Menu.gui.xml" />
+	<style control="Label" path="Interface/Styles/Gold/Label/Label.gui.xml" />
+	<style control="Slider" path="Interface/Styles/Gold/Slider/Slider.gui.xml" /> 
+	<style control="Spinner" path="Interface/Styles/Gold/Spinner/Spinner.gui.xml" />
+	<style control="TextField" path="Interface/Styles/Gold/TextField/TextField.gui.xml" />
+	<style control="TabControl" path="Interface/Styles/Gold/Tabs/Tabs.gui.xml" />
+	<style control="ChatBox" path="Interface/Styles/Gold/ChatBox/ChatBox.gui.xml" />
+	<style control="Indicator" path="Interface/Styles/Gold/Common/Extras/Indicator.gui.xml" />
+	<style control="ColorWheel" path="Interface/Styles/Gold/Common/Extras/ColorWheel.gui.xml" />
+	<style control="Table" path="Interface/Styles/Gold/Table/Table.gui.xml" />
+</root>

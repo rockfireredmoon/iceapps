@@ -1,0 +1,12 @@
+Material Standard_2Side_Illuminated : MatDefs/Standard_Lit.j3md {
+	MaterialParameters {
+        Ambient : 0.8 0.8 0.8 1
+        Specular : 0 0 0 1
+        Shininess : 10.0
+		Diffuse : 0.7 0.7 0.7 1
+	}
+    AdditionalRenderState {
+    	Wireframe Off
+        FaceCull Off
+    }
+}

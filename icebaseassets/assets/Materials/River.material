@@ -1,0 +1,24 @@
+material River
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8
+			specular 0 0 0 1 10
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture_alias River_A
+				scroll_anim 0.01 0.03
+			}
+
+			texture_unit
+			{
+				texture_alias River_B
+				scroll_anim -0.02 -0.01
+			}
+		}
+	}
+}

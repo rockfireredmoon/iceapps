@@ -1,0 +1,35 @@
+
+material MOB_Standard_Illuminated
+{
+	technique
+	{
+		pass
+		{
+			diffuse 1.1 1.1 1.1
+			ambient 0.9 0.9 0.9
+			specular 0.0 0.0 0.0 1 10
+			emissive 0.20 0.20 0.20 1
+
+			max_lights 8
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+		pass
+		{
+			ambient 1.0 1.0 1.0
+			diffuse 1.0 1.0 1.0 1
+			specular 0.0 0.0 0.0 1 10
+			emissive 1 1 1 1
+			scene_blend add
+			fog_override true
+
+			texture_unit
+			{
+				texture_alias Illuminated
+			}
+		}
+	}
+}

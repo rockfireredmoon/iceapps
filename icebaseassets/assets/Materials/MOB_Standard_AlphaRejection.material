@@ -1,0 +1,24 @@
+
+material MOB_Standard_AlphaRejection
+{
+	technique
+	{
+		lod_index 0
+
+		pass
+		{
+			diffuse 1.1 1.1 1.1
+			ambient 0.9 0.9 0.9
+			specular 0.0 0.0 0.0 1 10
+			emissive 0.20 0.20 0.20 1
+			alpha_rejection greater_equal 180
+
+			max_lights 4
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+	}
+}

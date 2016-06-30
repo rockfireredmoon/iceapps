@@ -1,0 +1,45 @@
+
+material NoDepthShaded
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0
+			emissive 0.5 0.5 0.5
+			diffuse 1 1 1
+			specular 0 0 0 1
+			
+			scene_blend alpha_blend
+			depth_write off
+			depth_check off
+			// This keeps it from flickering
+			depth_bias 1.5 1.5
+
+			texture_unit
+			{
+				texture_alias Diffuse
+				texture Manipulators.png
+
+			}
+		}
+		pass
+		{
+			ambient 0 0 0
+			emissive 0.5 0.5 0.5
+			diffuse 1 1 1
+			specular 0 0 0 1
+			
+			depth_write off
+			// This keeps it from flickering
+			depth_bias 1.5 1.5
+
+			texture_unit
+			{
+				texture_alias Diffuse
+				texture Manipulators.png
+
+			}
+		}
+	}
+}

@@ -1,0 +1,52 @@
+MaterialDef Scroll Texture {
+ 
+    MaterialParameters {
+
+        Float GlobalAnimSpeed   :   1
+
+        Texture2D ColorMap1
+        Float ScrollAnim1X  :   0
+        Float ScrollAnim1Y  :   0
+        Float Scroll1X      :   0
+        Float Scroll1Y      :   0
+        Float Scale1        :   1
+        Float Alpha1        :   1
+
+        Texture2D ColorMap2
+        Float ScrollAnim2X  :   0
+        Float ScrollAnim2Y  :   0
+        Float Scroll2X      :   0
+        Float Scroll2Y      :   0
+        Float Scale2        :   1
+        Float Alpha2        :   1
+
+        Texture2D ColorMap3
+        Float ScrollAnim3X  :   0
+        Float ScrollAnim3Y  :   0
+        Float Scroll3X      :   0
+        Float Scroll3Y      :   0
+        Float Scale3        :   1
+        Float Alpha3        :   1
+
+        Texture2D ColorMap4
+        Float ScrollAnim4X  :   0
+        Float ScrollAnim4Y  :   0
+        Float Scroll4X      :   0
+        Float Scroll4Y      :   0
+        Float Scale4        :   1
+        Float Alpha4        :   1
+
+    }
+ 
+    Technique {
+        VertexShader GLSL100:   MatDefs/Terrain/TerrainWater.vert
+        FragmentShader GLSL100: MatDefs/Terrain/TerrainWater.frag
+ 
+        WorldParameters {
+            WorldViewProjectionMatrix
+            Time
+        }
+ 
+    }
+ 
+}

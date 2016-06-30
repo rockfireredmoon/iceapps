@@ -1,0 +1,13 @@
+Material MOB_Standard : MatDefs/MOB_Lit.j3md {
+     MaterialParameters {
+        Ambient : 0.9 0.9 0.9 1
+        Specular : 0 0 0 1
+        Shininess : 10.0
+        Diffuse : 1 1 1 1
+        GlowColor : 0.2 0.2 0.2 1
+     }
+    AdditionalRenderState {
+      Wireframe Off
+      FaceCull Off
+    }
+}

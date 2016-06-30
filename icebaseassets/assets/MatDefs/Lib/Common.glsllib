@@ -1,0 +1,22 @@
+#ifdef DISCARD_ALPHA
+    uniform float m_AlphaDiscardThreshold;
+#endif
+
+#ifdef LIMIT_ALPHA
+	uniform float m_AlphaDiscardLimit;
+#endif
+
+void checkDiffuse(in vec4 diffuseColor) {
+    #ifdef DISCARD_ALPHA
+        if(diffuseColor.a <= m_AlphaDiscardThreshold){
+           discard;
+        }
+    #endif
+    
+    #ifdef LIMIT_ALPHA
+    float alpha = 1 - diffuseColor.a;
+    if(alpha >= m_AlphaDiscardLimit) {
+    	discard;
+    }
+   	#endif
+}

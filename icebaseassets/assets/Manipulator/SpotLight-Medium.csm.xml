@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<Component id="SpotLight-Medium">
+  <Entity meshClass="org.icescene.scene.Cone"/>
+  <Light type="spot" range="100" defaultColor="#ffffffff" outer="20" inner="15"/>
+</Component>

@@ -1,0 +1,21 @@
+material MOB_Standard_2Side
+{
+
+	technique
+	{
+		pass
+		{
+			diffuse 1.1 1.1 1.1
+			ambient 0.9 0.9 0.9
+			specular 0.0 0.0 0.0 1 10
+			emissive 0.20 0.20 0.20 1
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture_alias Diffuse
+			}
+		}
+	}
+}
