@@ -1,9 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.icemoon</groupId>
 	<artifactId>iceapps</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>Iceapps</name>
 	<description>Modules supporting the Ice* application framework.</description>
 	<properties>
@@ -12,6 +10,11 @@
 		<jmonkey.version>3.0.10</jmonkey.version>
 		<iceloader.version>0.0.1-SNAPSHOT</iceloader.version>
 	</properties>
+	<parent>
+		<groupId>org.icemoon</groupId>
+		<artifactId>ice</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 	<build>
 		<extensions>
 			<extension>

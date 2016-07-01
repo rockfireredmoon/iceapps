@@ -89,7 +89,7 @@
 		
 		<dependency>
 			<groupId>jME3-ext</groupId>
-			<artifactId>jME3-Iceloader-json</artifactId>
+			<artifactId>jME3-Iceloader-json-plugin</artifactId>
 			<version>${iceloader.version}</version>
 		</dependency>
 		
@@ -100,8 +100,8 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency> -->
 		<dependency>
-			<groupId>tonegod</groupId>
-			<artifactId>tonegod.emitter</artifactId>
+			<groupId>org.icemoon</groupId>
+			<artifactId>tonegod-emitter</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
