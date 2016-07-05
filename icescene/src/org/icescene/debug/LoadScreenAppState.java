@@ -143,7 +143,8 @@ public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 				loadScreen.setIgnoreGlobalAlpha(true);
 				loadScreen.setIgnoreMouse(false);
 				loadScreen.setGlobalAlpha(1);
-				loadScreen.setLayoutManager(new MigLayout(screen, "fill, wrap 1", "push[400:600:800]push", "push[:140:]"));
+				loadScreen.setLayoutManager(
+						new MigLayout(screen, "fill, wrap 1", "push[400:600:800]push", "push[:140:]"));
 
 				// Progress title bar
 				Container progressTitle = new Container(screen);
@@ -317,9 +318,13 @@ public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 	public void update(float tpf) {
 		super.update(tpf);
 		if (showing && targetOverall != -1) {
-			overallProgress.setCurrentValue(targetOverall);
-			targetOverall = -1;
+			updateOverall();
 		}
+	}
+
+	private void updateOverall() {
+		overallProgress.setCurrentValue(targetOverall);
+		targetOverall = -1;
 	}
 
 	private void cancelHide() {
@@ -332,7 +337,8 @@ public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 		cancelHide();
 		hideTask = app.getAlarm().timed(new Callable<Void>() {
 			public Void call() throws Exception {
-				if (overallProgress.getMaxValue() > 0 && overallProgress.getCurrentValue() < overallProgress.getMaxValue()) {
+				if (overallProgress.getMaxValue() > 0
+						&& overallProgress.getCurrentValue() < overallProgress.getMaxValue()) {
 					maybeHide();
 					return null;
 				} else {

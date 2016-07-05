@@ -16,6 +16,7 @@ import java.util.prefs.Preferences;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.vfs2.AllFileSelector;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.VFS;
 import org.icescene.IcesceneApp;
 
@@ -23,12 +24,14 @@ import com.jme3.asset.AssetLoadException;
 
 /**
  * Configures the custom asset locators / loaders and contains helpers for
- * dealing with
- * assets, particularly saving them in build mode to local locations.
+ * dealing with assets, particularly saving them in build mode to local
+ * locations.
  */
 public class Assets {
 
 	private static final Logger LOG = Logger.getLogger(Assets.class.getName());
+	private static final String DEFAULT_ASSET_URL = System.getProperty("icescene.defaultAssetUrl",
+			"http://assets.theanubianwar.com/iceclient-assets/");
 
 	public static void addOptions(Options opts) {
 		opts.addOption("x", "clear-cache", false, "When present, asset cache will be cleared before starting.");
@@ -43,14 +46,16 @@ public class Assets {
 		this.app = app;
 		setAssetsExternalLocation(externalAssetsDir);
 
-		if (commandLine != null && !commandLine.getArgList().isEmpty()) {
-			try {
+		try {
+			if (commandLine != null && !commandLine.getArgList().isEmpty()) {
 				// Set root for HTTP asset requests
 				String assetUrl = commandLine.getArgs()[0];
 				ServerLocator.setServerRoot(new URL(assetUrl));
-			} catch (MalformedURLException ex) {
-				throw new RuntimeException("Invalid server URL.", ex);
+			} else {
+				ServerLocator.setServerRoot(new URL(DEFAULT_ASSET_URL));
 			}
+		} catch (MalformedURLException ex) {
+			throw new RuntimeException("Invalid server URL.", ex);
 		}
 
 		MeshLoader.setTexturePathsRelativeToMesh(true);
@@ -70,22 +75,7 @@ public class Assets {
 				// file);
 				// AssetCacheLocator.setVFSRoot(VFS.getManager().resolveFile("fat32:///",
 				// fsOpts));
-				String hostname = "default";
-				if (commandLine != null) {
-					try {
-						String url = commandLine.getArgs()[0];
-						URL u = new URL(url);
-						hostname = u.getHost();
-					} catch (Exception e) {
-					}
-				}
-
-				File file = new File(System.getProperty("user.home") + File.separator + ".cache" + File.separator + "icescene"
-						+ File.separator + hostname);
-				if (!file.exists() && !file.mkdirs()) {
-					throw new IOException("Failed to create cache directory");
-				}
-				AssetCacheLocator.setVFSRoot(VFS.getManager().resolveFile(file.toURI().toString()));
+				setCacheLocationForServerLocator();
 			}
 
 			// Clear local cache if requested to do so
@@ -95,6 +85,28 @@ public class Assets {
 		} catch (Exception ex) {
 			throw new RuntimeException("Failed to configure cache options.", ex);
 		}
+	}
+
+	public void setCacheLocationForServerLocator() throws IOException, FileSystemException {
+		String hostname = "default";
+		URL url = ServerLocator.getServerRoot();
+		if (url != null) {
+			hostname = url.getHost();
+			if ((url.getProtocol().equals("http") && url.getPort() != 80)
+					|| (url.getProtocol().equals("https") && url.getPort() != 443)) {
+				hostname += ":" + url.getPort();
+			}
+		}
+		setCacheLocationForHostname(hostname);
+	}
+
+	public void setCacheLocationForHostname(String hostname) throws IOException, FileSystemException {
+		File file = new File(System.getProperty("user.home") + File.separator + ".cache" + File.separator + "icescene"
+				+ File.separator + hostname);
+		if (!file.exists() && !file.mkdirs()) {
+			throw new IOException("Failed to create cache directory");
+		}
+		AssetCacheLocator.setVFSRoot(VFS.getManager().resolveFile(file.toURI().toString()));
 	}
 
 	public File getExternalAssetFile(String resourceName) {
@@ -126,8 +138,8 @@ public class Assets {
 		this.externalAssetsDir = externalAssetsDir;
 		try {
 			// Set the local storage location
-			icemoon.iceloader.locators.FileLocator.setDefaultStoreRoot(VFS.getManager().resolveFile(
-					getExternalAssetsFolder().toURI().toString()));
+			icemoon.iceloader.locators.FileLocator
+					.setDefaultStoreRoot(VFS.getManager().resolveFile(getExternalAssetsFolder().toURI().toString()));
 		} catch (IOException ex) {
 			LOG.log(Level.SEVERE,
 					"Failed to configure local asset storage, you may not be able to save if you have permission to use build tools.",
@@ -152,7 +164,7 @@ public class Assets {
 					updateIndexes = true;
 				}
 			}
-			if(updateIndexes == null)
+			if (updateIndexes == null)
 				updateIndexes = false;
 		}
 		return updateIndexes;

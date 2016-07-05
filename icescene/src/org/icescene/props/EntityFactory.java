@@ -20,6 +20,7 @@ import org.icescene.entities.EntityContext;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
@@ -48,7 +49,10 @@ public class EntityFactory implements EntityContext {
 		this.lightingParent = lightingParent;
 		propPackages.add(AbstractProp.class.getPackage().getName());
 
-		InputStream in = app.getAssetManager().locateAsset(new AssetKey<String>("Data/PropTypes.txt")).openStream();
+		AssetInfo locateAsset = app.getAssetManager().locateAsset(new AssetKey<String>("Data/PropTypes.txt"));
+		if(locateAsset == null)
+			throw new RuntimeException("Could not locatee Data/PropTypes.txt");
+		InputStream in = locateAsset.openStream();
 		propTypePatterns = new LinkedHashMap<String, String>();
 		try {
 			try {

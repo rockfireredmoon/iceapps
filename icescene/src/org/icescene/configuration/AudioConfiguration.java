@@ -37,8 +37,8 @@ public class AudioConfiguration extends AbstractConfiguration<INIFile> {
 		private final boolean streamCache;
 		private final AudioConfiguration configuration;
 
-		public Sound(String name, AudioQueue channel, float refDistance, float maxDistance, float gain, int priority, boolean loop,
-				AudioConfiguration configuration, boolean stream, boolean streamCache) {
+		public Sound(String name, AudioQueue channel, float refDistance, float maxDistance, float gain, int priority,
+				boolean loop, AudioConfiguration configuration, boolean stream, boolean streamCache) {
 			this.name = name;
 			this.channel = channel;
 			this.refDistance = refDistance;
@@ -146,7 +146,8 @@ public class AudioConfiguration extends AbstractConfiguration<INIFile> {
 				out.close();
 			}
 		} catch (Exception e) {
-			LOG.log(Level.SEVERE, "Failed to generate audio index. Index will be recreatred on every startup causing delays.", e);
+			LOG.log(Level.SEVERE,
+					"Failed to generate audio index. Index will be recreatred on every startup causing delays.", e);
 		}
 	}
 
@@ -172,7 +173,8 @@ public class AudioConfiguration extends AbstractConfiguration<INIFile> {
 			}
 			// loadIndex(assetManager);
 			if (index.containsKey(name)) {
-				AudioConfiguration cfg = AudioConfiguration.getAudioConfiguration(index.getProperty(name), assetManager);
+				AudioConfiguration cfg = AudioConfiguration.getAudioConfiguration(index.getProperty(name),
+						assetManager);
 				if (!cfg.getSounds().containsKey(name)) {
 					throw new AssetNotFoundException(String.format(
 							"No sound configuration named %s. This should not happen! It means the audio index is out of sync with the audio resources.",
@@ -201,8 +203,10 @@ public class AudioConfiguration extends AbstractConfiguration<INIFile> {
 			boolean stream = Boolean.parseBoolean(file.getStringProperty(section, "stream"));
 			boolean streamCache = Boolean.parseBoolean(file.getStringProperty(section, "streamCache"));
 			String channelName = file.getStringProperty(section, "channel");
-			AudioQueue channel = channelName == null ? AudioQueue.INTERFACE : AudioQueue.valueOf(channelName.toUpperCase());
-			Sound value = new Sound(section, channel, refDistance, maxDistance, gain, priority, loop, this, stream, streamCache);
+			AudioQueue channel = channelName == null ? AudioQueue.INTERFACE
+					: AudioQueue.valueOf(channelName.toUpperCase());
+			Sound value = new Sound(section, channel, refDistance, maxDistance, gain, priority, loop, this, stream,
+					streamCache);
 			sounds.put(section, value);
 			allSounds.put(section, value);
 		}
