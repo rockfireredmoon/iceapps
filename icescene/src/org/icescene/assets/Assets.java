@@ -31,7 +31,7 @@ public class Assets {
 
 	private static final Logger LOG = Logger.getLogger(Assets.class.getName());
 	private static final String DEFAULT_ASSET_URL = System.getProperty("icescene.defaultAssetUrl",
-			"http://assets.theanubianwar.com/iceclient-assets/");
+			"http://assets.theanubianwar.com/iceclient-assets-archived/");
 
 	public static void addOptions(Options opts) {
 		opts.addOption("x", "clear-cache", false, "When present, asset cache will be cleared before starting.");
@@ -92,8 +92,8 @@ public class Assets {
 		URL url = ServerLocator.getServerRoot();
 		if (url != null) {
 			hostname = url.getHost();
-			if ((url.getProtocol().equals("http") && url.getPort() != 80)
-					|| (url.getProtocol().equals("https") && url.getPort() != 443)) {
+			if ((url.getProtocol().equals("http") && url.getPort() != 80 && url.getPort() > -1)
+					|| (url.getProtocol().equals("https") && url.getPort() != 443 && url.getPort() > -1)) {
 				hostname += ":" + url.getPort();
 			}
 		}

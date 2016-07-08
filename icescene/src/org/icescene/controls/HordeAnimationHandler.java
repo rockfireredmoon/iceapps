@@ -40,7 +40,6 @@ public class HordeAnimationHandler extends AbstractCreatureAnimationHandler<Mode
 				LOG.warning(String.format(">>> %s", k));
 		} else {
 
-			LOG.info(String.format("Playing %s", name));
 			active = request;
 
 			boolean wasNew = false;

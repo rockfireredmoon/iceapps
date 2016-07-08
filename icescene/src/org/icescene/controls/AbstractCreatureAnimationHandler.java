@@ -41,8 +41,8 @@ public abstract class AbstractCreatureAnimationHandler<T extends AbstractCreatur
 	}
 
 	protected void updateSpeed(AnimChannel ch) {
-		ch.setSpeed(SceneConstants.GLOBAL_SPEED_FACTOR * BipedAnimationHandler.ANIM_GLOBAL_SPEED * Icelib.getSpeedFactor(entity.getCreature().getSpeed())
-				* speed);
+		ch.setSpeed(SceneConstants.GLOBAL_SPEED_FACTOR * BipedAnimationHandler.ANIM_GLOBAL_SPEED
+				* Icelib.getSpeedFactor(entity.getCreature().getSpeed()) * speed);
 	}
 
 	protected boolean isDefaultLoop(String name) {
@@ -101,8 +101,14 @@ public abstract class AbstractCreatureAnimationHandler<T extends AbstractCreatur
 
 		AudioAppState aas = context.getStateManager().getState(AudioAppState.class);
 		if (aas != null) {
-			for (SoundOption so : active.getName().getSounds().values()) {
-				aas.queue(AudioQueue.COMBAT, this, so.getName(), so.getTime(), 1.0f);
+			Map<String, SoundOption> sounds = active.getName().getSounds();
+			for (SoundOption so : sounds.values()) {
+				try {
+					aas.queue(AudioQueue.COMBAT, this, so.getName(), so.getTime(), 1.0f);
+				}
+				catch(IllegalStateException ise) {
+					LOG.warning(String.format("%s is already queued to play", so.getName()));
+				}
 			}
 		}
 	}

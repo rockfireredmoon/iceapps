@@ -23,7 +23,7 @@ public class ExternalAudioStreamLocator extends AbstractServerLocator {
         setFireEvents(false);
     }
 
-    public AssetInfo locate(AssetManager manager, AssetKey key) {
+    public AssetInfo locate(AssetManager manager, @SuppressWarnings("rawtypes") AssetKey key) {
         final String name = key.getName();
         if (name.startsWith("http://") || name.startsWith("https://")) {
             try {
@@ -48,7 +48,7 @@ public class ExternalAudioStreamLocator extends AbstractServerLocator {
                 }
                 URL url = new URL(encName.toString());
                 LOG.info(String.format("Loading external URL %s", url));
-                final AssetInfo ai = create(manager, key, url, -1);     
+                final AssetInfo ai = create(manager, key, url, -1, -1);     
                 return ai;
             } catch (FileNotFoundException e) {
                 return null;
@@ -60,7 +60,7 @@ public class ExternalAudioStreamLocator extends AbstractServerLocator {
         return null;
     }
 
-    protected AssetInfo getCachedAssetInfo(AssetManager manager, AssetKey key) {
+    public AssetInfo getCachedAssetInfo(AssetManager manager, @SuppressWarnings("rawtypes") AssetKey key) {
         // Content has not changed, return original cached content
         if (LOG.isLoggable(Level.FINE)) {
             LOG.fine(String.format("Content %s has not changed, using cached version", key.getName()));

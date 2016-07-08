@@ -207,8 +207,8 @@ public class AudioQueueHandler {
 	boolean queue(QueuedAudio qa) {
 		synchronized (audioNodes) {
 			synchronized (queuedAudio) {
-				if(queuedAudio.contains(qa)) {
-					throw new IllegalArgumentException("Already queued " + qa);
+				if (queuedAudio.contains(qa)) {
+					throw new IllegalStateException("Already queued " + qa);
 				}
 				qa.init(this);
 
@@ -216,8 +216,10 @@ public class AudioQueueHandler {
 				int anSize = audioNodes.size();
 				boolean first = qaSize + anSize == 0;
 				queuedAudio.add(qa);
-				LOG.info(String.format("Queued %s (queue was %d in size, is now %d with %d audio nodes)", qa, qaSize,
-						queuedAudio.size(), anSize));
+				LOG.fine(String.format("Queued %s (queue was %d in size, is now %d with %d audio nodes)", qa.getPath(),
+						qaSize, queuedAudio.size(), anSize));
+				if (nextPlay == -1)
+					nextPlay = 0;
 				return first;
 			}
 		}
@@ -239,15 +241,16 @@ public class AudioQueueHandler {
 	}
 
 	void doPlayNextInQueue() {
-		LOG.info("Playing next in queue of " + queuedAudio.size());
+		if (LOG.isLoggable(Level.FINE))
+			LOG.fine("Playing next in queue of " + queuedAudio.size());
 
 		// Remove any existing audio nodes
-//		synchronized (audioNodes) {
-//			for (AudioNode n : audioNodes) {
-//				n.removeFromParent();
-//			}
-//			audioNodes.clear();
-//		}
+		// synchronized (audioNodes) {
+		// for (AudioNode n : audioNodes) {
+		// n.removeFromParent();
+		// }
+		// audioNodes.clear();
+		// }
 
 		if (queuedAudio.size() > 0) {
 			QueuedAudio qm = queuedAudio.get(0);
@@ -289,10 +292,8 @@ public class AudioQueueHandler {
 						// (QueuedData needs multiple resource support)
 						HUDMessageAppState ham = app.getStateManager().getState(HUDMessageAppState.class);
 						if (ham != null)
-							ham.message(
-									Level.INFO,
-									String.format("Now Playing - %s",
-											track.getTitle() == null ? track.getLocation() : track.getTitle()));
+							ham.message(Level.INFO, String.format("Now Playing - %s",
+									track.getTitle() == null ? track.getLocation() : track.getTitle()));
 						qm.setPath(track.getLocation().toString());
 						qm.setStreamCache(!stream);
 						qm.setLoop(false);
@@ -402,6 +403,8 @@ public class AudioQueueHandler {
 		LOG.info(String.format("Preparing %s to play", qm));
 		try {
 			queuedAudio.remove(qm);
+
+			LOG.info(String.format("%s removed from queue.", qm));
 			AudioData ad = null;
 			final AudioKey ak = new AudioKey(qm.getPath(), qm.isStream(), qm.isStreamCache());
 			final AssetInfo inf;
@@ -491,12 +494,13 @@ public class AudioQueueHandler {
 						final XAudioNode music = new XAudioNode(fad, fak);
 						music.setUserData(AudioAppState.QUEUE, new QueueData(qm));
 						if (LOG.isLoggable(Level.FINE)) {
-							LOG.fine(String.format("Playing %s for %4.2f gain of %2.3f", qm.getPath(), fad.getDuration(),
-									qm.getActualGain()));
+							LOG.fine(String.format("Playing %s for %4.2f gain of %2.3f", qm.getPath(),
+									fad.getDuration(), qm.getActualGain()));
 						}
 
 						if (qm.isPositional() && music.getAudioData().getChannels() == 2) {
-							LOG.warning(String.format("%s is stereo, so cannot be positional. It will be played as non-positional",
+							LOG.warning(String.format(
+									"%s is stereo, so cannot be positional. It will be played as non-positional",
 									qm.getPath()));
 							qm.setPositional(false);
 						}
@@ -511,7 +515,7 @@ public class AudioQueueHandler {
 						}
 						music.play();
 
-						LOG.info(String.format("Audio %s ready, removing from queue.", fak));
+						LOG.info(String.format("Audio %s ready.", fak));
 						// Make sure
 						audioNodes.add(music);
 						loopPlay = qm.isLoop() ? qm : null;
@@ -520,8 +524,6 @@ public class AudioQueueHandler {
 						if (LOG.isLoggable(Level.FINE)) {
 							LOG.fine(String.format("Next play is at %3.2f", nextPlay));
 						}
-						LOG.info(String.format("XXX Next play is at %3.2f (duration of %f, interval of %f)", nextPlay,
-								fad.getDuration(), qm.getInterval()));
 					} catch (Exception e) {
 						LOG.log(Level.SEVERE, String.format("Failed to load audio %s.", qm.getPath()), e);
 					}

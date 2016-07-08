@@ -34,26 +34,26 @@ import com.jme3.scene.control.AbstractControl;
 
 public class CreatureAnimationControl extends AbstractControl implements AnimEventListener {
 
-//	public class AnimationRequest {
-//
-//		private String name;
-//		private boolean loop;
-//		private float speed;
-//
-//		public AnimationRequest(String name) {
-//
-//		}
-//
-//		public AnimationRequest(String name, boolean loop) {
-//
-//		}
-//
-//		public AnimationRequest(String name, boolean loop, float speed) {
-//			this.name = name;
-//			this.loop = loop;
-//			this.speed = speed;
-//		}
-//	}
+	// public class AnimationRequest {
+	//
+	// private String name;
+	// private boolean loop;
+	// private float speed;
+	//
+	// public AnimationRequest(String name) {
+	//
+	// }
+	//
+	// public AnimationRequest(String name, boolean loop) {
+	//
+	// }
+	//
+	// public AnimationRequest(String name, boolean loop, float speed) {
+	// this.name = name;
+	// this.loop = loop;
+	// this.speed = speed;
+	// }
+	// }
 
 	public interface Listener {
 
@@ -92,8 +92,8 @@ public class CreatureAnimationControl extends AbstractControl implements AnimEve
 		} else if (spatial != null && animControl == null) {
 
 			player = getEntity().getCreature();
-			animationSubGroup = player.getAppearance().getGender() == null ? null : AnimationSequence.SubGroup.fromGender(player
-					.getAppearance().getGender());
+			animationSubGroup = player.getAppearance().getGender() == null ? null
+					: AnimationSequence.SubGroup.fromGender(player.getAppearance().getGender());
 			animControl = entity.getAnimControl();
 			if (animControl == null) {
 				LOG.warning(String.format("No animation control for %s", player.getDisplayName()));
@@ -175,20 +175,21 @@ public class CreatureAnimationControl extends AbstractControl implements AnimEve
 		if (remaining != null) {
 			if (channel.getLoopMode().equals(LoopMode.DontLoop)) {
 				remaining.remove(animName);
-				LOG.info(String.format("%s from animation sequence has completed, removing from list in sequence %s", animName,
-						sequence.getName()));
+				LOG.info(String.format("%s from animation sequence has completed, removing from list in sequence %s",
+						animName, sequence.getName()));
 			}
 			if (remaining.isEmpty()) {
 				LOG.info(String.format("%s sequence has completed.", sequence.getName()));
 
 				// Clear up all the maps
 				anims.remove(sequence);
-				for (Iterator<Map.Entry<AnimChannel, AnimationSequence>> en = sequences.entrySet().iterator(); en.hasNext();) {
+				for (Iterator<Map.Entry<AnimChannel, AnimationSequence>> en = sequences.entrySet().iterator(); en
+						.hasNext();) {
 					Map.Entry<AnimChannel, AnimationSequence> e = en.next();
 					if (e.getValue().equals(sequence)) {
 						en.remove();
-						for (Iterator<Map.Entry<AnimationSequence.Part, AnimChannel>> cen = channels.entrySet().iterator(); cen
-								.hasNext();) {
+						for (Iterator<Map.Entry<AnimationSequence.Part, AnimChannel>> cen = channels.entrySet()
+								.iterator(); cen.hasNext();) {
 							Map.Entry<AnimationSequence.Part, AnimChannel> ce = cen.next();
 							if (ce.getValue().equals(e.getKey())) {
 								cen.remove();
@@ -231,8 +232,8 @@ public class CreatureAnimationControl extends AbstractControl implements AnimEve
 
 	public void playAnimation(String animation, boolean loop, float speed) {
 		AnimationSequence seq = new AnimationSequence(animation);
-		final AnimationSequence.Anim anim = new AnimationSequence.Anim(AnimationSequence.SubGroup.NONE, AnimationSequence.Part.ALL,
-				animation);
+		final AnimationSequence.Anim anim = new AnimationSequence.Anim(AnimationSequence.SubGroup.NONE,
+				AnimationSequence.Part.ALL, animation);
 		anim.setLoopMode(loop ? LoopMode.Loop : LoopMode.DontLoop);
 		anim.setSpeed(speed);
 		seq.addAnim(anim);
@@ -292,7 +293,8 @@ public class CreatureAnimationControl extends AbstractControl implements AnimEve
 
 		// Remove any channels we don't need any more (not sure if this is
 		// required, but keeps it tidy :)
-		for (Iterator<Map.Entry<AnimationSequence.Part, AnimChannel>> it = channels.entrySet().iterator(); it.hasNext();) {
+		for (Iterator<Map.Entry<AnimationSequence.Part, AnimChannel>> it = channels.entrySet().iterator(); it
+				.hasNext();) {
 			Map.Entry<AnimationSequence.Part, AnimChannel> en = it.next();
 			if (!sequence.hasAnimForPart(getAnimationSubGroup(), en.getKey())) {
 				it.remove();
@@ -303,20 +305,23 @@ public class CreatureAnimationControl extends AbstractControl implements AnimEve
 
 		// Set the animation for each channel
 		for (AnimationSequence.Anim a : sequenceAnims) {
-			float animSpeed = SceneConstants.GLOBAL_SPEED_FACTOR * BipedAnimationHandler.ANIM_GLOBAL_SPEED * Icelib.getSpeedFactor(player.getSpeed())
-					* a.getSpeed() * speed;
+			float animSpeed = SceneConstants.GLOBAL_SPEED_FACTOR * BipedAnimationHandler.ANIM_GLOBAL_SPEED
+					* Icelib.getSpeedFactor(player.getSpeed()) * a.getSpeed() * speed;
 			AnimChannel ch = channels.get(a.getPart());
 			if (LOG.isLoggable(Level.FINE)) {
-				LOG.fine(String.format("Playing animation %s (current speed %4.2f, setting to %4.2f)", a, ch.getSpeed(), animSpeed));
+				LOG.fine(String.format("Playing animation %s (current speed %4.2f, setting to %4.2f)", a, ch.getSpeed(),
+						animSpeed));
 			}
 			if (ch.getAnimationName() == null || !ch.getAnimationName().equals(a.getAnimName())) {
 				try {
 					remainingAnims.add(a.getAnimName());
-					ch.setAnim(a.getAnimName(), blend ? a.getBlendTime() / SceneConstants.GLOBAL_SPEED_FACTOR : 0.00001f);
+					ch.setAnim(a.getAnimName(),
+							blend ? a.getBlendTime() / SceneConstants.GLOBAL_SPEED_FACTOR : 0.00001f);
 					ch.setLoopMode(forceLoop ? LoopMode.Loop : a.getLoopMode());
 					ch.setSpeed(animSpeed);
 				} catch (IllegalArgumentException iae) {
-					LOG.warning(String.format("Animation %s doesn't exist for sequence %s.", a.getAnimName(), sequence.getName()));
+					LOG.warning(String.format("Animation %s doesn't exist for sequence %s.", a.getAnimName(),
+							sequence.getName()));
 				}
 			}
 		}

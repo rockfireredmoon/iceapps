@@ -375,4 +375,8 @@ public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 			this.size = size;
 		}
 	}
+
+	@Override
+	public void assetSupplied(AssetKey key) {
+	}
 }

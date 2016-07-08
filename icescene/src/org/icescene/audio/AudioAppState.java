@@ -14,6 +14,7 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.vfs2.FileNotFoundException;
 import org.icelib.QueueExecutor;
 import org.icescene.IcemoonAppState;
 import org.icescene.SceneConfig;
@@ -29,8 +30,6 @@ import org.iceui.controls.UIUtil;
 import com.jme3.math.Vector2f;
 
 import icetone.controls.text.Label;
-import icetone.controls.windows.Panel;
-import icetone.core.Element.ZPriority;
 import icetone.core.layout.BorderLayout;
 import icetone.core.layout.LUtil;
 
@@ -38,7 +37,8 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 
 	static final Logger LOG = Logger.getLogger(AudioAppState.class.getName());
 	final static String QUEUE = "QueueItem";
-	private Map<AudioQueue, AudioQueueHandler> queueHandlers = new EnumMap<AudioQueue, AudioQueueHandler>(AudioQueue.class);
+	private Map<AudioQueue, AudioQueueHandler> queueHandlers = new EnumMap<AudioQueue, AudioQueueHandler>(
+			AudioQueue.class);
 	private static AudioAppState instance;
 	ExecutorService executor;
 
@@ -55,7 +55,8 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 	public void fadeAndRemove(AudioQueue queue, String soundName) {
 		Sound sound = AudioConfiguration.getSound(soundName, assetManager);
 		if (sound == null) {
-			LOG.log(Level.SEVERE, String.format("Could not find sound configuration for %s, no audio will be removed", soundName));
+			LOG.log(Level.SEVERE,
+					String.format("Could not find sound configuration for %s, no audio will be removed", soundName));
 		} else {
 			if (queue == null) {
 				queue = sound.getChannel();
@@ -73,12 +74,14 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 
 		Sound sound = AudioConfiguration.getSound(soundName, assetManager);
 		if (sound == null) {
-			LOG.log(Level.SEVERE, String.format("Could not find sound configuration for %s, no audio will be played", soundName));
+			LOG.log(Level.SEVERE,
+					String.format("Could not find sound configuration for %s, no audio will be played", soundName));
 		} else {
 			if (queue == null) {
 				queue = sound.getChannel();
 			}
-			QueuedAudio music = new QueuedAudio(owner, sound.getPath(), interval, sound.isLoop(), queue, sound.getGain() * gain);
+			QueuedAudio music = new QueuedAudio(owner, sound.getPath(), interval, sound.isLoop(), queue,
+					sound.getGain() * gain);
 			music.setStream(sound.isStream());
 			music.setStream(false);
 			music.setStreamCache(sound.isStreamCache());
@@ -126,10 +129,11 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 	}
 
 	public void queue(QueuedAudio music) {
-		LOG.info("Queueing " + music);
+		if (LOG.isLoggable(Level.FINE))
+			LOG.fine("Queueing " + music);
 		AudioQueueHandler qh = getQueue(music.getQueue());
 		if (qh.queue(music)) {
-			LOG.info("Queue is idle, playing (" + qh + ")");
+			LOG.fine("Queue is idle, playing (" + qh + ")");
 			qh.playNextInQueue();
 		}
 	}
@@ -152,7 +156,8 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 	}
 
 	public float getActualUIVolume() {
-		return prefs.getFloat(SceneConfig.AUDIO_UI_VOLUME, SceneConfig.AUDIO_UI_VOLUME_DEFAULT) * getActualMasterVolume();
+		return prefs.getFloat(SceneConfig.AUDIO_UI_VOLUME, SceneConfig.AUDIO_UI_VOLUME_DEFAULT)
+				* getActualMasterVolume();
 	}
 
 	public float getAmbientVolume() {
@@ -164,7 +169,8 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 	}
 
 	public float getActualAmbientVolume() {
-		return prefs.getFloat(SceneConfig.AUDIO_AMBIENT_VOLUME, SceneConfig.AUDIO_AMBIENT_VOLUME_DEFAULT) * getActualMasterVolume();
+		return prefs.getFloat(SceneConfig.AUDIO_AMBIENT_VOLUME, SceneConfig.AUDIO_AMBIENT_VOLUME_DEFAULT)
+				* getActualMasterVolume();
 	}
 
 	public float getMusicVolume() {
@@ -172,7 +178,8 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 	}
 
 	public float getActualMusicVolume() {
-		return prefs.getFloat(SceneConfig.AUDIO_MUSIC_VOLUME, SceneConfig.AUDIO_MUSIC_VOLUME_DEFAULT) * getActualMasterVolume();
+		return prefs.getFloat(SceneConfig.AUDIO_MUSIC_VOLUME, SceneConfig.AUDIO_MUSIC_VOLUME_DEFAULT)
+				* getActualMasterVolume();
 	}
 
 	@Override
@@ -200,6 +207,8 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 		if (!reindex) {
 			try {
 				AudioConfiguration.loadIndex(assetManager);
+			} catch (FileNotFoundException fnfe) {
+				reindex = true;
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Failed to load audio index. Attempt to build now", e);
 				reindex = true;
@@ -207,8 +216,8 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 		}
 		if (reindex) {
 
-			FancyPositionableWindow c = new FancyPositionableWindow(screen, "ExitPopup", 0, VPosition.MIDDLE, HPosition.CENTER,
-					LUtil.LAYOUT_SIZE, FancyWindow.Size.SMALL, true) {
+			FancyPositionableWindow c = new FancyPositionableWindow(screen, "ExitPopup", 0, VPosition.MIDDLE,
+					HPosition.CENTER, LUtil.LAYOUT_SIZE, FancyWindow.Size.SMALL, true) {
 			};
 			c.setWindowTitle("Re-indexing");
 			c.setIsMovable(false);
@@ -216,7 +225,8 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 			c.setIsModal(true);
 			c.getContentArea().setLayoutManager(new BorderLayout());
 			c.getContentArea().addChild(new Label("Indexing audio. Please wait ...", screen));
-	        c.getContentArea().addChild(new BusySpinner(screen, new Vector2f(31,31)).setSpeed(10f), BorderLayout.Border.EAST);
+			c.getContentArea().addChild(new BusySpinner(screen, new Vector2f(31, 31)).setSpeed(10f),
+					BorderLayout.Border.EAST);
 			c.sizeToContent();
 			UIUtil.center(screen, c);
 			app.getScreen().addElement(c, null, true);

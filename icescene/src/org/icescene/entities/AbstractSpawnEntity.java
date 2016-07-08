@@ -35,6 +35,10 @@ public abstract class AbstractSpawnEntity extends AbstractLoadableEntity {
 
 		PropUserDataBuilder.setSelectable(spatial, true);
 	}
+	
+	public String getPath() {
+		return path;
+	}
 
 	/**
 	 * Reload this spatial using the {@link EntityLoader}. This method will
