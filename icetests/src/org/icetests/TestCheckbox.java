@@ -34,7 +34,7 @@ public class TestCheckbox extends IcesceneApp {
 		// A single argument must be supplied, the URL (which is used to
 		// deterime router, which in turn locates simulator)
 		TestCheckbox app = new TestCheckbox(cmdLine);
-		startApp(app, cmdLine, "PlanetForever - " + AppInfo.getName() + " - " + AppInfo.getVersion(),
+		startApp(app, cmdLine, AppInfo.getName() + " - " + AppInfo.getVersion(),
 				SceneConstants.APPSETTINGS_NAME);
 	}
 

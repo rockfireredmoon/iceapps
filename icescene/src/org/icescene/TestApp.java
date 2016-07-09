@@ -20,7 +20,7 @@ public class TestApp extends IcesceneApp {
 		Assets.addOptions(opts);
 		CommandLine cmdLine = parseCommandLine(opts, args);
 		IcesceneApp app = appClass.getConstructor(CommandLine.class, String.class).newInstance(cmdLine, appName);
-		startApp(app, cmdLine, "PlanetForever - " + AppInfo.getName() + " - " + AppInfo.getVersion(), appName);
+		startApp(app, cmdLine, AppInfo.getName() + " - " + AppInfo.getVersion(), appName);
 	}
 
 	protected TestApp(CommandLine commandLine, String appName) {

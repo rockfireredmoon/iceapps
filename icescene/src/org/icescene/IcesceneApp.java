@@ -92,7 +92,7 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 
 		CommandLine cmdLine = parseCommandLine(opts, args);
 		IcesceneApp app = clazz.getConstructor(CommandLine.class).newInstance(cmdLine);
-		startApp(app, cmdLine, "Earth Eternal - " + AppInfo.getName() + " - " + AppInfo.getVersion(), appSettingsName);
+		startApp(app, cmdLine, AppInfo.getName() + " - " + AppInfo.getVersion(), appSettingsName);
 	}
 
 	protected static AppSettings createSettings(IcesceneApp app) throws IOException {

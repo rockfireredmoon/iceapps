@@ -51,8 +51,7 @@ public class TestImageChooser extends IcesceneApp {
 		// A single argument must be supplied, the URL (which is used to
 		// deterime router, which in turn locates simulator)
 		TestImageChooser app = new TestImageChooser(cmdLine);
-		startApp(app, cmdLine, "PlanetForever - " + AppInfo.getName() + " - " + AppInfo.getVersion(),
-				SceneConstants.APPSETTINGS_NAME);
+		startApp(app, cmdLine, AppInfo.getName() + " - " + AppInfo.getVersion(), SceneConstants.APPSETTINGS_NAME);
 	}
 
 	private TestImageChooser(CommandLine commandLine) {
@@ -85,14 +84,15 @@ public class TestImageChooser extends IcesceneApp {
 		win.getDragBar().setText("Fancy Window!");
 		Element el = win.getContentArea();
 		el.setLayoutManager(new MigLayout(screen, "gap 0, ins 0 0 0 0, wrap 1", "[grow, fill]", "[][][]"));
-		ImageFieldControl ifc = new ImageFieldControl(screen, null, imageResources, Preferences.userRoot().node("icescenetests")) {
+		ImageFieldControl ifc = new ImageFieldControl(screen, null, imageResources,
+				Preferences.userRoot().node("icescenetests")) {
 			@Override
 			protected void onResourceChosen(String newResource) {
 			}
 		};
 		el.addChild(ifc);
-		SoundFieldControl sfc = new SoundFieldControl(screen, Type.ALL, "http://ai-radio.org/radio.opus.m3u?stream", oggResources,
-				Preferences.userRoot().node("icescenetests")) {
+		SoundFieldControl sfc = new SoundFieldControl(screen, Type.ALL, "http://ai-radio.org/radio.opus.m3u?stream",
+				oggResources, Preferences.userRoot().node("icescenetests")) {
 			@Override
 			protected void onResourceChosen(String newResource) {
 			}
