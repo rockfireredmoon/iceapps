@@ -49,6 +49,7 @@ public class AnimLoader implements AssetLoader {
 		Loader() {
 		}
 
+		@SuppressWarnings("resource")
 		void process(InputStream in) throws IOException {
 			OGRESerializerDataInputStream din = new OGRESerializerDataInputStream(new BufferedInputStream(in, 65536 * 10));
 
@@ -58,7 +59,7 @@ public class AnimLoader implements AssetLoader {
 					throw new IOException("Not an oFusion .anim file (" + ofusionVer + ")");
 				}
 
-				short noBones = din.readShort();
+				din.readShort(); // No bones
 
 				String ogreVer = din.readFileHeader();
 				if (!ogreVer.equals("[Serializer_v1.10]") && !ogreVer.equals("[Serializer_v1.80]")) {
@@ -76,9 +77,7 @@ public class AnimLoader implements AssetLoader {
 				}
 				//
 			} catch (EOFException eof) {
-			} finally {
-				din.close();
-			}
+			} 
 		}
 
 		private void readAnimation(OGRESerializerDataInputStream din, Chunk ct) throws IOException {

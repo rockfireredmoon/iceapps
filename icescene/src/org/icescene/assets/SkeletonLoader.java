@@ -93,8 +93,8 @@ public class SkeletonLoader extends DefaultHandler implements AssetLoader {
 				String dir = FilenameUtils.getPath(path);
 				String base = FilenameUtils.getBaseName(FilenameUtils.getBaseName(path));
 
-				for (String animFile : ((ServerAssetManager) assetManager).getAssetNamesMatching(String.format("%s%s_.*\\.anim",
-						dir, base))) {
+				for (String animFile : ((ServerAssetManager) assetManager)
+						.getAssetNamesMatching(String.format("%s%s_.*\\.anim", dir, base))) {
 					List<Animation> anim = (List<Animation>) assetManager.loadAsset(new AnimKey(animFile));
 					if (logger.isLoggable(Level.FINE)) {
 						logger.fine(String.format("Loaded %d animations from file %s", anim.size(), animFile));
@@ -320,7 +320,14 @@ public class SkeletonLoader extends DefaultHandler implements AssetLoader {
 
 			xr.setContentHandler(this);
 			xr.setErrorHandler(this);
-			InputStreamReader r = new InputStreamReader(in);
+			InputStreamReader r = new InputStreamReader(in) {
+
+				@Override
+				public void close() throws IOException {
+					// Stop the parser closing the stream itself
+				}
+
+			};
 			xr.parse(new InputSource(r));
 			if (animations == null) {
 				animations = new ArrayList<Animation>();
@@ -337,7 +344,8 @@ public class SkeletonLoader extends DefaultHandler implements AssetLoader {
 				if (skeletonList == null) {
 					// Load the skeletonlist files for this asset folder
 					skeletonList = new HashMap<String, List<SkeletonList>>();
-					Set<String> skelListPaths = ((ServerAssetManager) assetManager).getAssetNamesMatching(".*\\.skeletonlist");
+					Set<String> skelListPaths = ((ServerAssetManager) assetManager)
+							.getAssetNamesMatching(".*\\.skeletonlist");
 					List<SkeletonList> skelFiles;
 					for (String skelListPath : skelListPaths) {
 						String skelDir = FilenameUtils.getPath(skelListPath);
@@ -355,8 +363,8 @@ public class SkeletonLoader extends DefaultHandler implements AssetLoader {
 							while ((line = reader.readLine()) != null) {
 								line = line.trim();
 								if (!line.startsWith("#")) {
-									logger.info(String.format("%s has animations loaded from skeleton list file %s", line,
-											skelListPath));
+									logger.info(String.format("%s has animations loaded from skeleton list file %s",
+											line, skelListPath));
 									l.skeletonFiles.add(line);
 								}
 							}
@@ -419,14 +427,8 @@ public class SkeletonLoader extends DefaultHandler implements AssetLoader {
 	public Object load(AssetInfo info) throws IOException {
 		assetManager = info.getManager();
 		InputStream in = null;
-		try {
-			String dir = info.getKey().getFolder();
-			in = info.openStream();
-			return doLoad(in, dir, info.getKey().getName());
-		} finally {
-			if (in != null) {
-				in.close();
-			}
-		}
+		String dir = info.getKey().getFolder();
+		in = info.openStream();
+		return doLoad(in, dir, info.getKey().getName());
 	}
 }

@@ -31,7 +31,7 @@ public class Assets {
 
 	private static final Logger LOG = Logger.getLogger(Assets.class.getName());
 	private static final String DEFAULT_ASSET_URL = System.getProperty("icescene.defaultAssetUrl",
-			"http://assets.theanubianwar.com/iceclient-assets-archived/");
+			"http://assets.theanubianwar.com/iceclient-assets/");
 
 	public static void addOptions(Options opts) {
 		opts.addOption("x", "clear-cache", false, "When present, asset cache will be cleared before starting.");

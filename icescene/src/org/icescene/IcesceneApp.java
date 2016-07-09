@@ -92,7 +92,7 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 
 		CommandLine cmdLine = parseCommandLine(opts, args);
 		IcesceneApp app = clazz.getConstructor(CommandLine.class).newInstance(cmdLine);
-		startApp(app, cmdLine, "PlanetForever - " + AppInfo.getName() + " - " + AppInfo.getVersion(), appSettingsName);
+		startApp(app, cmdLine, "Earth Eternal - " + AppInfo.getName() + " - " + AppInfo.getVersion(), appSettingsName);
 	}
 
 	protected static AppSettings createSettings(IcesceneApp app) throws IOException {
@@ -193,6 +193,15 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		}
 		settings.setTitle(title);
 		app.setResizable(settings.getBoolean(SceneConstants.APPSETTINGS_RESIZABLE));
+
+		LOG.info("Environment :-");
+		for(Map.Entry<String, String> en : System.getenv().entrySet()) {
+			LOG.info(String.format("    %s = %s", en.getKey(), en.getValue()));
+		}
+		LOG.info("System Properties :-");
+		for(Map.Entry<Object, Object> en : System.getProperties().entrySet()) {
+			LOG.info(String.format("    %s = %s", en.getKey(), en.getValue()));
+		}
 
 		// Start!
 		app.start();
