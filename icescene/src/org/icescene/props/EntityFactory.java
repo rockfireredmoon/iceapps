@@ -60,6 +60,9 @@ public class EntityFactory implements EntityContext {
 					s = s.trim();
 					if (!s.startsWith("#")) {
 						int idx = s.indexOf("=");
+						if(idx == -1) {
+							throw new IOException(String.format("Unexpected line in prop type data file '%s'.", s));
+						}
 						propTypePatterns.put(s.substring(0, idx), s.substring(idx + 1));
 					}
 				}
