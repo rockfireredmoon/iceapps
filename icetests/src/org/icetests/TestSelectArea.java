@@ -3,11 +3,13 @@ package org.icetests;
 import org.icelib.AppInfo;
 import org.icescene.IcesceneApp;
 import org.iceui.controls.ElementStyle;
+import org.iceui.controls.FancyButton;
 import org.iceui.controls.FancyWindow;
 import org.iceui.controls.SelectArea;
 import org.iceui.controls.SelectableItem;
 
 import com.jme3.font.BitmapFont;
+import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
@@ -47,19 +49,29 @@ public class TestSelectArea extends IcesceneApp {
 		mat.setColor("Color", ColorRGBA.Blue);
 		geom.setMaterial(mat);
 		rootNode.attachChild(geom);
-
-		// Panel for actions and character selection
-		FancyWindow panel = new FancyWindow(FancyWindow.Size.LARGE);
-		panel.getContentArea().setLayoutManager(new MigLayout("gap 0, ins 0", "[fill, grow]", "[fill, grow]"));
-		panel.setIsMovable(false);
-		panel.getContentArea().setIsResizable(false);
+		
 
 		SelectArea scr = new SelectArea();
 		for (int i = 0; i < 10; i++) {
 			scr.addScrollableContent(createPanel("Item number " + i));
 		}
+		
 
+		// Buttons
+		Container buttons = new Container(screen);
+		buttons.setLayoutManager(new MigLayout(screen));
+		buttons.addChild(new FancyButton("Create", screen), "");
+		buttons.addChild(new FancyButton("Edit", screen), "");
+		buttons.addChild(new FancyButton("Delete", screen), "");
+		buttons.addChild(new FancyButton("Exit", screen), "");
+
+		// Panel for actions and character selection
+		FancyWindow panel = new FancyWindow(FancyWindow.Size.LARGE);
+		panel.getContentArea().setLayoutManager(new MigLayout("gap 0, ins 0, wrap 1", "[fill, grow]", "[grow][shrink 0]"));
+		panel.setIsMovable(false);
+		panel.getContentArea().setIsResizable(false);
 		panel.getContentArea().addChild(scr);
+		panel.getContentArea().addChild(buttons);
 		panel.sizeToContent();
 
 		Container layer = new Container();

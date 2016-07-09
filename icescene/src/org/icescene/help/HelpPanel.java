@@ -1,5 +1,7 @@
 package org.icescene.help;
 
+import java.net.URI;
+
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
@@ -21,7 +23,16 @@ public class HelpPanel extends SplitPanel {
 	public HelpPanel(ElementManager screen, String helpUri, String helpIndexUri) {
 		super(screen, Vector2f.ZERO, LUtil.LAYOUT_SIZE, Vector4f.ZERO, null, Orientation.HORIZONTAL);
 
-		index = new HelpRenderer(screen);
+		index = new HelpRenderer(screen) {
+			@Override
+			protected void linkClicked(Link link) {
+				if ("helpMain".equals(link.getTarget())) {
+					xhtml.setDocumentRelative(link.getUri());
+				} else {
+					super.linkClicked(link);
+				}
+			}
+		};
 		index.setUseContentPaging(true);
 		index.setDocument(helpIndexUri);
 		index.scrollToTop();

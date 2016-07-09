@@ -51,7 +51,7 @@ public class EntityFactory implements EntityContext {
 
 		AssetInfo locateAsset = app.getAssetManager().locateAsset(new AssetKey<String>("Data/PropTypes.txt"));
 		if(locateAsset == null)
-			throw new RuntimeException("Could not locatee Data/PropTypes.txt");
+			throw new RuntimeException("Could not locate Data/PropTypes.txt");
 		InputStream in = locateAsset.openStream();
 		propTypePatterns = new LinkedHashMap<String, String>();
 		try {

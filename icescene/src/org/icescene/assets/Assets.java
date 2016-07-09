@@ -116,9 +116,6 @@ public class Assets {
 	public File getExternalAssetFile(String resourceName, File parentDir) {
 		File file = new File(parentDir, resourceName.replace('/', File.separatorChar));
 		File dir = file.getParentFile();
-		if (!dir.exists() && !dir.mkdirs()) {
-			throw new AssetLoadException(String.format("Invalid external assets location. Failed to create %s", dir));
-		}
 		return file;
 	}
 

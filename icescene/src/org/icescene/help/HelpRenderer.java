@@ -16,9 +16,10 @@ import icetone.core.utils.UIDUtil;
 import icetone.xhtml.TGGXHTMLRenderer;
 
 public class HelpRenderer extends TGGXHTMLRenderer {
-	
+
 	public HelpRenderer(ElementManager screen) {
-		super(screen, UIDUtil.getUID(), Vector2f.ZERO, LUtil.LAYOUT_SIZE, Vector4f.ZERO, null, new HelpUserAgent(screen));
+		super(screen, UIDUtil.getUID(), Vector2f.ZERO, LUtil.LAYOUT_SIZE, Vector4f.ZERO, null,
+				new HelpUserAgent(screen));
 		getElementMaterial().setColor("Color", ColorRGBA.Black);
 		innerBounds.getElementMaterial().setColor("Color", ColorRGBA.Black);
 		scrollableArea.getElementMaterial().setColor("Color", ColorRGBA.Black);
@@ -38,12 +39,7 @@ public class HelpRenderer extends TGGXHTMLRenderer {
 						"Failed to open browser.", e);
 			}
 		} else {
-			if ("helpMain".equals(link.getTarget())) {
-				Link l = new Link(link.getUri());
-				linkClicked(l);
-			} else {
-				super.linkClicked(link);
-			}
+			super.linkClicked(link);
 		}
 	}
 }
