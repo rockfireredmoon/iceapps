@@ -1299,14 +1299,6 @@
                 <x value="64" />
                 <y value="64" />
             </property>
-            <property name="logoSize" type="Vector2f">
-                <x value="350" />
-                <y value="137" />
-            </property>
-            <property name="bannerSize" type="Vector2f">
-                <x value="750" />
-                <y value="106" />
-            </property>
         </attributes>
         <images>
             <property name="busyIconImg" type="String" value="Interface/Styles/Gold/Progress_0.png" />

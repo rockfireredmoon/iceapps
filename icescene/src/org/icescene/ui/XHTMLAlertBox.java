@@ -16,6 +16,7 @@ import icetone.core.Element;
 import icetone.core.ElementManager;
 import icetone.core.Screen;
 import icetone.core.layout.LUtil;
+import icetone.core.layout.LayoutManager;
 import icetone.core.utils.UIDUtil;
 import icetone.xhtml.TGGUserAgent;
 import icetone.xhtml.TGGXHTMLRenderer;
@@ -46,6 +47,7 @@ public abstract class XHTMLAlertBox extends FancyButtonWindow<TGGXHTMLRenderer> 
 			dialog.setButtonOkText("Close");
 		}
 		dialog.setMsg(text);
+		dialog.setManagedHint(true);
 		dialog.setIsResizable(false);
 		dialog.setIsMovable(false);
 		if (screen.getUseUIAudio()) {
@@ -171,7 +173,9 @@ public abstract class XHTMLAlertBox extends FancyButtonWindow<TGGXHTMLRenderer> 
 	@Override
 	protected TGGXHTMLRenderer createContent() {
 		TGGXHTMLRenderer tggxhtmlRenderer = new TGGXHTMLRenderer(screen, Vector4f.ZERO, null, new TGGUserAgent(screen));
-		tggxhtmlRenderer.setMinDimensions(new Vector2f(300, 96));
+		tggxhtmlRenderer.setMinDimensions(new Vector2f(300, 1));
+//		tggxhtmlRenderer.setPreferredDimensions(new Vector2f(300, 32));
+//		tggxhtmlRenderer.setMaxDimensions(new Vector2f(600, 400));
 		return tggxhtmlRenderer;
 	}
 
@@ -187,17 +191,11 @@ public abstract class XHTMLAlertBox extends FancyButtonWindow<TGGXHTMLRenderer> 
 		bui.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		bui.append("<!DOCTYPE html>\n");
 		bui.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
-		bui.append("<head>\n");
-		bui.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/META-INF/ui.css\" title=\"Style\" media=\"screen\"/>\n");
-		bui.append("</head>\n");
-
-		bui.append("<body>\n");
+		bui.append("<body style=\"text-align: center;\">\n");
 		bui.append(text);
 		bui.append("</body>\n");
 		bui.append("</html>\n");
-
-		contentArea.setDocumentFromString(bui.toString(), "alert://", new NoNamespaceHandler());
-
+		contentArea.setDocumentFromString(bui.toString(), "alert://dialog.html");
 		sizeToContent();
 	}
 }

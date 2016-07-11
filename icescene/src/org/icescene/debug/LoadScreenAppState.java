@@ -28,6 +28,7 @@ import icetone.controls.text.Label;
 import icetone.controls.windows.Panel;
 import icetone.core.Container;
 import icetone.core.Element;
+import icetone.core.Element.ZPriority;
 import icetone.core.layout.BorderLayout;
 import icetone.core.layout.mig.MigLayout;
 
@@ -186,7 +187,7 @@ public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 				bottom.addChild(fileProgress, BorderLayout.Border.EAST);
 				progress.addChild(bottom, "growx");
 
-				app.setForegroundElement(loadScreen, null);
+				app.getLayers(ZPriority.FOREGROUND).addChild(loadScreen);
 
 			}
 			showing = true;
@@ -197,7 +198,7 @@ public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 		if (showing) {
 			LOG.info("Hiding load screen");
 			if (app != null) {
-				app.removeForegroundElement();
+				app.getLayers(ZPriority.FOREGROUND).removeChild(loadScreen);
 			}
 			overallProgress.setMaxValue(0);
 			loadScreen.setElementParent(null);
@@ -206,6 +207,8 @@ public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 	}
 
 	public void downloadStarting(final AssetKey key, final long size) {
+		if (key.getName().equals("Common/MatDefs/Gui/Gui.frag"))
+			System.out.println("Break!");
 		app.enqueue(new Callable<Void>() {
 			public Void call() throws Exception {
 				if (autoShowOnDownloads && !showing) {

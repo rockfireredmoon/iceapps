@@ -1,15 +1,23 @@
 package org.icescene;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -25,12 +33,14 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.io.IOUtils;
 import org.icelib.AppInfo;
 import org.icelib.Color;
 import org.icelib.QueueExecutor;
 import org.icelib.RGB;
 import org.icelib.beans.ObjectMapping;
 import org.icescene.assets.Assets;
+import org.icescene.assets.ImageLoader;
 import org.icescene.audio.AudioAppState;
 import org.icescene.camera.ExtendedFlyByCam;
 import org.icescene.io.KeyMapManager;
@@ -53,14 +63,13 @@ import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderContext;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.lwjgl.LwjglRenderer;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import com.jme3.texture.Image;
-import com.jme3.ui.Picture;
+import com.jme3.texture.Texture2D;
 
 import icemoon.iceloader.ServerAssetManager;
 import icetone.core.Container;
@@ -83,7 +92,8 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 	private final static String MAPPING_APPSTATE_DUMP = "AppStateDump";
 	private final static String MAPPING_GUI_EXPLORER = "GUIExplorer";
 
-	public static void defaultMain(String[] args, Class<? extends IcesceneApp> clazz, String appSettingsName) throws Exception {
+	public static void defaultMain(String[] args, Class<? extends IcesceneApp> clazz, String appSettingsName)
+			throws Exception {
 		AppInfo.context = clazz;
 
 		// Parse command line
@@ -166,7 +176,8 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		return cmdLine;
 	}
 
-	protected static void startApp(IcesceneApp app, CommandLine cmdLine, String title, String appSettingsName) throws IOException {
+	protected static void startApp(IcesceneApp app, CommandLine cmdLine, String title, String appSettingsName)
+			throws IOException {
 		AppSettings settings = createSettings(app);
 
 		// Whether to show recovery settings dialog
@@ -195,11 +206,11 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		app.setResizable(settings.getBoolean(SceneConstants.APPSETTINGS_RESIZABLE));
 
 		LOG.info("Environment :-");
-		for(Map.Entry<String, String> en : System.getenv().entrySet()) {
+		for (Map.Entry<String, String> en : System.getenv().entrySet()) {
 			LOG.info(String.format("    %s = %s", en.getKey(), en.getValue()));
 		}
 		LOG.info("System Properties :-");
-		for(Map.Entry<Object, Object> en : System.getProperties().entrySet()) {
+		for (Map.Entry<Object, Object> en : System.getProperties().entrySet()) {
 			LOG.info(String.format("    %s = %s", en.getKey(), en.getValue()));
 		}
 
@@ -228,9 +239,8 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 	private ThreadLocal<Boolean> sceneThread = new ThreadLocal<Boolean>();
 	private String assetsResource = "META-INF/SceneAssets.cfg";
 	private Alarm alarm;
-	private Picture picture;
+	private ImageSwapper backgroundSwapper;
 	private ViewPort backgroundViewport;
-	private Element foregroundPanel;
 	private float ga;
 	private Map<ZPriority, Element> layers = new HashMap<>();
 	private final String appSettingsName;
@@ -285,7 +295,8 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 								has.message(Level.SEVERE, String.format("Failed to create videos directory %s", dir));
 							}
 						} else {
-							recordingFile = new File(dir, new SimpleDateFormat("ddMMyy-HHmmss").format(new Date()) + ".mjpeg");
+							recordingFile = new File(dir,
+									new SimpleDateFormat("ddMMyy-HHmmss").format(new Date()) + ".mjpeg");
 							LOG.info(String.format("Recording to %s", recordingFile));
 							if (has != null) {
 								has.message(Level.INFO, "Recording!");
@@ -303,8 +314,9 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		}
 	};
 	private Scripts scripts;
-
 	private ComponentManager componentManager;
+
+	private Texture2D backgroundTexture;
 
 	protected IcesceneApp() {
 		this(SceneConfig.get(), null, SceneConstants.APPSETTINGS_NAME, null);
@@ -366,8 +378,8 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		keyMapManager.addMapping(MAPPING_ENGINE_DEBUG);
 		keyMapManager.addMapping(MAPPING_RECORDER);
 		keyMapManager.addMapping(MAPPING_APPSTATE_DUMP);
-		keyMapManager.addListener(actionListener, new String[] { MAPPING_GUI_EXPLORER, MAPPING_ENGINE_DEBUG, MAPPING_RECORDER,
-				MAPPING_RESET, MAPPING_APPSTATE_DUMP });
+		keyMapManager.addListener(actionListener, new String[] { MAPPING_GUI_EXPLORER, MAPPING_ENGINE_DEBUG,
+				MAPPING_RECORDER, MAPPING_RESET, MAPPING_APPSTATE_DUMP });
 	}
 
 	/**
@@ -544,10 +556,12 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		sceneThread.set(Boolean.TRUE);
 		try {
 			LOG.info(String.format("Configuring asset loaders and locators from %s", assetsResource));
-			assetManager = new ServerAssetManager(Thread.currentThread().getContextClassLoader().getResource(assetsResource));
+			assetManager = new ServerAssetManager(
+					Thread.currentThread().getContextClassLoader().getResource(assetsResource));
 
 			// Watch for preference changes
-			String dir = prefs.get(SceneConfig.ASSETS_EXTERNAL_LOCATION, SceneConfig.ASSETS_EXTERNAL_LOCATION_DEFAULT).trim();
+			String dir = prefs.get(SceneConfig.ASSETS_EXTERNAL_LOCATION, SceneConfig.ASSETS_EXTERNAL_LOCATION_DEFAULT)
+					.trim();
 			prefs.addPreferenceChangeListener(this);
 			assets = new Assets(this, dir, commandLine);
 			configureAssetManager((ServerAssetManager) assetManager);
@@ -563,7 +577,8 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 			// Load all of the services
 			// TODO should move all ice* stuff into org.ice.
 			try {
-				Reflections reflections = new Reflections("org", new FieldAnnotationsScanner(), new TypeAnnotationsScanner());
+				Reflections reflections = new Reflections("org", new FieldAnnotationsScanner(),
+						new TypeAnnotationsScanner());
 				LOG.info("Loading services");
 				for (Class<?> c : reflections.getTypesAnnotatedWith(Service.class)) {
 					IcesceneService service = (IcesceneService) c.newInstance();
@@ -626,8 +641,8 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 
 			super.initialize();
 			try {
-				keyMapManager = new KeyMapManager(AppInfo.getName(), prefs.node("keymap"), (ServerAssetManager) assetManager,
-						inputManager);
+				keyMapManager = new KeyMapManager(AppInfo.getName(), prefs.node("keymap"),
+						(ServerAssetManager) assetManager, inputManager);
 			} catch (IOException e) {
 				throw new RuntimeException("Failed to configure key map.", e);
 			}
@@ -716,6 +731,11 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 			saveSettings();
 			onResize();
 		}
+
+		if (backgroundSwapper != null) {
+			backgroundSwapper.updateLogicalState(tpf);
+		}
+
 		onUpdate(tpf);
 	}
 
@@ -725,15 +745,7 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 	 * @return is scene thread
 	 */
 	public boolean isSceneThread() {
-
-		final boolean st = Boolean.TRUE.equals(sceneThread.get());
-		// try {
-		// throw new Exception();
-		// } catch (Exception e) {
-		// System.err.println("isSceneThread() = " + st);
-		// e.printStackTrace();
-		// }
-		return st;
+		return Boolean.TRUE.equals(sceneThread.get());
 	}
 
 	@Override
@@ -757,28 +769,39 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 	 * @see #setBackgroundPicture(java.lang.String)
 	 */
 	public void removeBackgroundPicture() {
-		backgroundViewport.detachScene(picture);
-		getRenderManager().removePreView(backgroundViewport);
-
-		picture = null;
-		// if (foregroundPicture == null) {
-		getViewPort().setClearFlags(true, true, true);
-		// }
+		if (backgroundSwapper == null)
+			LOG.warning(String.format("Request to remove picture when none is set"));
+		else {
+			backgroundViewport.detachScene(backgroundSwapper);
+			getRenderManager().removePreView(backgroundViewport);
+			backgroundSwapper = null;
+			getViewPort().setClearFlags(true, true, true);
+		}
 	}
 
 	/**
-	 * Remove the current foreground picture.
+	 * Set an image to use as a background to the scene. Used in the lobby.
 	 * 
-	 * @see #setForegroundPicture(java.lang.String)
+	 * @param path
+	 *            path
 	 */
-	public void removeForegroundElement() {
-		if (foregroundPanel == null) {
-			throw new IllegalStateException("Not showing foreground picture");
+	public void setBackgroundPicture(Texture2D texture) {
+		setBackgroundPicture(texture, true);
+	}
+
+	public void setBackgroundPicture(Texture2D texture, boolean fadeIn) {
+		if (backgroundSwapper == null) {
+			backgroundSwapper = new ImageSwapper(new Vector2f(screen.getWidth(), screen.getHeight()), assetManager);
 		}
-		foregroundPanel.hide();
-		screen.removeElement(foregroundPanel);
-		foregroundPanel = null;
-		screen.setGlobalAlpha(ga);
+		if (!Objects.equals(texture, backgroundTexture)) {
+			backgroundTexture = texture;
+			backgroundSwapper.setPicture(texture, fadeIn);
+			backgroundViewport = getRenderManager().createPreView("background", getCamera());
+			backgroundViewport.setClearFlags(true, true, true);
+			backgroundViewport.attachScene(backgroundSwapper);
+			getViewPort().setClearFlags(false, true, true);
+			backgroundSwapper.updateGeometricState();
+		}
 	}
 
 	/**
@@ -788,60 +811,122 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 	 *            path
 	 */
 	public void setBackgroundPicture(String path) {
+		setBackgroundPicture(path, true);
+	}
+
+	public void setBackgroundPicture(String path, boolean fadeIn) {
 		LOG.info(String.format("Setting background picture %s", path));
-		// Background picture
-		picture = new Picture("background");
-		picture.setImage(getAssetManager(), path, false);
-		picture.setWidth(screen.getWidth());
-		picture.setHeight(screen.getHeight());
-		picture.setPosition(0, 0);
-		backgroundViewport = getRenderManager().createPreView("background", getCamera());
-		backgroundViewport.setClearFlags(true, true, true);
-		backgroundViewport.attachScene(picture);
-		// if (foregroundPicture == null) {
-		getViewPort().setClearFlags(false, true, true);
-		// }
-		picture.updateGeometricState();
+		setBackgroundPicture((Texture2D) getAssetManager().loadTexture(path), fadeIn);
 	}
 
-	/**
-	 * Set an image to display in the foreground element the top of everything
-	 * else. Can be used for loading screen for example.
-	 * 
-	 * @param path
-	 *            path of image
-	 */
-	public void setForegroundElement(Element el) {
-		setForegroundElement(el, "Interface/bgx.jpg");
+	public void loadExternalBackground(URL url, String cacheName, boolean fade, boolean onlyIfCached)
+			throws IOException {
+		final Texture2D tex2D = loadExternalCachableTexture(url, cacheName, onlyIfCached);
+		enqueue(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				setBackgroundPicture(tex2D, fade);
+				return null;
+			}
+		});
 	}
 
-	/**
-	 * Set an image to display in the foreground element the top of everything
-	 * else. Can be used for loading screen for example.
-	 * 
-	 * @param path
-	 *            path of image
-	 */
-	public void setForegroundElement(Element el, String texture) {
-		if (foregroundPanel != null) {
-			throw new IllegalStateException("Aready showing foreground picture");
+	public Texture2D loadExternalCachableTexture(URL url, String cacheName, boolean onlyIfCached) throws IOException {
+		// Do we have a locally cached copy?
+		File cacheDir = new File(new File(System.getProperty("java.io.tmpdir")), AppInfo.getName());
+		if (!cacheDir.exists() && !cacheDir.mkdirs())
+			throw new IOException("Could not create cache directory.");
+
+		File cacheFile = new File(cacheDir, URLEncoder.encode(cacheName, "UTF-8") + ".jpg");
+		if (onlyIfCached && !cacheFile.exists())
+			throw new IOException("Not cached, and load onlyIfCached was required.");
+
+		LOG.info(String.format("Loading background from %s", url));
+		HttpURLConnection conx = (HttpURLConnection) url.openConnection();
+		conx.setDoInput(true);
+		conx.setConnectTimeout(10000);
+		if (cacheFile.exists()) {
+			conx.setIfModifiedSince(cacheFile.lastModified());
 		}
-		ga = screen.getGlobalAlpha();
-		screen.setGlobalAlpha(1.0f);
-		foregroundPanel = new Element(screen, "LoadingScreen", Vector2f.ZERO, new Vector2f(screen.getWidth(), screen.getHeight()),
-				Vector4f.ZERO, texture);
-		foregroundPanel.setPriority(ZPriority.FOREGROUND);
-		// foregroundPanel.setAsContainerOnly();
-		foregroundPanel.setLayoutManager(new FillLayout());
-		foregroundPanel.addChild(el);
-		screen.addElement(foregroundPanel);
+		int resp = conx.getResponseCode();
+		if (resp == 200) {
+			FileOutputStream fos = new FileOutputStream(cacheFile);
+			try {
+				IOUtils.copy(conx.getInputStream(), fos);
+			} finally {
+				fos.close();
+			}
+		} else if (resp == 304) {
+			// Not modified, use cache
+		} else if (resp == 404) {
+			throw new FileNotFoundException(String.format("Could not find %s", url));
+		} else
+			throw new IOException(String.format("Unexpected server response %d.", resp));
+
+		ImageLoader il = new ImageLoader();
+		InputStream in = new FileInputStream(cacheFile);
+		final Texture2D tex2D = new Texture2D(il.load(in, true));
+		return tex2D;
+	}
+
+	// public void setBackgroundPicture(Picture picture, boolean fadeIn) {
+	// if (this.picture != null) {
+	//
+	// if(fadeIn) {
+	// if(fadeOutBackgroundViewport != null) {
+	// fadeOutBackgroundViewport.detachScene(fadeOutPicture);
+	// getRenderManager().removePreView(fadeOutBackgroundViewport);
+	// fadeOutBackgroundViewport = null;
+	// fadeOutPicture = null;
+	// }
+	//
+	// fadeOutBackgroundViewport = backgroundViewport;
+	// fadeOutPicture = picture;
+	// }
+	// else {
+	// backgroundViewport.detachScene(picture);
+	// getRenderManager().removePreView(backgroundViewport);
+	// }
+	// }
+	//
+	// this.picture = picture;
+	// backgroundViewport = getRenderManager().createPreView("background",
+	// getCamera());
+	// backgroundViewport.setClearFlags(true, true, true);
+	// backgroundViewport.attachScene(picture);
+	// // if (foregroundPicture == null) {
+	// getViewPort().setClearFlags(false, true, true);
+	// // }
+	// picture.updateGeometricState();
+	// }
+
+	/**
+	 * Reload the current background picture, resizing it the size of the screen
+	 */
+	public void reloadBackgroundPicture() {
+		if (backgroundSwapper != null) {
+			backgroundSwapper.setSize(new Vector2f(screen.getWidth(), screen.getHeight()));
+			backgroundSwapper.reloadBackgroundPicture();
+			// backgroundViewport.detachScene(picture);
+			// getRenderManager().removePreView(backgroundViewport);
+			// Picture picture = new Picture("background");
+			// picture.setTexture(getAssetManager(),
+			// (Texture2D)
+			// this.picture.getMaterial().getTextureParam("Texture").getTextureValue(),
+			// false);
+			// picture.setWidth(screen.getWidth());
+			// picture.setHeight(screen.getHeight());
+			// picture.setPosition(0, 0);
+			// setBackgroundPicture(picture, false);
+		}
 	}
 
 	public void preferenceChange(PreferenceChangeEvent evt) {
 		if (evt.getKey().equals(SceneConfig.ASSETS_EXTERNAL_LOCATION)) {
 			assets.setAssetsExternalLocation(evt.getNewValue());
 			((ServerAssetManager) assetManager).index();
-		} else if (evt.getKey().equals(SceneConfig.AUDIO_UI_VOLUME) || evt.getKey().equals(SceneConfig.AUDIO_MASTER_VOLUME)) {
+		} else if (evt.getKey().equals(SceneConfig.AUDIO_UI_VOLUME)
+				|| evt.getKey().equals(SceneConfig.AUDIO_MASTER_VOLUME)) {
 			screen.setUIAudioVolume(AudioAppState.get().getActualUIVolume());
 		}
 	}

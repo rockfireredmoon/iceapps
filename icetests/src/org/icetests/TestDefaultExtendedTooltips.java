@@ -58,7 +58,7 @@ public class TestDefaultExtendedTooltips extends IcesceneApp implements ToolTipP
 
     }
 
-    public Element createToolTip() {
+    public Element createToolTip(Vector2f mouseXY, Element el) {
         Panel extendedToolTip = new Panel(screen);
         extendedToolTip.setLayoutManager(new MigLayout(screen, "wrap 1", "[]", "[][][][]"));
         Label l1 = new Label(screen);
