@@ -23,6 +23,7 @@ public class ExtendedMaterialListKey extends OgreMaterialKey {
 	private String unlitMaterialDef;
 	private Lighting lighting = Lighting.DEFAULT;
 	private boolean cache;
+	private boolean flipTextureY;
 
 	public ExtendedMaterialListKey(String path) {
 		// Use defaults decided by loader
@@ -38,6 +39,14 @@ public class ExtendedMaterialListKey extends OgreMaterialKey {
 	public ExtendedMaterialListKey setTextureAliases(Map<ExtendedMaterialKey, Map<String, String>> textureAliases) {
 		this.textureAliases = textureAliases;
 		return this;
+	}
+
+	public boolean isFlipTextureY() {
+		return flipTextureY;
+	}
+
+	public void setFlipTextureY(boolean flipTextureY) {
+		this.flipTextureY = flipTextureY;
 	}
 
 	public boolean isCache() {

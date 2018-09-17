@@ -1,0 +1,12 @@
+.simplePanel {
+	background-image: url(/Interface/bgx.jpg);
+	color: red;
+	min-width: 400px;
+	min-height: 200px;
+	max-width: 600px;
+	max-height: 400px;
+}
+
+label {
+	color: red;
+}

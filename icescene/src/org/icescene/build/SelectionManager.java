@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.icelib.Icelib;
 import org.icescene.io.ModifierKeysAppState;
 import org.icescene.io.MouseManager;
 import org.icescene.scene.AbstractBuildableControl;
@@ -18,7 +19,8 @@ import com.jme3.scene.Spatial;
  * {@link MouseManager} is used to monitor mouse motion and set selections
  * accordingly.
  */
-public class SelectionManager<S extends Buildable, T extends AbstractBuildableControl<S>> implements MouseManager.Listener {
+public class SelectionManager<S extends Buildable, T extends AbstractBuildableControl<S>>
+		implements MouseManager.Listener {
 
 	private final MouseManager mouseManager;
 	private boolean selectBecauseDragged;
@@ -28,6 +30,7 @@ public class SelectionManager<S extends Buildable, T extends AbstractBuildableCo
 	}
 
 	private final static Logger LOG = Logger.getLogger(SelectionManager.class.getName());
+
 	private final List<T> selected = new ArrayList<T>();
 	private List<Listener<S, T>> listeners = new ArrayList<>();
 	private Class<T> controlClass;
@@ -82,25 +85,34 @@ public class SelectionManager<S extends Buildable, T extends AbstractBuildableCo
 	}
 
 	public void select(T control, int mods) {
+		boolean changed = false;
 		if (ModifierKeysAppState.isCtrl(mods)) {
 			// Toggle, don't deselect others
-			if (control.isSelected()) {
+			if (control.isSelected() || selected.contains(control)) {
 				selected.remove(control);
 				LOG.info(String.format("Deselected %s", control.getSpatial().getName()));
 				control.setSelected(false);
+				changed = true;
 			} else {
-				selected.add(control);
+				if(!selected.contains(control)) {
+					selected.add(control);
+					changed = true;
+				}
 				control.setSelected(true);
 				LOG.info(String.format("Selected %s", control.getSpatial().getName()));
 			}
 		} else {
-			// Select just this one
-			clearSelection();
-			selected.add(control);
-			control.setSelected(true);
-			LOG.info(String.format("Selected %s", control.getSpatial().getName()));
+			if (!selected.contains(control) || (selected.contains(control) && selected.size() > 1)) {
+				// Select just this one
+				clearSelection();
+				selected.add(control);
+				control.setSelected(true);
+				LOG.info(String.format("Selected %s", control.getSpatial().getName()));
+				changed = true;
+			}
 		}
-		fireSelectionChanged();
+		if(changed)
+			fireSelectionChanged();
 	}
 
 	public void clearSelection() {
@@ -165,12 +177,11 @@ public class SelectionManager<S extends Buildable, T extends AbstractBuildableCo
 	public void hover(MouseManager manager, Spatial spatial, ModifierKeysAppState mods) {
 	}
 
-	public void click(MouseManager manager, Spatial spatial, ModifierKeysAppState mods, int startModsMask, Vector3f contactPoint,
-			CollisionResults results, float tpf, boolean repeat) {
+	public void click(MouseManager manager, Spatial spatial, ModifierKeysAppState mods, int startModsMask,
+			Vector3f contactPoint, CollisionResults results, float tpf, boolean repeat) {
 		if (!mouseEnabled) {
 			return;
 		}
-		System.err.println("[CLICK] " + spatial + " / " + contactPoint);
 		Spatial buildableSpatial = getBuildable(spatial);
 		selectBecauseDragged = false;
 		select(buildableSpatial.getControl(controlClass), startModsMask);
@@ -184,7 +195,8 @@ public class SelectionManager<S extends Buildable, T extends AbstractBuildableCo
 	public void dragEnd(MouseManager manager, Spatial spatial, ModifierKeysAppState mods, int startModsMask) {
 	}
 
-	public void dragStart(Vector3f click3d, MouseManager manager, Spatial spatial, ModifierKeysAppState mods, Vector3f direction) {
+	public void dragStart(Vector3f click3d, MouseManager manager, Spatial spatial, ModifierKeysAppState mods,
+			Vector3f direction) {
 		if (!mouseEnabled) {
 			return;
 		}
@@ -197,8 +209,8 @@ public class SelectionManager<S extends Buildable, T extends AbstractBuildableCo
 		}
 	}
 
-	public void drag(MouseManager manager, Spatial spatial, ModifierKeysAppState mods, Vector3f click3d, Vector3f lastClick3d,
-			float tpf, int startModsMask, CollisionResults results, Vector3f lookDir) {
+	public void drag(MouseManager manager, Spatial spatial, ModifierKeysAppState mods, Vector3f click3d,
+			Vector3f lastClick3d, float tpf, int startModsMask, CollisionResults results, Vector3f lookDir) {
 	}
 
 	private Spatial getBuildable(Spatial spatial) {

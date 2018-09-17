@@ -34,19 +34,19 @@ varying vec2 scrollCoord4;
 
 void scroll(out vec2 mainTexCoord) {
 	#if defined(DIFFUSEMAP) || defined(HAS_COLORMAP)
-    mainTexCoord = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim1X * m_GlobalAnimSpeed) + m_Scroll1X , 1),
-            inTexCoord[1] + mod((g_Time * m_ScrollAnim1Y * m_GlobalAnimSpeed ) + m_Scroll1Y , 1));
+    mainTexCoord = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim1X * m_GlobalAnimSpeed) + m_Scroll1X , 1.0),
+            inTexCoord[1] + mod((g_Time * m_ScrollAnim1Y * m_GlobalAnimSpeed ) + m_Scroll1Y , 1.0));
     #endif
 	#if defined(DIFFUSEMAP2) || defined(HAS_COLORMAP2)
-    scrollCoord2 = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim2X * m_GlobalAnimSpeed ) + m_Scroll2X , 1),
-            inTexCoord[1] + mod((g_Time * m_ScrollAnim2Y * m_GlobalAnimSpeed ) + m_Scroll2Y , 1));
+    scrollCoord2 = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim2X * m_GlobalAnimSpeed ) + m_Scroll2X , 1.0),
+            inTexCoord[1] + mod((g_Time * m_ScrollAnim2Y * m_GlobalAnimSpeed ) + m_Scroll2Y , 1.0));
     #endif
 	#if defined(DIFFUSEMAP3) || defined(HAS_COLORMAP3)
-    scrollCoord3 = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim3X * m_GlobalAnimSpeed ) + m_Scroll3X , 1),
-            inTexCoord[1] + mod((g_Time * m_ScrollAnim3Y * m_GlobalAnimSpeed ) + m_Scroll3Y , 1));
+    scrollCoord3 = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim3X * m_GlobalAnimSpeed ) + m_Scroll3X , 1.0),
+            inTexCoord[1] + mod((g_Time * m_ScrollAnim3Y * m_GlobalAnimSpeed ) + m_Scroll3Y , 1.0));
     #endif
 	#if defined(DIFFUSEMAP4) || defined(HAS_COLORMAP4)
-    scrollCoord4 = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim4X * m_GlobalAnimSpeed ) + m_Scroll4X , 1),
-            inTexCoord[1] + mod((g_Time * m_ScrollAnim4Y * m_GlobalAnimSpeed ) + m_Scroll4Y , 1));
+    scrollCoord4 = vec2(inTexCoord[0] + mod((g_Time * m_ScrollAnim4X * m_GlobalAnimSpeed ) + m_Scroll4X , 1.0),
+            inTexCoord[1] + mod((g_Time * m_ScrollAnim4Y * m_GlobalAnimSpeed ) + m_Scroll4Y , 1.0));
     #endif
 }

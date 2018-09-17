@@ -20,10 +20,13 @@ public class TestProp extends IcesceneApp {
 
 	@Override
 	protected void onSimpleInitApp() {
+		flyCam.setEnabled(true);
 		flyCam.setMoveSpeed(100);
 		flyCam.setDragToRotate(true);
+		
 		EntityFactory pf = new EntityFactory(this, rootNode);
-		AbstractProp prop = pf.getProp("Prop-Paintings1#Prop-Painting1-WantedShadow");
+		//AbstractProp prop = pf.getProp("Prop-Paintings1#Prop-Painting1-WantedShadow");
+		AbstractProp prop = pf.getProp("CL-Candelabra2");
 		prop.getSpatial().rotate(0, -FastMath.QUARTER_PI * 2, 0);
 		prop.getSpatial().addControl(new Rotator());
 		getRootNode().attachChild(prop.getSpatial());

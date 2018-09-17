@@ -5,11 +5,11 @@ MaterialDef Fog {
 		Int NumSamplesDepth
 		Texture2D Texture
 		Texture2D DepthTexture
-		Int FogMode;
-		Vector4 FogColor;
-		Float FogDensity;
-		Float FogStartDistance;
-		Float FogEndDistance;
+		Int FogMode
+		Vector4 FogColor
+		Float FogDensity
+		Float FogStartDistance
+		Float FogEndDistance
 		Boolean ExcludeSky : false
 	}
 	
@@ -20,6 +20,7 @@ MaterialDef Fog {
 	
 		WorldParameters {
 			WorldViewProjectionMatrix
+			Resolution
 		}
 		
 	}

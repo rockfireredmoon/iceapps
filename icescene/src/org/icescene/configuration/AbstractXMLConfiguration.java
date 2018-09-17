@@ -1,7 +1,5 @@
 package org.icescene.configuration;
 
-import icemoon.iceloader.AbstractConfiguration;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +15,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import com.jme3.asset.AssetManager;
+
+import icemoon.iceloader.AbstractConfiguration;
 
 /**
  * Loads and stores a Component configuration file. All props have one of these.

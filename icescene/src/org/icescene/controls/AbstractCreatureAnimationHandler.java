@@ -7,7 +7,6 @@ import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
 import org.icelib.Icelib;
-import org.icescene.Alarm.AlarmTask;
 import org.icescene.SceneConstants;
 import org.icescene.animation.AnimationOption;
 import org.icescene.audio.AudioAppState;
@@ -21,6 +20,8 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.math.FastMath;
+
+import icetone.core.utils.Alarm.AlarmTask;
 
 /**
  * Handles animation for the 'Horde', basically this is the standard handler for

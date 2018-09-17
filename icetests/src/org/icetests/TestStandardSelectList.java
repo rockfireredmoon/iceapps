@@ -3,8 +3,8 @@ package org.icetests;
 import org.icelib.AppInfo;
 import org.icescene.IcesceneApp;
 
+import icetone.controls.containers.Panel;
 import icetone.controls.lists.SelectList;
-import icetone.controls.windows.Panel;
 
 public class TestStandardSelectList extends IcesceneApp {
 	
@@ -29,7 +29,7 @@ public class TestStandardSelectList extends IcesceneApp {
 
         Panel panel = new Panel();
         SelectList<Integer> scr = new SelectList<>();
-        panel.addChild(scr);
+        panel.addElement(scr);
         for (int i = 0; i < 10; i++) {
             scr.addListItem("This is list item " + i + " so it is", i);
         }

@@ -1,12 +1,12 @@
 package org.icescene.audio;
 
-import icemoon.iceloader.ServerAssetManager;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Logger;
 
 import com.jme3.asset.AssetManager;
+
+import icemoon.iceloader.ServerAssetManager;
 
 public class Music {
 

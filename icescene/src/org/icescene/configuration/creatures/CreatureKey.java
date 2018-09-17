@@ -1,7 +1,5 @@
 package org.icescene.configuration.creatures;
 
-import icemoon.iceloader.ServerAssetManager;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import org.icelib.Icelib;
 
 import com.jme3.asset.AssetManager;
+
+import icemoon.iceloader.ServerAssetManager;
 
 public class CreatureKey implements Serializable {
 

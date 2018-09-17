@@ -11,72 +11,82 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 
 import icetone.controls.extras.DragElement;
-import icetone.core.Element;
-import icetone.core.ElementManager;
-import icetone.core.layout.LUtil;
-import icetone.core.utils.UIDUtil;
+import icetone.core.BaseElement;
+import icetone.core.BaseScreen;
+import icetone.core.Size;
+import icetone.core.ToolKit;
+import icetone.core.layout.BasicLayout;
 
 public abstract class AbstractDraggable extends DragElement {
 
 	private static final Logger LOG = Logger.getLogger(AbstractDraggable.class.getName());
-	private DragContext dragContext;
-	private Vector2f maxDimensions;
-	private Vector2f prefDimensions;
-	private Element icon2;
-	private Element icon1;
+	private BaseElement icon2;
+	private BaseElement icon1;
 	private AnimSprite activeAnim;
 
-	public AbstractDraggable(DragContext dragContext, ElementManager screen, Vector2f dimensions, Vector4f resizeBorders,
-			String img1, String img2) {
-		super(screen, Vector2f.ZERO, dimensions, resizeBorders, null);
+	public AbstractDraggable(DragContext dragContext, BaseScreen screen, String img1, String img2) {
+		super(screen);
 		init(dragContext, img1, img2);
 	}
 
-	public AbstractDraggable(DragContext dragContext, ElementManager screen, String img1, String img2) {
-		super(screen, Vector4f.ZERO, null);
+	public AbstractDraggable(DragContext dragContext, BaseScreen screen, String styleId, String img1,
+			String img2) {
+		super(screen, styleId);
 		init(dragContext, img1, img2);
 	}
 
-	public AbstractDraggable(DragContext dragContext, ElementManager screen, String UID, String img1, String img2) {
-		super(screen, UID, Vector2f.ZERO, LUtil.LAYOUT_SIZE, Vector4f.ZERO, null);
-		init(dragContext, img1, img2);
-	}
-
-	public AbstractDraggable(DragContext dragContext, ElementManager screen, String UID, Vector2f dimensions,
+	public AbstractDraggable(DragContext dragContext, BaseScreen screen, String styleId, Size dimensions,
 			Vector4f resizeBorders, String img1, String img2) {
-		super(screen, UID, Vector2f.ZERO, dimensions, resizeBorders, null);
+		super(screen, styleId);
 		init(dragContext, img1, img2);
 	}
 
 	private void init(DragContext dragContext, String img1, String img2) {
-		this.dragContext = dragContext;
 
 		if (img2 != null) {
 			try {
-				icon2 = new Element(screen, UIDUtil.getUID(), LUtil.LAYOUT_SIZE, Vector4f.ZERO, img2);
-				icon2.setIgnoreMouse(true);
-				addChild(icon2);
+				icon2 = new BaseElement(screen, img2);
+				addElement(icon2);
 			} catch (AssetNotFoundException anfe) {
 				LOG.log(Level.SEVERE, String.format("Failed to locate icon %s.", img1));
 			}
 		}
 		if (img1 != null) {
 			try {
-				icon1 = new Element(screen, UIDUtil.getUID(), LUtil.LAYOUT_SIZE, Vector4f.ZERO, img1);
-				icon1.setIgnoreMouse(true);
-				addChild(icon1);
+				icon1 = new BaseElement(screen, img1);
+				addElement(icon1);
 			} catch (AssetNotFoundException anfe) {
 				LOG.log(Level.SEVERE, String.format("Failed to locate icon %s.", img1));
 			}
 		}
+		setLayoutManager(new BasicLayout());
 		setUseSpringBack(true);
 		setUseLockToDropElementEffect(true);
 		setUseSpringBackEffect(true);
+		onStart(evt -> {
+			dragContext.setDragStart(getPixelPosition().clone());
+			dragContext.start();
+		});
+		onEnd(evt -> {
+			dragContext.stop();
+			Vector2f pos = getPixelPosition();
+			if (dragContext.isCancelled()) {
+				LOG.warning("Drag was cancelled because an inventory refresh came in");
+			} else if (dragContext.getDragStart() != null && pos.x == dragContext.getDragStart().x
+					&& pos.y == dragContext.getDragStart().y) {
+				// A click
+				doOnClick(evt);
+			} else {
+				if (doOnDragEnd(evt, evt.getTarget()))
+					evt.setConsumed();
+			}
+		});
 	}
 
 	public void setActive(boolean active) {
 		if (active && activeAnim == null) {
-			activeAnim = new AnimSprite(app.getAssetManager(), "Interface/Styles/Gold/Button/ability-highlight.png", 32, 32);
+			activeAnim = new AnimSprite(ToolKit.get().getApplication().getAssetManager(),
+					"Interface/Styles/Gold/Button/ability-highlight.png", 32, 32);
 			activeAnim.start(0.1f);
 			attachChild(activeAnim);
 		} else if (!active && activeAnim != null) {
@@ -84,45 +94,7 @@ public abstract class AbstractDraggable extends DragElement {
 		}
 	}
 
-	@Override
-	public void onDragStart(MouseButtonEvent mbe) {
-		dragContext.setDragStart(getPosition().clone());
-		dragContext.start();
-	}
-
-	@Override
-	public boolean onDragEnd(MouseButtonEvent mbe, Element elmnt) {
-		dragContext.stop();
-		Vector2f pos = getPosition();
-		if (dragContext.isCancelled()) {
-			LOG.warning("Drag was cancelled because an inventory refresh came in");
-			return false;
-		} else if (pos.x == dragContext.getDragStart().x && pos.y == dragContext.getDragStart().y) {
-			// A click
-			doOnClick(mbe);
-			return false;
-		} else {
-			return doOnDragEnd(mbe, elmnt);
-		}
-	}
-
-	public Vector2f getMaxDimensions() {
-		return maxDimensions;
-	}
-
-	public Vector2f getPreferredDimensions() {
-		return prefDimensions;
-	}
-
-	public void setMaxDimensions(Vector2f maxDimensions) {
-		this.maxDimensions = maxDimensions;
-	}
-
-	public void setPreferredDimensions(Vector2f prefDimensions) {
-		this.prefDimensions = prefDimensions;
-	}
-
 	protected abstract boolean doOnClick(MouseButtonEvent evt);
 
-	protected abstract boolean doOnDragEnd(MouseButtonEvent mbe, Element elmnt);
+	protected abstract boolean doOnDragEnd(MouseButtonEvent mbe, BaseElement elmnt);
 }

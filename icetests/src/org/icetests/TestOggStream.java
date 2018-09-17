@@ -46,8 +46,7 @@ public class TestOggStream extends IcesceneApp {
 
         AssetManager   manager = JmeSystem.newAssetManager();
         
-        manager.registerLocator("http://revolutionradio.ru/",
-                                      UrlLocator.class.getName());
+        manager.registerLocator("http://revolutionradio.ru/", UrlLocator.class);
         manager.registerLoader(OGGLoader.class, "ogg");
          AudioNode src = new AudioNode(manager,"live.ogg", true, false);
          src.setPositional(false);

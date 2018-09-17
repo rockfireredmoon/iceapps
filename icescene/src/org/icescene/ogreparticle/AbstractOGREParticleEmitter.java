@@ -256,18 +256,20 @@ public abstract class AbstractOGREParticleEmitter implements OGREParticleEmitter
 				try {
 					LOG.info(String.format("   Material: %s", script.getMaterialName()));
 					ExtendedMaterialListKey key = new ExtendedMaterialListKey("Effects/particles.material");
+					key.setFlipTextureY(true);
 					key.setCache(true);
 					MaterialList materialList = assetManager.loadAsset(key);
 					ExtendedMaterial mat = (ExtendedMaterial) materialList.get(script.getMaterialName());
-					if(mat != null) {
+					if (mat != null) {
 						mat.setBoolean("VertexColor", true);
 						emitter.setMaterial(mat, mat.isLit() ? "Diffuse" : "ColorMap");
-					}
-					else {
-						throw new AssetNotFoundException(String.format("No material %s in material list", script.getMaterialName()));
+					} else {
+						throw new AssetNotFoundException(
+								String.format("No material %s in material list", script.getMaterialName()));
 					}
 				} catch (AssetNotFoundException anfe) {
-					LOG.severe(String.format("No material found for %s, ignoring this for now", script.getMaterialName()));
+					LOG.severe(
+							String.format("No material found for %s, ignoring this for now", script.getMaterialName()));
 					emitter.setSprite("Interface/bgx.jpg");
 					// emitter.setSprite("Effects/FrostStorm_Ring.png");
 
@@ -375,7 +377,11 @@ public abstract class AbstractOGREParticleEmitter implements OGREParticleEmitter
 			// emitter.setBillboardMode(Emitter.BillboardMode.UNIT_Y);
 		} else if (script.getBillboardType().equals(OGREParticleScript.BillboardType.ORIENTED_SELF)) {
 			/*
-			 * Particles are oriented around their own direction vector, which acts as their local Y axis. As the particle changes direction, so the billboard reorients itself to face this way. Good for laser fire, fireworks and other ’streaky’ particles that should look like they are traveling in their own direction.
+			 * Particles are oriented around their own direction vector, which
+			 * acts as their local Y axis. As the particle changes direction, so
+			 * the billboard reorients itself to face this way. Good for laser
+			 * fire, fireworks and other ’streaky’ particles that should look
+			 * like they are traveling in their own direction.
 			 */
 			emitter.setBillboardMode(Emitter.BillboardMode.Oriented_Self);
 		} else if (script.getBillboardType().equals(OGREParticleScript.BillboardType.PERPENDICULAR_SELF)) {
@@ -425,10 +431,10 @@ public abstract class AbstractOGREParticleEmitter implements OGREParticleEmitter
 		// emitter.setDirectionType(EmitterMesh.DirectionType.Normal);
 
 		// Rotation
-//		Vector3f upVector = script.getCommonUpVector();
-//		if (upVector == null) {
-//			upVector = new Vector3f(0, 1, 0);
-//		}
+		// Vector3f upVector = script.getCommonUpVector();
+		// if (upVector == null) {
+		// upVector = new Vector3f(0, 1, 0);
+		// }
 		Vector3f upVector = Vector3f.UNIT_Y;
 		Quaternion emitterRotation = new Quaternion();
 		Vector3f dir = direction;
@@ -439,9 +445,9 @@ public abstract class AbstractOGREParticleEmitter implements OGREParticleEmitter
 		emitterRotation.lookAt(dir.normalize(), upVector);
 		float[] angles = new float[3];
 		emitterRotation.toAngles(angles);
-		LOG.info(String.format("   Rotation: %s, Up: %s (%3.2f, %3.2f, %3.2f)", dir, upVector, angles[0] * FastMath.RAD_TO_DEG,
-				angles[1] * FastMath.RAD_TO_DEG, angles[2] * FastMath.RAD_TO_DEG));
-//		emitter.setLocalRotation(emitterRotation);
+		LOG.info(String.format("   Rotation: %s, Up: %s (%3.2f, %3.2f, %3.2f)", dir, upVector,
+				angles[0] * FastMath.RAD_TO_DEG, angles[1] * FastMath.RAD_TO_DEG, angles[2] * FastMath.RAD_TO_DEG));
+		// emitter.setLocalRotation(emitterRotation);
 
 		// TODO
 		// What the ...... for some reason this doesn't work when using the quat
@@ -471,7 +477,8 @@ public abstract class AbstractOGREParticleEmitter implements OGREParticleEmitter
 		pw.println("\t{");
 		pw.println(String.format("\t\tangle %1.1f", angle));
 		if (!startColour.equals(endColour)) {
-			pw.println(String.format("\t\tcolour_range_start %s", OGREParticleConfiguration.formatForWrite(startColour)));
+			pw.println(
+					String.format("\t\tcolour_range_start %s", OGREParticleConfiguration.formatForWrite(startColour)));
 			pw.println(String.format("\t\tcolour_range_end %s", OGREParticleConfiguration.formatForWrite(endColour)));
 		} else {
 			pw.println(String.format("\t\tcolour %s", OGREParticleConfiguration.formatForWrite(startColour)));

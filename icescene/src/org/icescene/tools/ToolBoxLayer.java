@@ -16,15 +16,17 @@ import org.iceui.controls.UIUtil;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector4f;
 import com.jme3.scene.Spatial;
 
-import icetone.controls.windows.Panel;
-import icetone.core.Container;
-import icetone.core.ElementManager;
-import icetone.core.layout.XYLayoutManager;
+import icetone.controls.containers.Panel;
+import icetone.core.BaseScreen;
+import icetone.core.Element;
+import icetone.core.ToolKit;
+import icetone.core.event.ElementEvent.Type;
+import icetone.core.layout.BasicLayout;
+import icetone.extras.util.ExtrasUtil;
 
-public class ToolBoxLayer extends Container {
+public class ToolBoxLayer extends Element {
 
 	private DragContext dragContext;
 	private PreferenceChangeListener toolBoxPreferenceListener;
@@ -58,10 +60,11 @@ public class ToolBoxLayer extends Container {
 	private Map<ToolBox, ToolBoxListener> toolListeners = new HashMap<ToolBox, ToolBoxListener>();
 	private Preferences prefs;
 
-	public ToolBoxLayer(ElementManager screen, Preferences prefs, HudType hudType, ToolManager toolManager,
+	public ToolBoxLayer(BaseScreen screen, Preferences prefs, HudType hudType, ToolManager toolManager,
 			DragContext dragContext) {
 		super(screen);
-		setLayoutManager(new XYLayoutManager());
+		setAsContainerOnly();
+		setLayoutManager(new BasicLayout());
 
 		this.prefs = prefs;
 		this.toolManager = toolManager;
@@ -78,9 +81,9 @@ public class ToolBoxLayer extends Container {
 						ToolBox tb = ToolBoxLayer.this.toolManager.getToolBox(ToolBoxLayer.this.hudType, toolBoxName);
 						Panel tp = toolPanels.get(tb);
 						if (pce.getNewValue().equals(String.valueOf(true))) {
-							tp.showWithEffect();
+							tp.show();
 						} else {
-							tp.hideWithEffect();
+							tp.hide();
 						}
 					}
 				}
@@ -97,7 +100,7 @@ public class ToolBoxLayer extends Container {
 		if (toolBoxes != null) {
 			for (final ToolBox toolBox : toolBoxes) {
 				Panel tp = toolPanels.get(toolBox);
-				LOG.info(String.format("Removing tool box %s", tp.getUID()));
+				LOG.info(String.format("Removing tool box %s", tp.getStyleId()));
 				screen.removeElement(tp);
 				toolBox.getPreferencesNode().removePreferenceChangeListener(toolBoxPreferenceListener);
 				cleanUpTools(toolBox);
@@ -124,45 +127,32 @@ public class ToolBoxLayer extends Container {
 	}
 
 	protected void toolBox(final ToolBox toolBox) {
+
 		// TODO remove
 		toolBox.getPreferencesNode().addPreferenceChangeListener(toolBoxPreferenceListener);
 
 		LOG.info(String.format("Adding toolbox %s", toolBox));
-		Vector2f size = screen.getStyle(toolBox.getStyle().getDroppableStyleName()).getVector2f("defaultSize");
-		Vector4f borders = screen.getStyle(toolBox.getStyle().getDroppableStyleName()).getVector4f("resizeBorders");
-		size.x = size.x * toolBox.getHorizontalCells();
-		size.y = size.y * toolBox.getVerticalCells();
-		size.addLocal(borders.y + borders.z, borders.x + borders.w);
 		final String toolBoxName = "Tools:" + toolBox.getName();
 		// Create the window for the tools
-		ToolPanel toolPanel = new ToolPanel(prefs, dragContext, toolBox, toolBoxName, screen, toolBoxName + ":Panel", Vector2f.ZERO,
-				size) {
-			@Override
-			public void controlMoveHook() {
-				Vector2f pos = getPosition().clone();
-				pos.y = ToolBoxLayer.this.getHeight() - pos.y - getHeight();
-				ToolBoxLayer.this.getLayoutManager().constrain(this, pos);
-				UIUtil.saveWindowPosition(toolBox.getPreferencesNode(), this, toolBoxName);
-			}
-
+		ToolPanel toolPanel = new ToolPanel(prefs, dragContext, toolBox, toolBoxName, screen) {
 			@Override
 			protected void onToolDragDropComplete(MouseButtonEvent evt) {
 				rebuildAll();
 			}
 		};
+		toolPanel.onElementEvent(evt -> ExtrasUtil.saveWindowPosition(toolBox.getPreferencesNode(), this, toolBoxName),
+				Type.MOVED);
+		toolPanel.setStyleClass(toolBox.getStyle());
 		toolPanels.put(toolBox, toolPanel);
 		rebuildTools(toolBox);
-
 		positionToolBox(toolBox, toolBoxName, toolPanel);
-
 	}
 
 	protected void positionToolBox(final ToolBox toolBox, final String toolBoxName, ToolPanel toolPanel) {
-		// Add to appropriate place, either screen or the main actions area
-		if (toolBox.getStyle().equals(ToolBox.Style.Tools)) {
-			toolPanel.sizeToContent();
-			// Work out it's default position (or restore it's last position)
-			Vector2f defaultPosition = new Vector2f();
+		toolPanel.sizeToContent();
+		// Work out it's default position (or restore it's last position)
+		Vector2f defaultPosition = new Vector2f(toolPanel.getPixelPosition());
+		if (toolBox.getDefaultVerticalPosition() != null) {
 			switch (toolBox.getDefaultVerticalPosition()) {
 			case Bottom:
 				defaultPosition.y = screen.getHeight() - toolPanel.getHeight() - 8;
@@ -174,7 +164,9 @@ public class ToolBoxLayer extends Container {
 				defaultPosition.y = 8;
 				break;
 			}
+		}
 
+		if (toolBox.getDefaultHorizontalPosition() != null) {
 			switch (toolBox.getDefaultHorizontalPosition()) {
 			case Right:
 				defaultPosition.x = screen.getWidth() - toolPanel.getWidth() - 8;
@@ -186,19 +178,18 @@ public class ToolBoxLayer extends Container {
 				defaultPosition.x = 8;
 				break;
 			}
-			UIUtil.position(toolBox.getPreferencesNode(), toolPanel, toolBoxName, defaultPosition);
-			LOG.info(String.format("    1Placing at %s", toolPanel.getPosition()));
-			addChild(toolPanel, null, !toolBox.isVisible(), true, -1);
-			LOG.info(String.format("    2Placing at %s", toolPanel.getPosition()));
-//			if () {
-//				// LOG.info(String.format("Showing toolbox %s", toolBoxName));
-//				// // toolPanel.showWithEffect();
-//				toolPanel.show();
-//			} else {
-//				LOG.info(String.format("Add toolbox %s as hidden", toolBoxName));
-//				toolPanel.hide();
-//			}
 		}
+		addElement(toolPanel, null, !toolBox.isVisible(), -1);
+		if (toolBox.isVisible()) {
+			toolPanel.show();
+		} else {
+			toolPanel.hide();
+		}
+		if (toolBox.isPersistent())
+			UIUtil.position(toolBox.getPreferencesNode(), toolPanel, toolBoxName, defaultPosition);
+		else
+			toolPanel.setPosition(defaultPosition);
+
 	}
 
 	/**
@@ -214,9 +205,11 @@ public class ToolBoxLayer extends Container {
 				Tool tool = toolManager.getTool(hudType, toolName);
 				if (tool != null) {
 					LOG.info(String.format("Got tool %s", toolName));
-					int mask = app.getStateManager().getState(ModifierKeysAppState.class).getMask();
-					if (((IcesceneApp) app).getKeyMapManager().isMapped(name, tool.getName())) {
-						tool.actionPerformed(new ActionData((IcesceneApp) app, 0, 0));
+					int mask = ToolKit.get().getApplication().getStateManager().getState(ModifierKeysAppState.class)
+							.getMask();
+					if (((IcesceneApp) ToolKit.get().getApplication()).getKeyMapManager().isMapped(name,
+							tool.getName())) {
+						tool.actionPerformed(new ActionData((IcesceneApp) ToolKit.get().getApplication(), 0, 0));
 					}
 				}
 			}
@@ -229,21 +222,25 @@ public class ToolBoxLayer extends Container {
 		// Remove existing key mappings
 		ToolBoxListener l = toolListeners.get(toolBox);
 		if (l != null) {
-			((IcesceneApp) app).getKeyMapManager().removeListener(l);
+			((IcesceneApp) ToolKit.get().getApplication()).getKeyMapManager().removeListener(l);
 		}
 		for (Spatial s : toolPanel.getChildren()) {
 			if (s instanceof ToolDroppable) {
 				ToolDroppable td = (ToolDroppable) s;
 				Tool tool = td.getTool();
 				if (tool != null) {
-					if (((IcesceneApp) app).getKeyMapManager().hasMapping(tool.getName())) {
-						((IcesceneApp) app).getKeyMapManager().deleteMapping(tool.getName());
+					if (((IcesceneApp) ToolKit.get().getApplication()).getKeyMapManager().hasMapping(tool.getName())) {
+						((IcesceneApp) ToolKit.get().getApplication()).getKeyMapManager().deleteMapping(tool.getName());
 					}
 				}
 			}
 		}
 
 		toolPanel.removeAllChildren();
+	}
+
+	public ToolPanel getTools(ToolBox toolBox) {
+		return toolPanels.get(toolBox);
 	}
 
 	public void rebuildTools(ToolBox toolBox) {
@@ -255,7 +252,7 @@ public class ToolBoxLayer extends Container {
 			toolListeners.put(toolBox, l);
 		}
 		int s = 0;
-		KeyMapManager keyMapManager = ((IcesceneApp) app).getKeyMapManager();
+		KeyMapManager keyMapManager = ((IcesceneApp) ToolKit.get().getApplication()).getKeyMapManager();
 		for (final Tool tool : toolBox.getTools()) {
 
 			if (tool != null && keyMapManager != null) {

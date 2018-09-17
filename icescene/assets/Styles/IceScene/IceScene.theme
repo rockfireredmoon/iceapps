@@ -1,0 +1,7 @@
+---
+!theme
+name: "IceScene"
+author: "Emerald Icemoon"
+description: "Generic CSS for IceScene extensions"
+path: "IceScene.css"
+parent: ".*"

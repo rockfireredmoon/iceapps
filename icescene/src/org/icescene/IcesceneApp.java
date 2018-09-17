@@ -1,5 +1,6 @@
 package org.icescene;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,6 +40,7 @@ import org.icelib.Color;
 import org.icelib.QueueExecutor;
 import org.icelib.RGB;
 import org.icelib.beans.ObjectMapping;
+import org.icescene.HUDMessageAppState.Channel;
 import org.icescene.assets.Assets;
 import org.icescene.assets.ImageLoader;
 import org.icescene.audio.AudioAppState;
@@ -46,13 +48,12 @@ import org.icescene.camera.ExtendedFlyByCam;
 import org.icescene.io.KeyMapManager;
 import org.icescene.props.ComponentManager;
 import org.icescene.scripting.ScriptAssetLoader;
-import org.icescene.ui.WindowManagerAppState;
 import org.icescripting.Scripts;
 import org.iceui.IceUI;
-import org.iceui.controls.XScreen;
 import org.lwjgl.opengl.Display;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 
 import com.jme3.app.FlyCamAppState;
@@ -65,22 +66,25 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.renderer.RenderContext;
 import com.jme3.renderer.ViewPort;
-import com.jme3.renderer.lwjgl.LwjglRenderer;
+import com.jme3.renderer.opengl.GLRenderer;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
 
 import icemoon.iceloader.ServerAssetManager;
+import icetone.core.BaseElement;
+import icetone.core.BaseScreen;
 import icetone.core.Container;
-import icetone.core.Element;
-import icetone.core.Element.ZPriority;
-import icetone.core.ElementManager;
-import icetone.core.layout.AbstractLayout;
+import icetone.core.Screen;
+import icetone.core.ToolKit;
+import icetone.core.ZPriority;
+import icetone.core.event.ScreenEvent.Type;
 import icetone.core.layout.FillLayout;
-import icetone.core.layout.GUIExplorerAppState;
-import icetone.core.layout.LUtil;
-import icetone.style.Style;
+import icetone.core.layout.ScreenLayoutConstraints;
+import icetone.core.utils.Alarm;
+import icetone.extras.appstates.FrameManagerAppState;
+import icetone.extras.debug.GUIExplorerAppState;
 
 public class IcesceneApp extends SimpleApplication implements PreferenceChangeListener {
 
@@ -117,11 +121,6 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		// ImageIO.read(app.getClass().getResource("/Interface/icon-32.png")),
 		// ImageIO.read(app.getClass().getResource("/Interface/icon-16.png"))});
 		return settings;
-	}
-
-	public interface AppListener {
-
-		void reshape(int w, int h);
 	}
 
 	static {
@@ -167,13 +166,18 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		} else if (cmdLine.hasOption('T')) {
 			level = Level.FINEST;
 		}
+		setLogLevel(level);
+		return cmdLine;
+	}
+
+	protected static void setLogLevel(Level level) {
+
 		Logger root = Logger.getLogger("");
 		Handler[] handlers = root.getHandlers();
 		for (Handler h : handlers) {
 			root.setLevel(level);
 			h.setLevel(level);
 		}
-		return cmdLine;
 	}
 
 	protected static void startApp(IcesceneApp app, CommandLine cmdLine, String title, String appSettingsName)
@@ -232,17 +236,13 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 	private QueueExecutor worldLoaderExecutorService;
 	private FileMonitor monitor;
 	private boolean useUI;
-	private String stylePath = SceneConstants.UI_DEFAULT_THEME;
-	protected XScreen screen;
+	protected BaseScreen screen;
 	private boolean resizable = false;
-	private List<AppListener> appListeners = new ArrayList<AppListener>();
 	private ThreadLocal<Boolean> sceneThread = new ThreadLocal<Boolean>();
 	private String assetsResource = "META-INF/SceneAssets.cfg";
-	private Alarm alarm;
 	private ImageSwapper backgroundSwapper;
 	private ViewPort backgroundViewport;
-	private float ga;
-	private Map<ZPriority, Element> layers = new HashMap<>();
+	private Map<ZPriority, BaseElement> layers = new HashMap<>();
 	private final String appSettingsName;
 	private KeyMapManager keyMapManager;
 	private Map<Class<? extends IcesceneService>, IcesceneService> services = new HashMap<Class<? extends IcesceneService>, IcesceneService>();
@@ -285,27 +285,27 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 						LOG.info(String.format("Stopped recording to ", recordingFile));
 						stateManager.detach(rec);
 						if (has != null) {
-							has.message(Level.INFO, "Stopped Recording!");
+							has.message(Channel.INFORMATION, "Stopped Recording!");
 						}
 					} else {
 						File dir = new File(assets.getExternalAssetsFolder(), "Videos");
 						if (!dir.exists() && !dir.mkdirs()) {
 							LOG.severe(String.format("Failed to create videos directory %s", dir));
 							if (has != null) {
-								has.message(Level.SEVERE, String.format("Failed to create videos directory %s", dir));
+								has.message(Channel.ERROR, String.format("Failed to create videos directory %s", dir));
 							}
 						} else {
 							recordingFile = new File(dir,
 									new SimpleDateFormat("ddMMyy-HHmmss").format(new Date()) + ".mjpeg");
 							LOG.info(String.format("Recording to %s", recordingFile));
 							if (has != null) {
-								has.message(Level.INFO, "Recording!");
+								has.message(Channel.INFORMATION, "Recording!");
 							}
 							stateManager.attach(new VideoRecorderAppState(recordingFile));
 						}
 					}
 				} else if (name.equals(MAPPING_RESET)) {
-					for (Element el : screen.getElements()) {
+					for (BaseElement el : screen.getElements()) {
 						screen.updateZOrder(el);
 					}
 					LOG.info("Reset all Z");
@@ -418,19 +418,21 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 	@Override
 	public void start() {
 		if (settings != null) {
-			JmeSystem.initialize(settings);
-
 			LOG.info(String.format("Screen size settings of %d x %d", settings.getWidth(), settings.getHeight()));
-			if (settings.getBoolean(SceneConstants.APPSETTINGS_RESIZABLE)) {
-				final int wx = settings.getInteger(SceneConstants.APPSETTINGS_WINDOW_X);
-				final int wy = settings.getInteger(SceneConstants.APPSETTINGS_WINDOW_Y);
-				LOG.info(String.format("Positioning window at %d, %d", wx, wy));
-				Display.setLocation(wx, wy);
-
-			}
+			JmeSystem.initialize(settings);
 		}
 
 		super.start();
+		
+
+//		if (settings != null) {
+//			if (settings.getBoolean(SceneConstants.APPSETTINGS_RESIZABLE)) {
+//				final int wx = settings.getInteger(SceneConstants.APPSETTINGS_WINDOW_X);
+//				final int wy = settings.getInteger(SceneConstants.APPSETTINGS_WINDOW_Y);
+//				LOG.info(String.format("Positioning window at %d, %d", wx, wy));
+//				Display.setLocation(wx, wy);
+//			}
+//		}
 	}
 
 	/**
@@ -446,40 +448,17 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		return prefs;
 	}
 
-	public Element getLayers(ZPriority priority) {
-		Element el = layers.get(priority);
+	public BaseElement getLayers(ZPriority priority) {
+		BaseElement el = layers.get(priority);
 		if (el == null) {
 			el = new Container(screen);
+			el.setConstraints(ScreenLayoutConstraints.fill);
 			el.setLayoutManager(new FillLayout());
-			el.setDimensions(LUtil.getScreenSize(screen));
 			el.setPriority(priority);
 			screen.addElement(el);
 			layers.put(priority, el);
 		}
 		return el;
-	}
-
-	@Override
-	public void reshape(int w, int h) {
-		super.reshape(w, h);
-		if (screen != null) {
-			// layers.dirtyLayout(true);
-			screen.dirtyLayout();
-			screen.layoutChildren();
-
-			// layers.setDimensions(LUtil.getScreenSize(screen));
-
-			// Make sure no top level components are now outside of the screen
-			// area
-			// for (Element el : screen.getElements()) {
-			// if (el.getX() + el.getWidth() >= screen.getWidth()) {
-			// el.setX(screen.getWidth() - el.getWidth());
-			// }
-			// if (el.getY() + el.getHeight() >= screen.getHeight()) {
-			// el.setY(screen.getHeight() - el.getHeight());
-			// }
-			// }
-		}
 	}
 
 	public List<String> getInitScripts() {
@@ -490,8 +469,9 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		return assets;
 	}
 
+	@Deprecated
 	public Alarm getAlarm() {
-		return alarm;
+		return ToolKit.get().getAlarm();
 	}
 
 	public synchronized FileMonitor getMonitor() {
@@ -506,7 +486,7 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		return monitor;
 	}
 
-	public XScreen getScreen() {
+	public BaseScreen getScreen() {
 		if (!useUI) {
 			throw new IllegalStateException("UI not in use.");
 		}
@@ -517,24 +497,12 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		return assetsResource;
 	}
 
-	public void addListener(AppListener appListener) {
-		appListeners.add(appListener);
-	}
-
-	public void removeListener(AppListener appListener) {
-		appListeners.remove(appListener);
-	}
-
 	public boolean isResizable() {
 		return resizable;
 	}
 
 	public void setResizable(boolean resizable) {
 		this.resizable = resizable;
-	}
-
-	public void setStylePath(String stylePath) {
-		this.stylePath = stylePath;
 	}
 
 	public boolean isUseUI() {
@@ -566,7 +534,6 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 			assets = new Assets(this, dir, commandLine);
 			configureAssetManager((ServerAssetManager) assetManager);
 
-			alarm = new Alarm(this);
 			worldLoaderExecutorService = new QueueExecutor(SceneConstants.MAX_WORLD_LOAD_THREADS);
 
 			// This will create the asset indexes for all locators that support
@@ -578,7 +545,7 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 			// TODO should move all ice* stuff into org.ice.
 			try {
 				Reflections reflections = new Reflections("org", new FieldAnnotationsScanner(),
-						new TypeAnnotationsScanner());
+						new TypeAnnotationsScanner(), new SubTypesScanner());
 				LOG.info("Loading services");
 				for (Class<?> c : reflections.getTypesAnnotatedWith(Service.class)) {
 					IcesceneService service = (IcesceneService) c.newInstance();
@@ -595,6 +562,14 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 			} catch (Exception e1) {
 				throw new RuntimeException("Could not initialise services.", e1);
 			}
+
+			// Map all the fonts for the XHTML renderer
+			// for (String fnt : ((ServerAssetManager)
+			// assetManager).getAssetNamesMatching(".*\\.fnt")) {
+			// String baseName = FilenameUtils.getBaseName(fnt);
+			// LOG.info(String.format("Mapping font %s as %s", fnt, baseName));
+			// TGGFontResolver.mapFont(baseName, fnt);
+			// }
 
 			// Now can create the scripting system
 			try {
@@ -657,17 +632,20 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 
 			onInitialize();
 
+			/*
+			 * TODO this is bad. do we really need 32 texture units? It's mainly for the clothing
+			 * shaders. perhaps there is another way
+			 */
 			try {
-				Field f = LwjglRenderer.class.getDeclaredField("context");
+				Field f = GLRenderer.class.getDeclaredField("context");
 				f.setAccessible(true);
 				RenderContext ctx = (RenderContext) f.get(getRenderer());
 				ctx.boundTextures = new Image[32];
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Could not raise number of texture units.", e);
 			}
-
-			// TODO this doesnt seem right...
-			// super.update();
+		} catch (Exception e) {
+			LOG.log(Level.SEVERE, "Init failed.", e);
 		} finally {
 			sceneThread.remove();
 		}
@@ -687,11 +665,11 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 		super.destroy();
 		if (monitor != null) {
 			LOG.info("Stopping monitor");
-			alarm.stop();
+			monitor.stop();
 		}
-		if (alarm != null) {
+		if (getAlarm() != null) {
 			LOG.info("Stopping alarm");
-			alarm.stop();
+			getAlarm().stop();
 		}
 		worldLoaderExecutorService.shutdown();
 		LOG.info("Destroyed application");
@@ -712,25 +690,6 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 
 	@Override
 	public final void simpleUpdate(float tpf) {
-		if (Display.wasResized()) {
-			final int width = Display.getWidth();
-			final int height = Display.getHeight();
-			LOG.info(String.format("Window resized to %d X %d", width, height));
-			this.settings.setWidth(width);
-			this.settings.setHeight(height);
-			reshape(this.settings.getWidth(), this.settings.getHeight());
-			for (AppListener l : appListeners) {
-				l.reshape(width, height);
-			}
-			screen.dirtyLayout();
-			screen.layoutChildren();
-			// if (screen instanceof LayoutAware && screen.getLayoutManager() !=
-			// null) {
-			// ((LayoutAware) screen).getLayoutManager().layoutScreen(screen);
-			// }
-			saveSettings();
-			onResize();
-		}
 
 		if (backgroundSwapper != null) {
 			backgroundSwapper.updateLogicalState(tpf);
@@ -934,10 +893,6 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 	protected void onUpdate(float tpf) {
 	}
 
-	protected void onResize() {
-		// Invoked when the window is resized (when resizing is enabled)
-	}
-
 	protected void preInitialize() {
 	}
 
@@ -948,13 +903,13 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 	public final void simpleInitApp() {
 
 		// Default XHTML renderer configuration
-		System.setProperty("xr.conf", getClass().getResource("/Interface/Styles/Gold/XHTML/xmlrender.conf").toString());
+		// System.setProperty("xr.conf",
+		// getClass().getResource("/Interface/Styles/Gold/XHTML/xmlrender.conf").toString());
 
 		// Login dialog
 		if (useUI) {
 			createScreen();
 			configureScreen();
-			getGuiNode().addControl(screen);
 		}
 
 		flyCam = new ExtendedFlyByCam(cam);
@@ -971,19 +926,21 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 	}
 
 	protected void configureScreen() {
-		screen.setUseToolTips(true);
-		screen.setUseCustomCursors(true);
 		screen.setUseUIAudio(true);
 		screen.setGlobalAlpha(0.9f);
 	}
 
 	protected void createScreen() {
-		screen = new XScreen(this, stylePath) {
+		ToolKit.init(this);
+		ToolKit.get().getStyleManager().setTheme(System.getProperty("icetone.defaultTheme",
+				prefs.get(SceneConfig.APP_THEME, SceneConfig.APP_THEME_DEFAULT)), "Default");
+
+		screen = new Screen() {
 
 			@Override
 			protected void defaultClick() {
-				if (getTabFocusElement() != null) {
-					WindowManagerAppState was = stateManager.getState(WindowManagerAppState.class);
+				if (getKeyboardFocus() != null) {
+					FrameManagerAppState was = stateManager.getState(FrameManagerAppState.class);
 					if (was != null) {
 						was.deselectAllWindows();
 					}
@@ -992,16 +949,16 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 				super.defaultClick();
 			}
 		};
-		Style style = screen.getStyle("Common");
-		if (style == null) {
+		
+		screen.onScreenEvent(evt -> {
+			int width = (int) screen.getWidth();
+			int height = (int) screen.getHeight();
+			LOG.info(String.format("Window resized to %d X %d", width, height));
+			this.settings.setWidth(width);
+			this.settings.setHeight(height);
+			saveSettings();
+		}, Type.RESIZE);
 
-			throw new RuntimeException("Style map '" + stylePath + "' could not be found.\n"
-					+ "This could mean a number of things. For example, the style map is not on the\n"
-					+ "class path, and it could not be retrieved through any other asset locators\n"
-					+ "that may be in use (such as retrieval from a server, a cache, or other service).");
-		}
-
-		screen.setLayoutManager(new AppLayout());
 	}
 
 	protected void saveSettings() {
@@ -1030,51 +987,5 @@ public class IcesceneApp extends SimpleApplication implements PreferenceChangeLi
 			componentManager = new ComponentManager(this);
 		}
 		return componentManager;
-	}
-
-	class AppLayout extends AbstractLayout {
-
-		@Override
-		public Vector2f minimumSize(Element parent) {
-			return new Vector2f(screen.getWidth(), screen.getHeight());
-		}
-
-		@Override
-		public Vector2f maximumSize(Element parent) {
-			return minimumSize(parent);
-		}
-
-		@Override
-		public Vector2f preferredSize(Element parent) {
-			return preferredSize(parent);
-		}
-
-		@Override
-		public void layoutScreen(ElementManager screen) {
-			for (Map.Entry<ZPriority, Element> en : layers.entrySet()) {
-				LUtil.setBounds(en.getValue(), 0, 0, screen.getWidth(), screen.getHeight());
-			}
-			for (Element el : screen.getElements()) {
-				if (el.getX() + el.getWidth() >= screen.getWidth()) {
-					el.setX(screen.getWidth() - el.getWidth());
-				}
-				if (el.getY() + el.getHeight() >= screen.getHeight()) {
-					el.setY(screen.getHeight() - el.getHeight());
-				}
-			}
-		}
-
-		@Override
-		public void constrain(Element child, Object constraints) {
-		}
-
-		@Override
-		public void remove(Element child) {
-		}
-
-		@Override
-		public void layout(Element container) {
-		}
-
 	}
 }

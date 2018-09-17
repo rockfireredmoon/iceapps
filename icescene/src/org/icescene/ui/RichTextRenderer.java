@@ -7,14 +7,12 @@ import org.icelib.XDesktop;
 import org.icescene.HUDMessageAppState;
 import org.icescene.help.HelpUserAgent;
 
-import com.jme3.math.ColorRGBA;
+import icetone.core.BaseScreen;
+import icetone.xhtml.XHTMLDisplay;
 
-import icetone.core.ElementManager;
-import icetone.xhtml.TGGXHTMLRenderer;
-
-public class RichTextRenderer extends TGGXHTMLRenderer {
+public class RichTextRenderer extends XHTMLDisplay {
 	
-	public RichTextRenderer(ElementManager screen) {
+	public RichTextRenderer(BaseScreen screen) {
 		super(screen, new HelpUserAgent(screen));
 //		getElementMaterial().setColor("Color", ColorRGBA.Black);
 //		innerBounds.getElementMaterial().setColor("Color", ColorRGBA.Black);

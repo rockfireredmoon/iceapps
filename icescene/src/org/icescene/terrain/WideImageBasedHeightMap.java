@@ -1,11 +1,10 @@
 package org.icescene.terrain;
 
 import com.jme3.terrain.heightmap.AbstractHeightMap;
-import com.jme3.terrain.heightmap.ImageHeightmap;
 import com.jme3.texture.Image;
 import com.jme3.texture.image.ImageRaster;
 
-public class WideImageBasedHeightMap extends AbstractHeightMap implements ImageHeightmap {
+public class WideImageBasedHeightMap extends AbstractHeightMap {
 
 	protected Image colorImage;
 

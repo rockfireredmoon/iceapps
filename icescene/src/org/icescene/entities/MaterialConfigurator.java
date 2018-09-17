@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.icescene.NodeVisitor;
 import org.icescene.NodeVisitor.Visit;
+import org.icescene.NodeVisitor.VisitResult;
 
 import com.jme3.material.MatParam;
 import com.jme3.scene.Geometry;
@@ -23,7 +24,7 @@ public abstract class MaterialConfigurator implements Visit {
 	}
 
 	@Override
-	public void visit(Spatial node) {
+	public VisitResult visit(Spatial node) {
 
 		if (node instanceof Geometry) {
 			Geometry geom = (Geometry) node;
@@ -43,6 +44,7 @@ public abstract class MaterialConfigurator implements Visit {
 				}
 			}
 		}
+		return VisitResult.CONTINUE;
 
 	}
 

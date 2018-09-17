@@ -2,8 +2,6 @@ package org.icescene.fog;
 
 import java.io.IOException;
 
-import org.icelib.Icelib;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -21,6 +19,12 @@ import com.jme3.renderer.ViewPort;
  * A filter to render the GLSL implementation of a fog effect
  * 
  * @author t0neg0d
+ * 
+ * TODO
+ * 
+ * some improvements here ...
+ * 
+ * http://in2gpu.com/2014/07/22/create-fog-shader/
  */
 
 public class FogFilter extends Filter {
@@ -30,11 +34,11 @@ public class FogFilter extends Filter {
 	}
 
 	private ColorRGBA fogColor = ColorRGBA.White.clone();
-	private float fogDensity = 1.0f;
+	private float fogDensity = 0.1f;
 	private float fogStartDistance = 200f;
 	private float fogEndDistance = 500f;
 	private boolean excludeSky = false;
-	private FogMode fogMode = FogMode.EXP2_CAM_TO_DISTANCE;
+	private FogMode fogMode = FogMode.LINEAR;
 
 	/**
 	 * Creates a FogFilter
@@ -83,6 +87,8 @@ public class FogFilter extends Filter {
 	protected void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
 		material = new Material(manager, "MatDefs/Filters/Fog.j3md");
 		material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+		material.getAdditionalRenderState().setDepthTest(true);
+		material.getAdditionalRenderState().setDepthWrite(true);
 		material.setInt("FogMode", fogMode.ordinal());
 		material.setColor("FogColor", fogColor);
 		material.setFloat("FogDensity", fogDensity);

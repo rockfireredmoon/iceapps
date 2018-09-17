@@ -6,14 +6,14 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jme3tools.optimize.GeometryBatchFactory;
-
 import org.icescene.IcesceneApp;
 import org.icescene.scene.AbstractSceneQueue;
 
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
+
+import jme3tools.optimize.GeometryBatchFactory;
 
 public class TerrainClutterLoader extends AbstractSceneQueue<TerrainClutterTile, TerrainClutter> {
 

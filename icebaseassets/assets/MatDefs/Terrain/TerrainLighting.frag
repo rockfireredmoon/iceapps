@@ -115,7 +115,7 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
 
   vec4 calculateDiffuseBlend(in vec2 texCoord) {
     vec4 alphaBlend   = texture2D( m_AlphaMap, texCoord.xy );
-    
+
     #ifdef ALPHAMAP_1
       vec4 alphaBlend1   = texture2D( m_AlphaMap_1, texCoord.xy );
     #endif
@@ -126,7 +126,7 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
     // 3-2-1 = argb
 
     vec4 diffuseColor = texture2D(m_DiffuseMap, texCoord * m_DiffuseMap_0_scale);
-    diffuseColor *= 1;
+    diffuseColor *= 1.0;
     #ifdef DIFFUSEMAP_1
       vec4 diffuseColor1 = texture2D(m_DiffuseMap_1, texCoord * m_DiffuseMap_1_scale);
       diffuseColor = mix( diffuseColor, diffuseColor1, alphaBlend.r );
@@ -143,8 +143,8 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
   }
 
   vec3 calculateNormal(in vec2 texCoord) {
-    vec3 normal = vec3(0,0,1);
-    vec3 n = vec3(0,0,0);
+    vec3 normal = vec3(0.0,0.0,1.0);
+    vec3 n = vec3(0.0,0.0,0.0);
 
     vec4 alphaBlend = texture2D( m_AlphaMap, texCoord.xy );
 
@@ -152,28 +152,28 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
       n = texture2D(m_NormalMap, texCoord * m_DiffuseMap_0_scale).xyz;
       normal += n * alphaBlend.r;
     #else
-      normal += vec3(0.5,0.5,1) * alphaBlend.r;
+      normal += vec3(0.5,0.5,1.0) * alphaBlend.r;
     #endif
 
     #ifdef NORMALMAP_1
       n = texture2D(m_NormalMap_1, texCoord * m_DiffuseMap_1_scale).xyz;
       normal += n * alphaBlend.g;
     #else
-      normal += vec3(0.5,0.5,1) * alphaBlend.g;
+      normal += vec3(0.5,0.5,1.0) * alphaBlend.g;
     #endif
 
     #ifdef NORMALMAP_2
       n = texture2D(m_NormalMap_2, texCoord * m_DiffuseMap_2_scale).xyz;
       normal += n * alphaBlend.b;
     #else
-      normal += vec3(0.5,0.5,1) * alphaBlend.b;
+      normal += vec3(0.5,0.5,1.0) * alphaBlend.b;
     #endif
 
     #ifdef NORMALMAP_3
       n = texture2D(m_NormalMap_3, texCoord * m_DiffuseMap_3_scale).xyz;
       normal += n * alphaBlend.a;
     #else
-      normal += vec3(0.5,0.5,1) * alphaBlend.a;
+      normal += vec3(0.5,0.5,1.0) * alphaBlend.a;
     #endif
 
     normal = (normal.xyz * vec3(2.0) - vec3(1.0));
@@ -220,7 +220,7 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
 
         vec4 alphaBlend   = texture2D( m_AlphaMap, texCoord.xy );
 
-        vec4 diffuseColor = tex0 * 1;
+        vec4 diffuseColor = tex0 * 1.0;
         #ifdef DIFFUSEMAP_1
           diffuseColor = mix( diffuseColor, tex1, alphaBlend.r );
           #ifdef DIFFUSEMAP_2
@@ -246,35 +246,35 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
       vec4 coords = wVert;
       vec4 alphaBlend = texture2D( m_AlphaMap, texCoord.xy );
 
-      vec3 normal = vec3(0,0,1);
-      vec3 n = vec3(0,0,0);
+      vec3 normal = vec3(0.0,0.0,1.0);
+      vec3 n = vec3(0.0,0.0,0.0);
 
       #ifdef NORMALMAP
           n = getTriPlanarBlend(coords, blending, m_NormalMap, m_DiffuseMap_0_scale).xyz;
-          normal += n * 1;
+          normal += n * 1.0;
       #else
-          normal += vec3(0.5,0.5,1) * 1;
+          normal += vec3(0.5,0.5,1.0) * 1.0;
       #endif
 
       #ifdef NORMALMAP_1
           n = getTriPlanarBlend(coords, blending, m_NormalMap_1, m_DiffuseMap_1_scale).xyz;
           normal += n * alphaBlend.g;
       #else
-          normal += vec3(0.5,0.5,1) * alphaBlend.r;
+          normal += vec3(0.5,0.5,1.0) * alphaBlend.r;
       #endif
 
       #ifdef NORMALMAP_2
           n = getTriPlanarBlend(coords, blending, m_NormalMap_2, m_DiffuseMap_2_scale).xyz;
           normal += n * alphaBlend.b;
       #else
-          normal += vec3(0.5,0.5,1) * alphaBlend.g;
+          normal += vec3(0.5,0.5,1.0) * alphaBlend.g;
       #endif
 
       #ifdef NORMALMAP_3
           n = getTriPlanarBlend(coords, blending, m_NormalMap_3, m_DiffuseMap_3_scale).xyz;
           normal += n * alphaBlend.a;
       #else
-          normal += vec3(0.5,0.5,1) * alphaBlend.b;
+          normal += vec3(0.5,0.5,1.0) * alphaBlend.b;
       #endif
 
       normal = (normal.xyz * vec3(2.0) - vec3(1.0));
@@ -309,7 +309,7 @@ void main(){
         if(g_LightDirection.w!=0.0){
               vec3 L=normalize(lightVec.xyz);
               vec3 spotdir = normalize(g_LightDirection.xyz);
-              float curAngleCos = dot(-L, spotdir);             
+              float curAngleCos = dot(-L, spotdir);
               float innerAngleCos = floor(g_LightDirection.w) * 0.001;
               float outerAngleCos = fract(g_LightDirection.w);
               float innerMinusOuter = innerAngleCos - outerAngleCos;
@@ -323,11 +323,11 @@ void main(){
                   spotFallOff = clamp(spotFallOff, 0.0, 1.0);
               }
         }
-    
+
     //---------------------
     // normal calculations
     //---------------------
-    #if defined(NORMALMAP) || defined(NORMALMAP_1) || defined(NORMALMAP_2) || defined(NORMALMAP_3) 
+    #if defined(NORMALMAP) || defined(NORMALMAP_1) || defined(NORMALMAP_2) || defined(NORMALMAP_3)
       #ifdef TRI_PLANAR_MAPPING
         vec3 normal = calculateNormalTriPlanar(wNormal, wVertex, texCoord);
       #else

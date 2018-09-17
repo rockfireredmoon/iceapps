@@ -3,6 +3,7 @@ package org.icescene.tools;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
@@ -15,36 +16,8 @@ import com.jme3.font.BitmapFont;
  * (both play mode and build mode). Each toolbox can also be one of a number of styles.
  */
 public class ToolBox extends ToolElement {
+	public static final String PROP_VISIBLE = "visible";
 
-    public enum Style {
-
-        PrimaryAbilities, Tools, Options, BuildTools;
-
-        public String getWindowStyleName() {
-            switch (this) {
-                case PrimaryAbilities:
-                    return "MainTools1";
-                case Options:
-                    return "MainTools2";
-                case BuildTools:
-                    return "BuildTools";
-                default:
-                    return "ToolWindow";
-            }
-        }
-
-        public String getDroppableStyleName() {
-            switch (this) {
-                case Options:
-                    return "OptionButton";
-                case BuildTools:
-                    return "BuildButton";
-                default:
-                    return "ToolButton";
-            }
-        }
-
-    }
     private final static Logger LOG = Logger.getLogger(ToolBox.class.getName());
     private Tool[] tools;
     private Preferences toolBoxNode;
@@ -53,15 +26,16 @@ public class ToolBox extends ToolElement {
     private ToolManager manager;
     private int defaultHorizontalCells = -1;
     private boolean vertical;
-    private BitmapFont.Align defaultHorizontalPosition = BitmapFont.Align.Center;
-    private BitmapFont.VAlign defaultVerticalPosition = BitmapFont.VAlign.Bottom;
+    private BitmapFont.Align defaultHorizontalPosition = null;
+    private BitmapFont.VAlign defaultVerticalPosition = null;
     private boolean defaultVisible = true;
     private final int slots;
-    private Style style = Style.Tools;
+    private String style;
     private int modifiers = -1;
     private Boolean visible;
     private boolean configurable = true;
     private boolean moveable = true;
+    private boolean persistent;
 
     public ToolBox(String name, String help, int weight, int slots) {
         super(name, help, weight);
@@ -72,7 +46,15 @@ public class ToolBox extends ToolElement {
         this.tools = new Tool[slots];
     }
     
-    public boolean isMoveable() {
+    public boolean isPersistent() {
+		return persistent;
+	}
+
+	public void setPersistent(boolean persistent) {
+		this.persistent = persistent;
+	}
+
+	public boolean isMoveable() {
 		return moveable;
 	}
 
@@ -116,11 +98,11 @@ public class ToolBox extends ToolElement {
         return slots;
     }
 
-    public Style getStyle() {
+    public String getStyle() {
         return style;
     }
 
-    public ToolBox setStyle(Style style) {
+    public ToolBox setStyle(String style) {
         this.style = style;
         return this;
     }
@@ -142,20 +124,24 @@ public class ToolBox extends ToolElement {
         this.defaultVerticalPosition = defaultVerticalPosition;
         return this;
     }
-    
-    public boolean isVisible() {
+
+	public boolean isVisible() {
         if(visible == null) {
             return defaultVisible;
         }
         return visible;
-    }
-    
-    public ToolBox setVisible(boolean visible) {
-        this.visible = visible;
-        toolBoxNode.putBoolean("visible", visible);
-        return this;
-    }
+	}
 
+	public void setVisible(boolean visible) {
+		boolean was = isVisible();
+		if (!Objects.equals(was, visible)) {
+			this.visible = visible;
+	        if(configurable)
+	        	toolBoxNode.putBoolean("visible", visible);
+			firePropertyChange(PROP_VISIBLE, was, visible);
+		}
+	}
+    
     void init(ToolManager manager, HudType hud, Preferences toolBoxNode) {
         this.tools = new Tool[slots];
         this.hud = hud;
@@ -164,7 +150,7 @@ public class ToolBox extends ToolElement {
         try {
             boolean newToolBox = !Arrays.asList(toolBoxNode.childrenNames()).contains("tools");
             toolsNode = toolBoxNode.node("tools");
-            if(Arrays.asList(toolBoxNode.keys()).contains("visible")) {
+            if(configurable && Arrays.asList(toolBoxNode.keys()).contains("visible")) {
                 visible = toolBoxNode.getBoolean("visible", defaultVisible);
             }
 
@@ -217,10 +203,10 @@ public class ToolBox extends ToolElement {
     }
 
     public int getHorizontalCells() {
-        if (toolBoxNode == null) {
+        if (configurable && toolBoxNode == null) {
             throw new IllegalStateException("May not get horizontal cells till added to the tool manager.");
         }
-        return toolBoxNode.getInt("hCells", getDefaultHorizontalCells());
+        return configurable ? toolBoxNode.getInt("hCells", getDefaultHorizontalCells()) : getDefaultHorizontalCells();
     }
 
 
@@ -232,7 +218,8 @@ public class ToolBox extends ToolElement {
         if (toolBoxNode == null) {
             throw new IllegalStateException("May not set vertical till added to the tool manager.");
         }
-        toolBoxNode.putInt("hCells", horizontalCells);
+        if(configurable)
+        	toolBoxNode.putInt("hCells", horizontalCells);
     }
 
     public int getDefaultHorizontalCells() {

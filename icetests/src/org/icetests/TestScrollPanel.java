@@ -2,19 +2,22 @@ package org.icetests;
 
 import org.icelib.AppInfo;
 import org.icescene.IcesceneApp;
+import org.iceui.controls.ElementStyle;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector2f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
+import icetone.controls.containers.Panel;
 import icetone.controls.scrolling.ScrollPanel;
 import icetone.controls.text.Label;
-import icetone.controls.windows.Panel;
-import icetone.core.Element;
+import icetone.core.BaseElement;
+import icetone.core.Orientation;
+import icetone.core.layout.Border;
 import icetone.core.layout.BorderLayout;
+import icetone.core.layout.WrappingLayout;
 import icetone.core.layout.mig.MigLayout;
 
 public class TestScrollPanel extends IcesceneApp {
@@ -32,11 +35,6 @@ public class TestScrollPanel extends IcesceneApp {
 		setUseUI(true);
 	}
 
-	protected void configureScreen() {
-		super.configureScreen();
-		screen.setUseToolTips(false);
-	}
-
 	@Override
 	public void onSimpleInitApp() {
 		flyCam.setMoveSpeed(10);
@@ -51,49 +49,34 @@ public class TestScrollPanel extends IcesceneApp {
 		rootNode.attachChild(geom);
 
 		Panel panel = new Panel();
-		panel.setLayoutManager(new MigLayout(screen, "gap 0, ins 0", "[fill, grow]", "[fill, grow]"));
+		panel.setLayoutManager(new MigLayout(screen, "gap 0, ins 0", "[fill, grow][][]", "[fill, grow]"));
 
 		ScrollPanel scr = new ScrollPanel(screen);
+		((WrappingLayout) scr.getScrollContentLayout()).setOrientation(Orientation.HORIZONTAL);
 		// scr.getScrollableArea().setIgnoreMouse(true);
 		// scr.setScrollAreaLayout(new MigLayout(screen, "wrap 1, fill, ins 0,
 		// gap 0", "[grow]", "[]"));
 		// scr.setUseVerticalWrap(true);
-		panel.addChild(scr);
-
-		// Element el = new Element(screen, new Vector2f(600, 1600));
-		// el.setColorMap("Interface/bgx.jpg");
-		// scr.addScrollableContent(el);
+		panel.addElement(scr);
 
 		for (int i = 0; i < 10; i++) {
-			final Element createPanel = createPanel("Item number " + i, 64 * i);
-//			createPanel.addClippingLayer(scr.getScrollBounds());
-			scr.addScrollableContent(createPanel);
-//			panel.addChild(createPanel, "wrap");
+			scr.addScrollableContent(createPanel("Item number " + i, 64 * i));
 		}
-
-		// Add window to screen (causes a layout)
 		screen.addElement(panel);
-
-		// System.err.println("Track is desc of Thumb: " +
-		// scr.getHorizontalScrollBar().getScrollTrack().isDescendantOf(scr.getHorizontalScrollBar().getScrollThumb()));
-		// System.err.println("Thumb is desc of Trace: " +
-		// scr.getHorizontalScrollBar().getScrollThumb().isDescendantOf(scr.getHorizontalScrollBar().getScrollTrack()));
 
 	}
 
-	Element createPanel(String n, float y) {
-		Element p = new Element(new BorderLayout());
+	BaseElement createPanel(String n, float y) {
+		BaseElement p = new BaseElement(new BorderLayout());
 		p.setIgnoreMouse(true);
-		p.setMinDimensions(new Vector2f(200, 64));
 
 		Label l1 = new Label(n);
-		l1.setFont(screen.getStyle("Font").getString("mediumFont"));
-		l1.setFontSize(screen.getStyle("Common").getFloat("mediumFontSize"));
-		p.addChild(l1, BorderLayout.Border.CENTER);
+		ElementStyle.medium(l1);
+		p.addElement(l1, Border.CENTER);
 
 		Label l2 = new Label("Label 2 for " + n);
 		l2.setTextVAlign(BitmapFont.VAlign.Top);
-		p.addChild(l2, BorderLayout.Border.SOUTH);
+		p.addElement(l2, Border.SOUTH);
 
 		return p;
 	}

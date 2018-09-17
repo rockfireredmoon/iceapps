@@ -1,139 +1,113 @@
 package org.icescene.scene;
 
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import org.icelib.Icelib;
-import org.icelib.UndoManager;
 import org.icescene.IcemoonAppState;
 import org.icescene.SceneConfig;
 import org.icescene.SceneConstants;
 import org.iceui.IceUI;
-import org.iceui.controls.FancyButton;
-import org.iceui.controls.color.ColorFieldControl;
+import org.iceui.actions.ActionAppState;
+import org.iceui.actions.ActionMenu;
+import org.iceui.actions.ActionMenuBar;
+import org.iceui.actions.AppAction;
+import org.iceui.actions.AppAction.Style;
 
-import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.math.ColorRGBA;
-
-import icetone.controls.buttons.CheckBox;
-import icetone.core.Container;
-import icetone.core.Element.ZPriority;
+import icetone.core.StyledContainer;
+import icetone.core.ZPriority;
 import icetone.core.layout.mig.MigLayout;
+import icetone.core.undo.UndoManager;
+import icetone.extras.chooser.ColorFieldControl;
 
-public abstract class AbstractSceneUIAppState extends IcemoonAppState<IcemoonAppState> {
+public abstract class AbstractSceneUIAppState extends IcemoonAppState<IcemoonAppState<?>> {
 
-    private static final Logger LOG = Logger.getLogger(AbstractSceneUIAppState.class.getName());
-    protected Container layer;
-    private ColorFieldControl background;
-    private CheckBox showGrid;
-    private final UndoManager undoManager;
-    private FancyButton undoButton;
-    private FancyButton redoButton;
+	protected StyledContainer layer;
+	protected ActionMenuBar menuBar;
 
-    public AbstractSceneUIAppState(UndoManager undoManager, Preferences prefs) {
-        super(prefs);
-        this.undoManager = undoManager;
-    }
+	private final UndoManager undoManager;
+	private ActionMenu editMenu;
+	private ActionMenu viewMenu;
+	private AppAction showGridAction;
+	private AppAction redoAction;
+	private AppAction undoAction;
 
-    @Override
-    protected void postInitialize() {
+	public AbstractSceneUIAppState(UndoManager undoManager, Preferences prefs) {
+		super(prefs);
+		this.undoManager = undoManager;
+	}
 
-        layer = new Container(screen);
-        layer.setLayoutManager(createLayout());
+	@Override
+	protected void postInitialize() {
 
-        // Anything else
-        addBefore();
+		ActionAppState appState = app.getStateManager().getState(ActionAppState.class);
+		menuBar = appState == null ? null : appState.getMenuBar();
 
+		if (menuBar != null) {
+			menuBar.invalidate();
+			menuBar.addActionMenu(editMenu = new ActionMenu("Edit", 5));
+			menuBar.addActionMenu(viewMenu = new ActionMenu("View", 7));
+			menuBar.addAction(undoAction = new AppAction("Undo", evt -> maybeDoUndo()).setMenu("Edit")
+					.setInterval(SceneConstants.UNDO_REDO_REPEAT_INTERVAL));
+			menuBar.addAction(redoAction = new AppAction("Redo", evt -> maybeDoRedo()).setMenu("Edit")
+					.setInterval(SceneConstants.UNDO_REDO_REPEAT_INTERVAL));
+			menuBar.addAction(showGridAction = new AppAction("Show Grid", evt -> {
+				prefs.putBoolean(SceneConfig.DEBUG_GRID, evt.getSourceAction().isActive());
+			}).setMenu("View").setStyle(Style.TOGGLE)
+					.setActive(prefs.getBoolean(SceneConfig.DEBUG_GRID, SceneConfig.DEBUG_GRID_DEFAULT)));
 
-        // Background
-        background = new ColorFieldControl(screen, app.getViewPort().getBackgroundColor(), false, true, true) {
-            @Override
-            protected void onChangeColor(ColorRGBA newColor) {
-                prefs.put(SceneConfig.DEBUG_VIEWPORT_COLOUR,
-                        Icelib.toHexString(IceUI.fromRGBA(newColor)));
-            }
-        };
-        background.setToolTipText("Background colour");
-        layer.addChild(background);
+			menuBar.addAction(showGridAction = new AppAction("Background").setMenu("View")
+					.setElement(new ColorFieldControl(screen, app.getViewPort().getBackgroundColor(), true, true)
+							.onChange(evt -> prefs.put(SceneConfig.DEBUG_VIEWPORT_COLOUR,
+									Icelib.toHexString(IceUI.fromRGBA(evt.getNewValue()))))));
+			menuBar.validate();
+		}
 
-        // Show grid
-        showGrid = new CheckBox(screen) {
-            @Override
-            public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-                prefs.putBoolean(SceneConfig.DEBUG_GRID, toggled);
-            }
-        };
-        showGrid.setIsCheckedNoCallback(prefs.getBoolean(SceneConfig.DEBUG_GRID, SceneConfig.DEBUG_GRID_DEFAULT));
-        showGrid.setLabelText("Grid");
-        layer.addChild(showGrid);
+		layer = new StyledContainer(screen);
+		layer.setLayoutManager(createLayout());
 
-        // Undo
-        undoButton = new FancyButton(screen) {
-            @Override
-            public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-                maybeDoUndo();
-            }
+		// Anything else
+		addBefore();
 
-            @Override
-            public void onButtonStillPressedInterval() {
-                maybeDoUndo();
-            }
-        };
-        undoButton.setInterval(SceneConstants.UNDO_REDO_REPEAT_INTERVAL);
-        undoButton.setText("Undo");
-        layer.addChild(undoButton);
+		// Anything else
+		addAfter();
 
-        // Redo
-        redoButton = new FancyButton(screen) {
-            @Override
-            public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-                maybeDoRedo();
-            }
+		//
+		app.getLayers(ZPriority.NORMAL).addElement(layer);
+	}
 
-            @Override
-            public void onButtonStillPressedInterval() {
-                maybeDoRedo();
-            }
-        };
-        redoButton.setInterval(SceneConstants.UNDO_REDO_REPEAT_INTERVAL);
-        redoButton.setText("Redo");
-        layer.addChild(redoButton);
+	protected void maybeDoUndo() {
+		if (undoManager.isUndoAvailable()) {
+			undoManager.undo();
+		} else {
+			info("Nothing more to undo.");
+		}
+	}
 
-        // Anything else
-        addAfter();
+	protected void maybeDoRedo() {
+		if (undoManager.isRedoAvailable()) {
+			undoManager.redo();
+		} else {
+			info("Nothing more to redo.");
+		}
+	}
 
-        //
-        app.getLayers(ZPriority.NORMAL).addChild(layer);
-    }
+	@Override
+	protected void onCleanup() {
+		if (menuBar != null) {
+			menuBar.removeAction(undoAction);
+			menuBar.removeAction(redoAction);
+			menuBar.removeAction(showGridAction);
+			menuBar.removeActionMenu(editMenu);
+			menuBar.removeActionMenu(viewMenu);
+		}
+		app.getLayers(ZPriority.NORMAL).removeElement(layer);
+	}
 
-    protected void maybeDoUndo() {
-        if (undoManager.isUndoAvailable()) {
-            undoManager.undo();
-        } else {
-            info("Nothing more to undo.");
-        }
-    }
+	protected void addAfter() {
+	}
 
-    protected void maybeDoRedo() {
-        if (undoManager.isRedoAvailable()) {
-            undoManager.redo();
-        } else {
-            info("Nothing more to redo.");
-        }
-    }
+	protected void addBefore() {
+	}
 
-    @Override
-    protected void onCleanup() {
-        app.getLayers(ZPriority.NORMAL).removeChild(layer);
-    }
-
-    protected void addAfter() {
-    }
-
-    protected void addBefore() {
-    }
-
-    protected MigLayout createLayout() {
-        return new MigLayout(screen, "fill", "push[][][][]", "[]push");
-    }
+	protected abstract MigLayout createLayout();
 }

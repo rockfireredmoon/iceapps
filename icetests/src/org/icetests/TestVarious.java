@@ -4,29 +4,38 @@ import org.apache.commons.cli.CommandLine;
 import org.icelib.AppInfo;
 import org.icescene.IcesceneApp;
 import org.icescene.SceneConfig;
-import org.iceui.controls.color.ColorFieldControl;
-import org.iceui.controls.color.XColorSelector.ColorTab;
+import org.icescene.ServiceRef;
+import org.icescene.configuration.ColourPalettes;
 
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
-import icetone.controls.form.Form;
-import icetone.controls.lists.ComboBox;
+import icetone.controls.containers.Panel;
 import icetone.controls.lists.IntegerRangeSpinnerModel;
 import icetone.controls.lists.Spinner;
 import icetone.controls.text.Label;
+import icetone.controls.text.Password;
+import icetone.controls.text.TextArea;
 import icetone.controls.text.TextField;
-import icetone.controls.windows.Panel;
-import icetone.core.Container;
+import icetone.core.ElementContainer;
+import icetone.core.Form;
+import icetone.core.StyledContainer;
 import icetone.core.layout.mig.MigLayout;
+import icetone.extras.chooser.ColorButton;
+import icetone.extras.chooser.ColorFieldControl;
+import icetone.extras.chooser.ColorSelector.ColorTab;
 
 public class TestVarious extends IcesceneApp {
 
 	static {
 		AppInfo.context = TestVarious.class;
 	}
+
+	@ServiceRef
+	private static ColourPalettes colourPalettes;
 
 	public static void main(String[] args) throws Exception {
 		defaultMain(args, TestVarious.class, "Icetest");
@@ -40,7 +49,8 @@ public class TestVarious extends IcesceneApp {
 	@Override
 	public void onSimpleInitApp() {
 
-		screen.setUseCustomCursors(true);
+		getScripts().eval("Scripts/ColourPalettes.js");
+
 		screen.setUseUIAudio(false);
 
 		flyCam.setMoveSpeed(10);
@@ -59,51 +69,79 @@ public class TestVarious extends IcesceneApp {
 
 	private void addLaidOutversion() {
 
-		Container opts = new Container(new MigLayout());
+		StyledContainer opts = new StyledContainer(new MigLayout("") {
+
+			@Override
+			protected Vector2f calcPreferredSize(ElementContainer<?,?> parent) {
+				// TODO Auto-generated method stub
+				return super.calcPreferredSize(parent);
+			}
+
+		});
 
 		Form form = new Form();
 
-		opts.addChild(new Label("Test Input"));
-		TextField tx1 = new TextField("Some text");
-		tx1.setMaxLength(30);
-		opts.addChild(form.addFormElement(tx1), "wrap");
+		opts.addElement(new Label("Test Input"));
+		opts.addElement(new TextField().setMaxLength(30).setForm(form), "wrap");
 
-		opts.addChild(new Label("Test Input2"));
-		opts.addChild(form.addFormElement(new TextField("Some more text")), "wrap");
+		opts.addElement(new Label("Test Input2"));
+		opts.addElement(new TextField("Some more text").setForm(form), "wrap");
 
-		// Length of test text
-		opts.addChild(new Label("Test Length"));
-		Spinner<Integer> textLength = new Spinner<Integer>(new IntegerRangeSpinnerModel(1, 256, 10, 32));
-		textLength.selectTextRangeAll();
-		opts.addChild(form.addFormElement(textLength), "wrap");
+		opts.addElement(new Label("Test Password"));
+		opts.addElement(new Password().setMaxLength(20).setForm(form), "wrap");
+
+		opts.addElement(new Label("Test Area"));
+		opts.addElement(new TextArea().setRows(5).setCharacterLength(20).setForm(form), "wrap");
 
 		// Length of test text
-		opts.addChild(new Label("Test Colour"));
-		ColorFieldControl cfc = new ColorFieldControl(screen, new ColorRGBA(1.0f, 0f, 0f, 1.0f), true, true, true);
-		cfc.setShowHexInChooser(true);
-		opts.addChild(form.addFormElement(cfc), "wrap");
+		opts.addElement(new Label("Test Length"));
+		opts.addElement(new Spinner<Integer>(new IntegerRangeSpinnerModel(1, 256, 10, 32)).getTextField()
+				.selectTextRangeAll().setForm(form), "wrap");
 
 		// Length of test text
-		opts.addChild(new Label("Test Colour 2"));
-		ColorFieldControl cfc2 = new ColorFieldControl(screen, new ColorRGBA(1.0f, 0f, 0f, 1.0f), true, true, true);
-		cfc2.setShowHexInChooser(true);
-		cfc2.setAllowUnset(true);
-		cfc2.setTabs(ColorTab.WHEEL, ColorTab.PALETTE);
-		opts.addChild(form.addFormElement(cfc2), "wrap");
+		opts.addElement(new Label("Test Colour 1"));
+		opts.addElement(new ColorFieldControl(screen, new ColorRGBA(1.0f, 0f, 0f, 1.0f), true, true)
+				.setShowHexInChooser(true).setForm(form), "wrap");
+
+		opts.addElement(new Label("Test Colour 2"));
+		opts.addElement(new ColorFieldControl(screen, new ColorRGBA(1.0f, 0f, 0f, 1.0f), true, true)
+				.setTabs(ColorTab.PALETTE).setShowHexInChooser(true).setForm(form), "wrap");
+
+		opts.addElement(new Label("Test Colour 3"));
+		opts.addElement(new ColorButton(screen, new ColorRGBA(1.0f, 0f, 0f, 1.0f)).setForm(form), "wrap");
 
 		// Length of test text
-		Label child3 = new Label("Test Combo");
-		opts.addChild(child3);
-		ComboBox<String> textCombo = new ComboBox<String>("Option 1", "Longer option 2", "Option 3", "Another longer option 4");
-		opts.addChild(form.addFormElement(textCombo), "wrap");
+		opts.addElement(new Label("Test Colour 4"));
+		opts.addElement(
+				new ColorFieldControl(screen, new ColorRGBA(1.0f, 0f, 0f, 1.0f), true, true)
+						.setShowHexInChooser(true).setAllowUnset(true).setTabs(ColorTab.WHEEL, ColorTab.PALETTE)
+						.setPalette(ColourPalettes.toColourList(colourPalettes.get("furs2d"))).setForm(form),
+				"wrap");
+
+		// cfc2.setPalettes(Arrays.asList(ColourPalettes.toColourList(colourPalettes.get("eyes")),
+		// ColourPalettes.toColourList(colourPalettes.get("grayscale2d")),
+		// ColourPalettes.toColourList(colourPalettes.get("skin")),
+		// ColourPalettes.toColourList(colourPalettes.get("wood")),
+		// ColourPalettes.toColourList(colourPalettes.get("metal"))));
+		// cfc2.setPalettes(Arrays.asList(ColourPalettes.toColourList(colourPalettes.get("eyes"))));
+		// cfc2.setPalettes(Arrays.asList(ColourPalettes.toColourList(colourPalettes.get("rainbow"))));
+
+		// cfc2.setPalettes(Arrays.asList(ColourPalettes.toColourList(colourPalettes.get("rainbow2d"))));
+
+		// Length of test text
+		// opts.addElement(new Label("Test Combo"));
+		// opts.addElement(new ComboBox<String>("Option 1", "Longer option 2",
+		// "Option 3", "Another longer option 4")
+		// .bindChanged(evt ->
+		// System.out.println(evt.getNewValue())).setForm(form), "wrap");
+
+		//
+		// // Length of test text
+		// opts.addElement(new Label("Test XHTML Text"));
+		// opts.addElement(new XHTMLTextField().setForm(form), "wrap");
 
 		// Panel
-		Panel xcw = new Panel();
-		xcw.addChild(opts);
-		xcw.sizeToContent();
-
-		screen.addElement(xcw);
-		xcw.show();
+		screen.addElement(new Panel().addElement(opts).sizeToContent());
 	}
 
 }

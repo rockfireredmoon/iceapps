@@ -4,11 +4,11 @@ import java.io.OutputStream;
 
 import org.icescene.io.PNGSaver;
 
+import com.jme3.texture.Image;
+
 import ar.com.hjg.pngj.ImageInfo;
 import ar.com.hjg.pngj.ImageLineInt;
 import ar.com.hjg.pngj.PngWriter;
-
-import com.jme3.texture.Image;
 
 public class SaveableWideImageBasedHeightMap extends WideImageBasedHeightMap implements SaveableHeightMap {
 

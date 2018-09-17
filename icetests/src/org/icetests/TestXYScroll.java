@@ -1,19 +1,15 @@
 package org.icetests;
 
-import java.awt.ScrollPane;
-
 import org.icelib.AppInfo;
 import org.icescene.IcesceneApp;
 
-import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 
-import icetone.controls.buttons.ButtonAdapter;
+import icetone.controls.buttons.PushButton;
+import icetone.controls.containers.Panel;
 import icetone.controls.scrolling.ScrollPanel;
-import icetone.controls.windows.Panel;
-import icetone.core.layout.FixedLayoutManager;
-import icetone.core.layout.LUtil;
-import icetone.core.layout.XYLayoutManager;
+import icetone.core.Size;
+import icetone.core.layout.FixedLayout;
 
 public class TestXYScroll extends IcesceneApp {
 
@@ -38,8 +34,7 @@ public class TestXYScroll extends IcesceneApp {
 		flyCam.setDragToRotate(true);
 
 		ScrollPanel scr = new ScrollPanel();
-		scr.setScrollContentLayout(new FixedLayoutManager());
-		// panel.setLayoutManager(new XYLayoutManager());
+		scr.setScrollContentLayout(new FixedLayout());
 
 		final Vector2f bs = new Vector2f(64, 24);
 		for (int i = 0; i < 10; i++) {
@@ -47,21 +42,19 @@ public class TestXYScroll extends IcesceneApp {
 		}
 
 		Panel panel = new Panel();
-		panel.addChild(scr);
+		panel.setResizable(true);
+		panel.setMovable(true);
+		panel.addElement(scr);
 		panel.sizeToContent();
-		
-		screen.addElement(panel);
+		screen.showElement(panel);
 
 	}
 
-	private ButtonAdapter addRandomButton(final Vector2f bs) {
+	private PushButton addRandomButton(final Vector2f bs) {
 		Vector2f p = new Vector2f((int) ((float) Math.random() * 255), (int) ((float) Math.random() * 255));
-		ButtonAdapter ba = new ButtonAdapter(screen, p, bs) {
-			@Override
-			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-				addRandomButton(bs);
-			}
-		};
+		PushButton ba = new PushButton(screen);
+		ba.setPreferredDimensions(new Size(bs));
+		ba.onMouseReleased(evt -> addRandomButton(bs));
 		ba.setText((int) p.x + "," + (int) p.y);
 		return ba;
 	}

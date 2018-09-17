@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.icescene.NodeVisitor;
+import org.icescene.NodeVisitor.VisitResult;
 import org.icescene.materials.WireframeWidget;
 
 import com.jme3.asset.AssetManager;
@@ -24,7 +25,8 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.debug.WireBox;
 
-public abstract class AbstractBuildableControl<T extends Buildable> extends AbstractControl implements PropertyChangeListener {
+public abstract class AbstractBuildableControl<T extends Buildable> extends AbstractControl
+		implements PropertyChangeListener {
 
 	private final static Logger LOG = Logger.getLogger(AbstractBuildableControl.class.getName());
 	private AssetManager assetManager;
@@ -214,8 +216,8 @@ public abstract class AbstractBuildableControl<T extends Buildable> extends Abst
 			LOG.info(String.format("Detaching selection shape from %s", selectionShapes.get(0).getParent().getName()));
 			detachSelectionShape();
 		} else {
-			LOG.info("No changeing sel state (should activate = " + shouldActivate + ", enabled = " + isEnabled() + ", selected = "
-					+ selected + ")");
+			LOG.info("No changeing sel state (should activate = " + shouldActivate + ", enabled = " + isEnabled()
+					+ ", selected = " + selected + ")");
 		}
 
 	}
@@ -226,9 +228,9 @@ public abstract class AbstractBuildableControl<T extends Buildable> extends Abst
 			BoundingBox bbox = (BoundingBox) bound;
 			Vector3f extent = new Vector3f();
 			bbox.getExtent(extent);
-			WireBox wireBox = new WireBox();
-			wireBox.fromBoundingBox(bbox);
-			final Geometry selectionGeometry = new Geometry("selection_geometry_sceneviewer", wireBox);
+
+			final Geometry selectionGeometry = WireBox.makeGeometry(bbox);
+			;
 			LOG.info("Attaching box selection of " + extent + " to geom at " + geom.getWorldTranslation() + " tools @ "
 					+ toolsNode.getWorldTranslation() + " BBOX CENT: " + bbox.getCenter() + " BBX: " + bbox);
 			selectionGeometry.setMaterial(new WireframeWidget(assetManager, ColorRGBA.Orange));
@@ -268,10 +270,12 @@ public abstract class AbstractBuildableControl<T extends Buildable> extends Abst
 			NodeVisitor nv = new NodeVisitor((Node) spat);
 			nv.visit(new NodeVisitor.Visit() {
 				@Override
-				public void visit(Spatial node) {
+				public VisitResult visit(Spatial node) {
 					if (node instanceof Geometry) {
 						attachGeometrySelection((Geometry) node);
+						return VisitResult.END;
 					}
+					return VisitResult.CONTINUE;
 				}
 			});
 		} else {
@@ -300,7 +304,8 @@ public abstract class AbstractBuildableControl<T extends Buildable> extends Abst
 	}
 
 	private BoundingBox getBoundingBox() {
-		BoundingVolume bound = spatial instanceof Geometry ? ((Geometry) spatial).getModelBound() : spatial.getWorldBound();
+		BoundingVolume bound = spatial instanceof Geometry ? ((Geometry) spatial).getModelBound()
+				: spatial.getWorldBound();
 		BoundingBox bbox = (BoundingBox) bound;
 		return bbox;
 	}

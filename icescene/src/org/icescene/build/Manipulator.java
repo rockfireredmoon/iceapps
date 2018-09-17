@@ -7,8 +7,11 @@ import java.util.logging.Logger;
 
 import org.icescene.EditDirection;
 import org.icescene.Icescene;
+import org.icescene.assets.ExtendedMaterialListKey;
+import org.icescene.assets.ExtendedMaterialListKey.Lighting;
 import org.icescene.assets.ExtendedOgreMeshKey;
 import org.icescene.entities.EntityContext;
+import org.icescene.materials.MaterialUtil;
 import org.icescene.props.AbstractProp;
 
 import com.jme3.material.Material;
@@ -16,7 +19,9 @@ import com.jme3.material.MaterialList;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 
 /**
  * The manipulator sceneryItem.
@@ -144,14 +149,18 @@ public class Manipulator extends AbstractProp {
 	private Spatial createSpatial(String name, String path) {
 		String meshPath = Icescene.checkAssetPath(path);
 		LOG.info(String.format("Loading %s", meshPath));
-		ExtendedOgreMeshKey mk = new ExtendedOgreMeshKey(meshPath);
-		MaterialList ml = new MaterialList();
-		mk.setMaterialList(ml);
+		ExtendedOgreMeshKey mk = new ExtendedOgreMeshKey(meshPath) {
+
+			@Override
+			protected void configureMaterialKey(ExtendedMaterialListKey key) {
+				super.configureMaterialKey(key);
+				key.setLighting(Lighting.UNLIT);
+			}
+
+		};
 		Spatial spat = context.getAssetManager().loadModel(mk);
 		spat.setName("EditCursor-" + name);
-		Material propMaterial = ml.values().iterator().next();
-		propMaterial.setColor("Color", DESELECTED_COLOR);
-		spat.setMaterial(propMaterial);
+		MaterialUtil.setColor(mk.getMaterialList().values().iterator().next(), DESELECTED_COLOR);
 		return spat;
 	}
 

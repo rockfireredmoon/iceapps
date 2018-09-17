@@ -2,14 +2,14 @@ package org.icescene.io;
 
 import java.io.OutputStream;
 
+import com.jme3.math.ColorRGBA;
+import com.jme3.texture.Image;
+import com.jme3.texture.image.ImageRaster;
+
 import ar.com.hjg.pngj.ImageInfo;
 import ar.com.hjg.pngj.ImageLineHelper;
 import ar.com.hjg.pngj.ImageLineInt;
 import ar.com.hjg.pngj.PngWriter;
-
-import com.jme3.math.ColorRGBA;
-import com.jme3.texture.Image;
-import com.jme3.texture.image.ImageRaster;
 
 public class PNGSaver {
 
@@ -22,7 +22,7 @@ public class PNGSaver {
 		int imageWidth = img.getWidth();
 		int imageHeight = img.getHeight();
 
-		if (img.getFormat().equals(Image.Format.Luminance16)) {
+		if (img.getFormat().equals(Image.Format.Luminance16F)) {
 
 			ImageRaster r = ImageRaster.create(img);
 			ImageInfo ii = new ImageInfo(img.getWidth(), img.getHeight(), 16, false, true, false);

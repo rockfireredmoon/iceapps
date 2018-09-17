@@ -40,12 +40,12 @@ public class TestAnimSprite extends IcesceneApp {
 		geom.setMaterial(mat);
 		rootNode.attachChild(geom);
 
-		AnimSprite as = new AnimSprite(assetManager, "Interface/Styles/Gold/Button/ability-highlight.png", 32, 32);
+		AnimSprite as = new AnimSprite(assetManager, "Interface/Styles/Gold/Scene/ability-h.png", 32, 32);
 		as.setLocalTranslation(200, 200, 0);
 		as.start(0.1f);
 		guiNode.attachChild(as);
 
-		Sprite as2 = new Sprite(assetManager, "Interface/Styles/Gold/Button/ability-highlight.png", 0, 0, 32, 32);
+		Sprite as2 = new Sprite(assetManager, "Interface/Styles/Gold/Scene/ability-h.png", 0, 0, 32, 32);
 		as2.setLocalTranslation(400, 400, 0);
 		guiNode.attachChild(as2);
 

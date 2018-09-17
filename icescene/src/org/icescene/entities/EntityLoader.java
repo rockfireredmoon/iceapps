@@ -13,7 +13,6 @@ import java.util.prefs.Preferences;
 
 import org.icelib.AbstractCreature;
 import org.icelib.Appearance;
-import org.icescene.Alarm;
 import org.icescene.IcesceneApp;
 import org.icescene.props.AbstractProp;
 import org.icescene.props.ComponentManager;
@@ -25,6 +24,8 @@ import org.icescene.scene.creatures.Prop;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+
+import icetone.core.utils.Alarm;
 
 /**
  * Responsible for loading creatures.

@@ -3,21 +3,22 @@ package org.icetests;
 import org.icelib.AppInfo;
 import org.icescene.IcesceneApp;
 import org.icescene.controls.Rotator;
-import org.iceui.controls.XSeparator;
-import org.iceui.controls.ZMenu;
 
-import com.jme3.input.event.MouseButtonEvent;
+import com.jme3.font.BitmapFont.Align;
+import com.jme3.font.BitmapFont.VAlign;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
-import icetone.controls.buttons.ButtonAdapter;
+import icetone.controls.buttons.ButtonGroup;
 import icetone.controls.buttons.CheckBox;
+import icetone.controls.buttons.PushButton;
 import icetone.controls.buttons.RadioButton;
-import icetone.controls.buttons.RadioButtonGroup;
-import icetone.controls.windows.Panel;
+import icetone.controls.containers.Panel;
+import icetone.controls.menuing.Menu;
 import icetone.core.layout.FlowLayout;
+import icetone.extras.chooser.ColorFieldControl;
 
 public class TestZMenu extends IcesceneApp {
 
@@ -36,7 +37,6 @@ public class TestZMenu extends IcesceneApp {
 
 	@Override
 	public void onSimpleInitApp() {
-		screen.setUseCustomCursors(true);
 		screen.setUseUIAudio(false);
 		flyCam.setMoveSpeed(10);
 		flyCam.setDragToRotate(true);
@@ -49,83 +49,87 @@ public class TestZMenu extends IcesceneApp {
 		geom.setMaterial(mat);
 		rootNode.attachChild(geom);
 		geom.addControl(new Rotator());
+		
 
-		ButtonAdapter menuButton = new ButtonAdapter("Menu") {
-			@Override
-			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-				ZMenu menu = new ZMenu(screen);
 
-				// Ordinary menu items
-				for (int i = 0; i < 15; i++) {
-					menu.addMenuItem("This is menu item " + i, "MENU" + i);
-				}
-				menu.addMenuItem("This is <u>underlined</u>", "underline");
-				menu.addMenuItem("This is <b>bold</b>", "bold");
-				menu.addMenuItem("This is <i>italic</i>", "italic");
+		Menu menu = new Menu(screen);
 
-				// A CheckBox
-				menu.addMenuItem("A Checkbox!", new CheckBox(), name);
+		// Ordinary menu items
+		for (int i = 0; i < 15; i++) {
+			menu.addMenuItem("This is menu item " + i, "MENU" + i);
+		}
+		menu.addMenuItem("This is <u>underlined</u>", "underline");
+		menu.addMenuItem("This is <b>bold</b>", "bold");
+		menu.addMenuItem("This is <i>italic</i>", "italic");
 
-				// Some radio buttons
-				RadioButtonGroup rgb = new RadioButtonGroup();
-				RadioButton r1 = new RadioButton();
-				menu.addMenuItem("Radio 1!", r1, name);
-				rgb.addButton(r1);
-				RadioButton r2 = new RadioButton();
-				rgb.addButton(r2);
-				menu.addMenuItem("Radio 2!", r2, name);
+		// A CheckBox
+		menu.addMenuItem("A Checkbox!", new CheckBox(), null);
 
-				// A separator
-				 menu.addMenuItem(null, new XSeparator(screen,
-				 Orientation.HORIZONTAL), null).setSelectable(false);
+		// Some radio buttons
+		ButtonGroup rgb = new ButtonGroup();
+		RadioButton r1 = new RadioButton();
+		menu.addMenuItem("Radio 1!", r1, null);
+		rgb.addButton(r1);
+		RadioButton r2 = new RadioButton();
+		rgb.addButton(r2);
+		menu.addMenuItem("Radio 2!", r2, null);
 
-				// Sub menus
-				addSubMenu(menu, 0);
+		// A separator
+		menu.addSeparator();
+		
+		menu.addMenuItem("Color", new ColorFieldControl(ColorRGBA.Red, false, false), null);
+		
+		// A separator
+		menu.addSeparator();
 
-				// Another separator
-				// menu.addMenuItem(null, new XSeparator(screen,
-				// Orientation.HORIZONTAL), null).setSelectable(false);
+		// Sub menus
+		addSubMenu(menu, 0);
 
-				// A slider
-				// ModelledSlider slider = new ModelledSlider(screen,
-				// orgPosition, ModelledSlider.Orientation.HORIZONTAL, true) {
-				// @Override
-				// public void onChange(Object value) {
-				// }
-				// };
-				// slider.setSliderModel(new
-				// ModelledSlider.FloatRangeSliderModel(0, 10, 1));
-				// menu.addMenuItem(null, slider, null).setSelectable(false);
+		// Another separator
+		// menu.addMenuItem(null, new XSeparator(screen,
+		// Orientation.HORIZONTAL), null).setSelectable(false);
 
-				// Show menu
-				screen.addElement(menu);
-				// menu.showMenu(null, getAbsoluteX(), getAbsoluteY() -
-				// menu.getHeight());
-				menu.showMenu(null, evt.getX(), evt.getY());
-			}
+		// A slider
+		// ModelledSlider slider = new ModelledSlider(screen,
+		// orgPosition, ModelledSlider.Orientation.HORIZONTAL, true) {
+		// @Override
+		// public void onChange(Object value) {
+		// }
+		// };
+		// slider.setSliderModel(new
+		// ModelledSlider.FloatRangeSliderModel(0, 10, 1));
+		// menu.addMenuItem(null, slider, null).setSelectable(false);
 
-			private void addSubMenu(ZMenu menu, int depth) {
-				// A submenu
-				ZMenu submenu = new ZMenu(screen);
-				for (int i = 0; i < 30; i++) {
-					if (i == 5) {
-						if (depth < 6) {
-							addSubMenu(submenu, depth + 1);
-						}
-					} else {
-						submenu.addMenuItem("This is menu item " + i, "MENU" + i);
-					}
-				}
-				menu.addMenuItem("A submenu", submenu, name);
-			}
+		// Show menu
+//		screen.addElement(menu);
+//		 menu.showMenu(null, evt.getgetAbsoluteX(), getAbsoluteY() -
+//		 menu.getHeight());
+
+		PushButton menuButton = new PushButton("Menu") {
 		};
+		menuButton.onMouseReleased(evt -> {
+			menu.showMenu(evt.getElement());
+//			menu.showMenu(evt.getElement(), VAlign.Bottom, Align.Center, 10);
+		});
 
 		Panel window = new Panel(new FlowLayout());
-		window.getTextPaddingVec().set(10, 10, 10, 10);
-		window.addChild(menuButton);
-		window.setIsResizable(false);
-		window.sizeToContent();
+		window.addElement(menuButton);
 		screen.addElement(window);
 
+	}
+
+	private void addSubMenu(Menu menu, int depth) {
+		// A submenu
+		Menu submenu = new Menu(screen);
+		for (int i = 0; i < 30; i++) {
+			if (i == 5) {
+				if (depth < 6) {
+					addSubMenu(submenu, depth + 1);
+				}
+			} else {
+				submenu.addMenuItem("This is menu item " + i, "MENU" + i);
+			}
+		}
+		menu.addMenuItem("A submenu", submenu, menu.getStyleId());
 	}
 }

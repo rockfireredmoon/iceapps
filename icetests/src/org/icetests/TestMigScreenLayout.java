@@ -9,8 +9,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
+import icetone.controls.containers.Panel;
 import icetone.controls.text.Label;
-import icetone.controls.windows.Panel;
 import icetone.core.layout.FlowLayout;
 import icetone.core.layout.mig.MigLayout;
 
@@ -46,12 +46,11 @@ public class TestMigScreenLayout extends IcesceneApp {
 		screen.setLayoutManager(new MigLayout(screen, "fill", "[:250:][grow][]", "[grow]"));
 
 		Panel left = new Panel();
-		left.setUID("LeftPanel");
 		left.setLayoutManager(new FlowLayout(0, BitmapFont.Align.Center));
-		left.addChild(new Label("Some label text"));
+		left.addElement(new Label("Some label text"));
 
 		// Add window to screen (causes a layout)
-		screen.addElement(left, "growy, width 250", false);
+		screen.addElement(left, "growy, width 250");
 		screen.addElement(new Label("Middle"));
 		screen.addElement(new Label("Right"));
 

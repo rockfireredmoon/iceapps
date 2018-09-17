@@ -2,52 +2,48 @@ package org.icescene.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.io.FilenameUtils;
 import org.icescene.audio.AudioField;
 import org.icescene.audio.AudioQueue;
 import org.iceui.controls.ChooserFieldControl.ChooserPathTranslater;
-import org.iceui.controls.FancyButton;
 import org.iceui.controls.SoundFieldControl.Type;
 
-import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.math.Vector2f;
-
-import icetone.controls.lists.Table;
-import icetone.controls.lists.Table.TableRow;
-import icetone.core.Container;
+import icetone.controls.buttons.PushButton;
+import icetone.controls.table.Table;
+import icetone.controls.table.TableRow;
+import icetone.core.BaseScreen;
+import icetone.core.StyledContainer;
 import icetone.core.Element;
-import icetone.core.ElementManager;
-import icetone.core.layout.LUtil;
 import icetone.core.layout.mig.MigLayout;
+import icetone.extras.chooser.ChooserModel;
 
 public class Playlist extends Element {
 	private AudioField audio;
-	private FancyButton deleteItem;
+	private PushButton deleteItem;
 	private Table items;
-	private FancyButton upItem;
-	private FancyButton downItem;
-	private FancyButton newItem;
+	private PushButton upItem;
+	private PushButton downItem;
+	private PushButton newItem;
 	private int row = -1;
 
-	public Playlist(ElementManager screen, Type type, AudioQueue queue, Preferences prefs, Set<String> soundResources) {
+	public Playlist(BaseScreen screen, Type type, AudioQueue queue, Preferences prefs,
+			ChooserModel<String> soundResources) {
 		super(screen);
 
 		audio = new AudioField(screen, type, null, soundResources, prefs, queue) {
 			@Override
 			protected void createChooserButton() {
-				chooserButton = new FancyButton(screen) {
-					@Override
-					public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-						showChooser(evt.getX(), evt.getY());
+				chooserButton = new PushButton(screen) {
+					{
+						setStyleClass("fancy");
 					}
 				};
-				chooserButton.getMinDimensions().x = 64;
-				chooserButton.setButtonIcon(16, 16, "Interface/Styles/Gold/Common/Icons/edit.png");
+				chooserButton.onMouseReleased(evt -> showChooser(evt.getX(), evt.getY()));
+				chooserButton.getButtonIcon().setStyleClass("icon icon-edit");
 				chooserButton.setToolTipText("Edit Item");
-				addChild(chooserButton, "wrap");
+				addElement(chooserButton, "wrap");
 
 			}
 
@@ -66,100 +62,102 @@ public class Playlist extends Element {
 				setAvailable();
 			}
 		};
-		newItem = new FancyButton(screen) {
-			@Override
-			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-				row = -1;
-				audio.setValue("");
-				audio.showChooser(evt.getX(), evt.getY());
-				setAvailable();
+		newItem = new PushButton(screen) {
+			{
+				setStyleClass("fancy");
 			}
 		};
-		newItem.getMinDimensions().x = 64;
-		newItem.setButtonIcon(16, 16, "Interface/Styles/Gold/Common/Icons/new.png");
+		newItem.onMouseReleased(evt -> {
+			row = -1;
+			audio.setValue("");
+			audio.showChooser(evt.getX(), evt.getY());
+			setAvailable();
+		});
+		newItem.getButtonIcon().setStyleClass("icon icon-new");
 		newItem.setToolTipText("Add New Item");
 
-		deleteItem = new FancyButton(screen) {
-			@Override
-			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-				String sel = items.isAnythingSelected() ? (String)items.getSelectedRow().getValue() : null;
-				if(sel != null) {
-					List<String> a = getAudio();
-					a.remove(sel);
-					setAudio(a);
-				}
-				onAudioChanged(getAudio());
+		deleteItem = new PushButton(screen) {
+			{
+				setStyleClass("fancy");
 			}
 		};
-		deleteItem.getMinDimensions().x = 64;
-		deleteItem.setButtonIcon(16, 16, "Interface/Styles/Gold/Common/Icons/trash.png");
+		deleteItem.onMouseReleased(evt -> {
+			String sel = items.isAnythingSelected() ? (String) items.getSelectedRow().getValue() : null;
+			if (sel != null) {
+				List<String> a = getAudio();
+				a.remove(sel);
+				setAudio(a);
+			}
+			onAudioChanged(getAudio());
+		});
+		deleteItem.getButtonIcon().setStyleClass("icon icon-trash");
 		deleteItem.setToolTipText("Delete Item");
 
-		upItem = new FancyButton(screen) {
-			@Override
-			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-				int idx = Math.max(0, items.getSelectedRowIndex() - 1);
-				TableRow row = items.getSelectedRow();
-				items.removeRow(row);
-				items.insertRow(idx, row);
-				items.setSelectedRowIndex(idx);
-				items.scrollToSelected();
-				onAudioChanged(getAudio());
+		upItem = new PushButton(screen) {
+			{
+				setStyleClass("fancy");
 			}
 		};
-		upItem.getMinDimensions().x = 64;
-		upItem.setButtonIcon(16, 16, "Interface/Styles/Gold/Common/Arrows/arrow_up.png");
+		upItem.onMouseReleased(evt -> {
+			int idx = Math.max(0, items.getSelectedRowIndex() - 1);
+			TableRow row = items.getSelectedRow();
+			items.removeRow(row);
+			items.insertRow(idx, row);
+			items.setSelectedRowIndex(idx);
+			items.scrollToSelected();
+			onAudioChanged(getAudio());
+		});
+		upItem.getButtonIcon().setStyleClass("icon icon-up");
 		upItem.setToolTipText("Move Item Up");
 
-		downItem = new FancyButton(screen) {
-			@Override
-			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-				int idx = items.getSelectedRowIndex() + 1;
-				TableRow row = items.getSelectedRow();
-				items.removeRow(row);
-				items.insertRow(idx, row);
-				items.setSelectedRowIndex(idx);
-				items.scrollToSelected();
-				onAudioChanged(getAudio());
+		downItem = new PushButton(screen) {
+			{
+				setStyleClass("fancy");
 			}
 		};
-		downItem.getMinDimensions().x = 64;
-		downItem.setButtonIcon(16, 16, "Interface/Styles/Gold/Common/Arrows/arrow_down.png");
+		downItem.onMouseReleased(evt -> {
+			int idx = items.getSelectedRowIndex() + 1;
+			TableRow row = items.getSelectedRow();
+			items.removeRow(row);
+			items.insertRow(idx, row);
+			items.setSelectedRowIndex(idx);
+			items.scrollToSelected();
+			onAudioChanged(getAudio());
+		});
+		downItem.getButtonIcon().setStyleClass("icon icon-down");
 		downItem.setToolTipText("Move Item Up");
 
-		Container tools = new Container(screen);
+		StyledContainer tools = new StyledContainer(screen);
 		tools.setLayoutManager(new MigLayout(screen, "wrap 1, ins 0, fill", "[grow]", "[][][][]push"));
-		tools.addChild(newItem, "growx");
-		tools.addChild(deleteItem, "growx");
-		tools.addChild(upItem, "growx");
-		tools.addChild(downItem, "growx");
+		tools.addElement(newItem, "growx");
+		tools.addElement(deleteItem, "growx");
+		tools.addElement(upItem, "growx");
+		tools.addElement(downItem, "growx");
 
-		items = new Table(screen, Vector2f.ZERO, LUtil.LAYOUT_SIZE, screen.getStyle("TextField").getVector4f("resizeBorders"), screen.getStyle(
-				"TextField").getString("defaultImg")) {
-			@Override
-			public void onChange() {
-				TableRow selectedRow = getSelectedRow();
-				audio.setValue(selectedRow == null ? "" : selectedRow.getValue().toString());
-				row = getSelectedRowIndex();
-				setAvailable();
-			}
-		};
+		items = new Table(screen);
+		items.onChanged(evt -> {
+			TableRow selectedRow = evt.getSource().getSelectedRow();
+			audio.setValue(selectedRow == null ? "" : selectedRow.getValue().toString());
+			row = evt.getSource().getSelectedRowIndex();
+			setAvailable();
+			onSelectionChanged(audio.getValue());
+		});
 		items.setHeadersVisible(false);
 		items.addColumn("Sound");
 
 		setLayoutManager(new MigLayout(screen, "wrap 2", "[grow, fill][]", "[:32:][:128:]"));
-		addChild(audio, "span 2, growx");
-		addChild(items, "growx, growy");
-		addChild(tools, "growy, growx");
+		addElement(audio, "span 2, growx");
+		addElement(items, "growx, growy");
+		addElement(tools, "growy, growx");
 
 		setAvailable();
 	}
 
-	public void setChooserPathTranslater(ChooserPathTranslater chooserPathTranslater) {
+	public void setChooserPathTranslater(ChooserPathTranslater<String> chooserPathTranslater) {
 		audio.setChooserPathTranslater(chooserPathTranslater);
 	}
 
-	public void setResources(Set<String> resources) {
+	public void setResources(ChooserModel<String> resources) {
 		audio.setResources(resources);
 	}
 
@@ -171,6 +169,10 @@ public class Playlist extends Element {
 		items.scrollToTop();
 	}
 
+	public String getSelected() {
+		return items.isAnythingSelected() ? (String) items.getSelectedRow().getValue() : null;
+	}
+
 	public List<String> getAudio() {
 		List<String> a = new ArrayList<>();
 		for (TableRow r : items.getRows()) {
@@ -178,15 +180,18 @@ public class Playlist extends Element {
 		}
 		return a;
 	}
-	
+
+	protected void onSelectionChanged(String path) {
+	}
+
 	protected void onAudioChanged(List<String> audio) {
 	}
 
 	private void setAvailable() {
-		audio.getChooserButton().setIsEnabled(items.isAnythingSelected());
-		deleteItem.setIsEnabled(items.isAnythingSelected());
-		upItem.setIsEnabled(items.isAnythingSelected() && items.getSelectedRowIndex() > 0);
-		downItem.setIsEnabled(items.isAnythingSelected() && items.getSelectedRowIndex() < items.getRowCount() - 1);
+		audio.getChooserButton().setEnabled(items.isAnythingSelected());
+		deleteItem.setEnabled(items.isAnythingSelected());
+		upItem.setEnabled(items.isAnythingSelected() && items.getSelectedRowIndex() > 0);
+		downItem.setEnabled(items.isAnythingSelected() && items.getSelectedRowIndex() < items.getRowCount() - 1);
 	}
 
 	private void addChoice(String r) {

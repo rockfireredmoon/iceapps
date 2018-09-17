@@ -7,13 +7,14 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<signingFiles>${basedir}/../ice/src/signing</signingFiles>
-		<jmonkey.version>3.0.10</jmonkey.version>
+		<jmonkey.version>3.1.0-stable</jmonkey.version>
 		<iceloader.version>0.0.1-SNAPSHOT</iceloader.version>
 	</properties>
 	<parent>
 		<groupId>org.icemoon</groupId>
 		<artifactId>ice</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../ice</relativePath>
 	</parent>
 	<build>
 		<extensions>
@@ -161,7 +162,7 @@
 			</snapshots>
 			<id>bintray-jmonkeyengine-com.jme3</id>
 			<name>bintray</name>
-			<url>http://dl.bintray.com/jmonkeyengine/com.jme3</url>
+			<url>https://dl.bintray.com/jmonkeyengine/org.jmonkeyengine/</url>
 		</repository>
 		<!-- <repository> <id>oss-sonatype</id> <name>oss-sonatype</name> <url>https://oss.sonatype.org/content/repositories/snapshots/</url> 
 			<releases> <enabled>false</enabled> </releases> <snapshots /> </repository> -->

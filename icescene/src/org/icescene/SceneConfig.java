@@ -67,6 +67,8 @@ public class SceneConfig extends AbstractConfig {
     public final static boolean SCENE_LIGHT_BEAMS_DEFAULT = true;
     public final static String SCENE_SHADOWS = SCENE + "Shadows";
     public final static boolean SCENE_SHADOWS_DEFAULT = true;
+    public final static String SCENE_HARDWARE_SKINNING = SCENE + "HardwareSkinning";
+    public final static boolean SCENE_HARDWARE_SKINNING_DEFAULT = false;
     public final static String SCENE_SSAO = SCENE + "SSAO";
     public final static boolean SCENE_SSAO_DEFAULT = false;
     public final static String SCENE_CLUTTER_DENSITY = SCENE + "DensityOfClutter";
@@ -147,6 +149,8 @@ public class SceneConfig extends AbstractConfig {
      * General application
      */
     public final static String APP = "app";
+    public final static String APP_THEME = APP + "Theme";
+    public final static String APP_THEME_DEFAULT = "Gold";
     public final static String APP_WORKSPACE_DIR = APP + "WorkspaceDir";
     public final static String APP_WORKSPACE_DIR_DEFAULT = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "Icedata";
 

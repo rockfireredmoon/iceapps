@@ -178,7 +178,7 @@ void main(){
       vec4 diffuseColor = vec4(1.0);
     #endif
     
-    float alpha = 1 - diffuseColor.a;
+    float alpha = 1.0 - diffuseColor.a;
     #ifdef LIMIT_ALPHA
     if(alpha >= m_AlphaDiscardLimit) {
     	discard;

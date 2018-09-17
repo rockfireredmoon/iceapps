@@ -72,6 +72,36 @@
 		</dependency>
 		<dependency>
 			<groupId>org.icemoon</groupId>
+			<artifactId>icetone-theme-gold</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.icemoon</groupId>
+			<artifactId>icetone-theme-paranoid</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.icemoon</groupId>
+			<artifactId>icetone-theme-antique</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.icemoon</groupId>
+			<artifactId>icetone-theme-steampunk</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.icemoon</groupId>
+			<artifactId>icetone-theme-slickness-ruby</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.icemoon</groupId>
+			<artifactId>icetone-extras</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.icemoon</groupId>
 			<artifactId>icescripting</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -92,22 +122,10 @@
 			<artifactId>jME3-Iceloader-json-plugin</artifactId>
 			<version>${iceloader.version}</version>
 		</dependency>
-		
-		
-		<!-- <dependency>
-			<groupId>tonegod</groupId>
-			<artifactId>icetone.xhtml</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency> -->
 		<dependency>
 			<groupId>org.icemoon</groupId>
-			<artifactId>tonegod-emitter</artifactId>
+			<artifactId>tonegod-emitter-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.xhtmlrenderer</groupId>
-			<artifactId>flying-saucer-core</artifactId>
-			<version>9.0.8</version>
 		</dependency>
 		<dependency>
 			<groupId>ar.com.hjg</groupId>
@@ -122,91 +140,91 @@
 
 		<!-- LWJGL stuff -->
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-lwjgl</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<!-- <dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jME3-lwjgl-natives</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency> -->
 		<!-- <dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>lwjgl</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency> -->
 
 		<!-- Bullet stuff -->
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-bullet</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>jme3-bullet-natives</artifactId>
+			<groupId>org.jmonkeyengine</groupId>
+			<artifactId>jme3-bullet-native</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 
 
 		<!-- Feature libs -->
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-desktop</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-effects</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-plugins</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-terrain</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 
 		<!-- Ogg audio stuff -->
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-jogg</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<!-- <dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>j-ogg-oggd</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>j-ogg-vorbisd</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency> -->
 
 		<!-- Third party libs -->
 		<!-- <dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jinput</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>stack-alloc</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>vecmath</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>xmlpull-xpp3</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency> -->

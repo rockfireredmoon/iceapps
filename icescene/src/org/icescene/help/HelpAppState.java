@@ -3,20 +3,18 @@ package org.icescene.help;
 import java.util.prefs.Preferences;
 
 import org.icescene.IcemoonAppState;
-import org.iceui.HPosition;
-import org.iceui.VPosition;
-import org.iceui.controls.FancyPersistentWindow;
-import org.iceui.controls.FancyWindow;
-import org.iceui.controls.SaveType;
 
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector2f;
+import com.jme3.font.BitmapFont.Align;
+import com.jme3.font.BitmapFont.VAlign;
 
+import icetone.core.Size;
 import icetone.core.layout.FillLayout;
+import icetone.extras.windows.PersistentWindow;
+import icetone.extras.windows.SaveType;
 
 public class HelpAppState extends IcemoonAppState<IcemoonAppState<?>> {
 
-	private FancyPersistentWindow helpWindow;
+	private PersistentWindow helpWindow;
 	private HelpPanel helpPanel;
 
 	public HelpAppState(Preferences prefs) {
@@ -25,8 +23,8 @@ public class HelpAppState extends IcemoonAppState<IcemoonAppState<?>> {
 
 	@Override
 	protected void postInitialize() {
-		helpWindow = new FancyPersistentWindow(screen, "Help", 10, VPosition.TOP, HPosition.CENTER, new Vector2f(560, 400),
-				FancyWindow.Size.SMALL, true, SaveType.POSITION_AND_SIZE, prefs) {
+		helpWindow = new PersistentWindow(screen, "Help", 10, VAlign.Top, Align.Center, new Size(560, 400), true,
+				SaveType.POSITION_AND_SIZE, prefs) {
 			@Override
 			protected void onCloseWindow() {
 				super.onCloseWindow();
@@ -36,16 +34,14 @@ public class HelpAppState extends IcemoonAppState<IcemoonAppState<?>> {
 		helpWindow.setDestroyOnHide(true);
 		helpWindow.getContentArea().setLayoutManager(new FillLayout());
 		helpWindow.setMinimizable(true);
-		helpWindow.setIsResizable(true);
+		helpWindow.setResizable(true);
 		helpWindow.setMaximizable(true);
 		helpWindow.setWindowTitle("Help");
 
 		helpPanel = new HelpPanel(screen);
 
-		helpWindow.getContentArea().addChild(helpPanel);
-
-		screen.addElement(helpWindow, null, true);
-		helpWindow.showWindow();
+		helpWindow.getContentArea().addElement(helpPanel);
+		screen.showElement(helpWindow);
 	}
 
 	@Override

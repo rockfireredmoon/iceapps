@@ -27,7 +27,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -40,8 +39,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
-
-import icemoon.iceloader.LoaderUtils;
 
 /**
  * INIFile class provides methods for manipulating (Read/Write) windows ini
@@ -703,7 +700,7 @@ public final class INIFile {
 				iter = null;
 			}
 		}
-		return arrRet;
+		return arrRet == null ? new String[0] : arrRet;
 	}
 
 	/**
@@ -844,6 +841,7 @@ public final class INIFile {
 				objSec = null;
 			}
 			blnRet = true;
+			objWriter.flush();
 		} catch (IOException IOExIgnore) {
 		} finally {
 			itrSec = null;

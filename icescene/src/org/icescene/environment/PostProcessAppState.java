@@ -24,10 +24,10 @@ import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.water.WaterFilter;
 
-public class PostProcessAppState extends IcemoonAppState<IcemoonAppState> implements PropertyChangeListener {
+public class PostProcessAppState extends IcemoonAppState<IcemoonAppState<?>> implements PropertyChangeListener {
 
 	public enum FogFilterMode {
-		JME3, OGL
+		JME3, OGL, OGL2
 	}
 
 	private final static Logger LOG = Logger.getLogger(PostProcessAppState.class.getName());
@@ -38,7 +38,7 @@ public class PostProcessAppState extends IcemoonAppState<IcemoonAppState> implem
 	private SSAOFilter ssaoFilter;
 	private DirectionalLightShadowFilter shadowFilter;
 	private EnvironmentLight light;
-	private FogFilterMode fogFilterMode = FogFilterMode.OGL;
+	private FogFilterMode fogFilterMode;
 
 	public PostProcessAppState(Preferences prefs, EnvironmentLight light) {
 		super(prefs);
@@ -55,19 +55,17 @@ public class PostProcessAppState extends IcemoonAppState<IcemoonAppState> implem
 	}
 
 	@Override
-	protected IcemoonAppState onInitialize(AppStateManager stateManager, IcesceneApp app) {
+	protected IcemoonAppState<?> onInitialize(AppStateManager stateManager, IcesceneApp app) {
 
 		light.addPropertyChangeListener(this);
 		postProcessor = new DisableableFilterPostProcessor(assetManager);
 
 		// Fog
-		fogFilter = new org.icescene.fog.FogFilter();
-		postProcessor.addFilter(fogFilter);
-		fogFilter.setEnabled(false);
+		setFogFilterMode(FogFilterMode.OGL2);
 
 		// Sunlight
-		sunLightFilter = new LightScatteringFilter(
-				new Vector3f(SceneConstants.DEFAULT_SUN_DIRECTION).mult(SceneConstants.DIRECTIONAL_LIGHT_SOURCE_DISTANCE)) {
+		sunLightFilter = new LightScatteringFilter(new Vector3f(SceneConstants.DEFAULT_SUN_DIRECTION)
+				.mult(SceneConstants.DIRECTIONAL_LIGHT_SOURCE_DISTANCE)) {
 			@Override
 			public void setLightPosition(Vector3f lightPosition) {
 				super.setLightPosition(lightPosition);
@@ -133,23 +131,57 @@ public class PostProcessAppState extends IcemoonAppState<IcemoonAppState> implem
 		return fogFilterMode;
 	}
 
-	public void setFogFilterMode(FogFilterMode fogMode) {
-		if (!Objects.equal(fogMode, this.fogFilterMode)) {
-			boolean enabled = fogFilter.isEnabled();
+	public void setFogFilterMode(FogFilterMode fogFilterMode) {
+		if (!Objects.equal(fogFilterMode, this.fogFilterMode)) {
+			LOG.info(String.format("Switching fog filter mode from %s to %s", this.fogFilterMode, fogFilterMode));
+			this.fogFilterMode = fogFilterMode;
+			boolean enabled = fogFilter != null && fogFilter.isEnabled();
+			if (fogFilter != null)
+				postProcessor.removeFilter(fogFilter);
 
-			postProcessor.removeFilter(fogFilter);
+			if (fogFilterMode != null) {
+				switch (fogFilterMode) {
+				case OGL:
+					fogFilter = new org.icescene.fog.FogFilter() {
 
-			switch (fogMode) {
-			case OGL:
-				fogFilter = new org.icescene.fog.FogFilter();
-				break;
-			default:
-				fogFilter = new FogFilter();
-				break;
+						@Override
+						public void setEnabled(boolean enabled) {
+							super.setEnabled(enabled);
+							checkIfShouldEnable();
+						}
+
+					};
+					break;
+				case OGL2:
+					fogFilter = new org.icescene.fog.FogFilter2() {
+
+						@Override
+						public void setEnabled(boolean enabled) {
+							super.setEnabled(enabled);
+							checkIfShouldEnable();
+						}
+
+					};
+					break;
+				default:
+					fogFilter = new FogFilter() {
+
+						@Override
+						public void setEnabled(boolean enabled) {
+							super.setEnabled(enabled);
+							checkIfShouldEnable();
+						}
+
+					};
+					break;
+				}
+				postProcessor.addFilter(fogFilter);
+
 			}
-			postProcessor.addFilter(fogFilter);
-
-			fogFilter.setEnabled(enabled);
+			if (fogFilter != null)
+				fogFilter.setEnabled(enabled);
+			else
+				checkIfShouldEnable();
 		}
 	}
 
@@ -210,10 +242,12 @@ public class PostProcessAppState extends IcemoonAppState<IcemoonAppState> implem
 
 	protected void setLightBeams(boolean lightBeams) {
 		sunLightFilter.setEnabled(lightBeams);
-		if (lightBeams && postProcessor.getFilter(LightScatteringFilter.class) == null && light.isDirectionalAllowed()) {
+		if (lightBeams && postProcessor.getFilter(LightScatteringFilter.class) == null
+				&& light.isDirectionalAllowed()) {
 			postProcessor.addFilter(sunLightFilter);
 			sunLightFilter.setLightPosition(light.getLightSourcePosition());
-		} else if ((!lightBeams || !light.isDirectionalAllowed()) && postProcessor.getFilter(LightScatteringFilter.class) != null) {
+		} else if ((!lightBeams || !light.isDirectionalAllowed())
+				&& postProcessor.getFilter(LightScatteringFilter.class) != null) {
 			postProcessor.removeFilter(sunLightFilter);
 		}
 		checkIfShouldEnable();
@@ -229,7 +263,8 @@ public class PostProcessAppState extends IcemoonAppState<IcemoonAppState> implem
 	}
 
 	protected void setShadows(boolean shadows) {
-		if (shadows && postProcessor.getFilter(DirectionalLightShadowFilter.class) == null && light.isDirectionalAllowed()) {
+		if (shadows && postProcessor.getFilter(DirectionalLightShadowFilter.class) == null
+				&& light.isDirectionalAllowed()) {
 			postProcessor.addFilter(shadowFilter);
 		} else if ((!shadows || !light.isDirectionalAllowed())
 				&& postProcessor.getFilter(DirectionalLightShadowFilter.class) != null) {

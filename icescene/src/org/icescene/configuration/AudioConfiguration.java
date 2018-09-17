@@ -27,7 +27,8 @@ public class AudioConfiguration extends AbstractConfiguration<INIFile> {
 
 	public static class Sound {
 		private final String name;
-		private final AudioQueue channel;
+		private final String subChannel;
+		private final AudioQueue queue;
 		private final float refDistance;
 		private final float maxDistance;
 		private final float gain;
@@ -36,11 +37,15 @@ public class AudioConfiguration extends AbstractConfiguration<INIFile> {
 		private final boolean stream;
 		private final boolean streamCache;
 		private final AudioConfiguration configuration;
+		private final String channel;
 
-		public Sound(String name, AudioQueue channel, float refDistance, float maxDistance, float gain, int priority,
-				boolean loop, AudioConfiguration configuration, boolean stream, boolean streamCache) {
+		public Sound(String name, String channel, String subChannel, float refDistance, float maxDistance, float gain,
+				int priority, boolean loop, AudioConfiguration configuration, boolean stream, boolean streamCache) {
 			this.name = name;
 			this.channel = channel;
+			this.subChannel = subChannel;
+			this.queue = channel == null ? AudioQueue.INTERFACE : AudioQueue.valueOf(channel.toUpperCase());
+			;
 			this.refDistance = refDistance;
 			this.maxDistance = maxDistance;
 			this.gain = gain;
@@ -63,7 +68,11 @@ public class AudioConfiguration extends AbstractConfiguration<INIFile> {
 			return configuration;
 		}
 
-		public AudioQueue getChannel() {
+		public AudioQueue getQueue() {
+			return queue;
+		}
+
+		public String getChannel() {
 			return channel;
 		}
 
@@ -93,6 +102,10 @@ public class AudioConfiguration extends AbstractConfiguration<INIFile> {
 
 		public String getPath() {
 			return configuration.getAssetFolder() + "/" + name;
+		}
+
+		public String getSubChannel() {
+			return subChannel;
 		}
 
 	}
@@ -273,10 +286,9 @@ public class AudioConfiguration extends AbstractConfiguration<INIFile> {
 			boolean stream = Boolean.parseBoolean(file.getStringProperty(section, "stream"));
 			boolean streamCache = Boolean.parseBoolean(file.getStringProperty(section, "streamCache"));
 			String channelName = file.getStringProperty(section, "channel");
-			AudioQueue channel = channelName == null ? AudioQueue.INTERFACE
-					: AudioQueue.valueOf(channelName.toUpperCase());
-			Sound value = new Sound(section, channel, refDistance, maxDistance, gain, priority, loop, this, stream,
-					streamCache);
+			String subChannel = file.getStringProperty(section, "subChannel");
+			Sound value = new Sound(section, channelName, subChannel, refDistance, maxDistance, gain, priority, loop,
+					this, stream, streamCache);
 			sounds.put(section, value);
 			allSounds.put(section, value);
 		}

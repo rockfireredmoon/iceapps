@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.cli.CommandLine;
@@ -14,25 +13,23 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.ParseException;
 import org.icescene.IcemoonAppState;
-import org.icescene.IcesceneApp.AppListener;
-import org.iceui.XConsole;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ClasspathHelper;
 
+import com.jme3.app.state.AppStateManager;
 import com.jme3.input.KeyInput;
 
-import icetone.core.Element.ZPriority;
+import icetone.core.ZPriority;
+import icetone.core.event.ScreenEvent;
+import icetone.core.event.ScreenEventListener;
+import icetone.extras.windows.Console;
 
 public class ConsoleAppState extends IcemoonAppState<IcemoonAppState<?>> {
 
-	private static final Logger LOG = Logger.getLogger(ConsoleAppState.class.getName());
-	private static XConsole console;
+	private static Console console;
 	private boolean showOnce;
 	private Map<String, ConsoleCommand> commands = new LinkedHashMap<String, ConsoleCommand>();
-	private AppListener appListener;
 	private boolean showOnInit;
+	private boolean autoHide = true;
+	private ScreenEventListener screenEventListener;
 
 	public ConsoleAppState(Preferences prefs) {
 		super(prefs);
@@ -40,52 +37,44 @@ public class ConsoleAppState extends IcemoonAppState<IcemoonAppState<?>> {
 
 	@Override
 	protected final void postInitialize() {
-		app.addListener(appListener = new AppListener() {
-
-			@Override
-			public void reshape(int w, int h) {
-				console.setWidth(w);
-				console.setPosition(0, h - console.getHeight());
-			}
-		});
 
 		// layer = hud.addLayer(consoleLayer());
 		if (console == null) {
-			console = new XConsole(screen, "Console", 400) {
-				@Override
-				public void onCommand(String command) {
-					try {
-						command(command);
-					} catch (Exception e) {
-						LOG.log(Level.SEVERE, "Failed to execute command.", e);
-						if(e.getMessage() == null)  
-							outputError(e.getClass().getName());
-						else
-							outputError(e.getMessage());
-					}
+
+			console = new Console(screen);
+			console.onChange(evt -> {
+				try {
+					command(evt.getNewValue());
+				} catch (Exception e) {
+					LOG.log(Level.SEVERE, "Failed to execute command.", e);
+					if (e.getMessage() == null)
+						outputError(e.getClass().getName());
+					else
+						outputError(e.getMessage());
 				}
-			};
+			});
+			console.setHideOnLoseFocus(autoHide);
 			console.setPriority(ZPriority.POPUP);
 			console.setExecuteKey(KeyInput.KEY_RETURN);
-			screen.addElement(console, null, true);
+			screen.attachElement(console);
+			screen.addScreenListener(screenEventListener = new ScreenEventListener() {
+
+				@Override
+				public void onScreenEvent(ScreenEvent evt) {
+					console.setWidth(evt.getSource().getWidth());
+
+				}
+			});
 		}
 		// console.setHideOnLoseFocus(true);
 
-		Reflections reflections = new Reflections(ClasspathHelper.forJavaClassPath(), new SubTypesScanner(),
-				new TypeAnnotationsScanner());
-		Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(Command.class);
-		for (Class<?> a : annotated) {
-			try {
-				ConsoleCommand cmd = (ConsoleCommand) a.newInstance();
-				cmd.init(this);
-				String[] names = a.getAnnotation(Command.class).names();
-				for (String n : names) {
-					registerCommand(n, cmd);
-				}
-			} catch (Exception e) {
-				LOG.log(Level.SEVERE, "Failed to register command.", e);
-			}
-		}
+		ServiceLoader<ConsoleCommand> loader = ServiceLoader.load(ConsoleCommand.class);
+		loader.forEach(cmd -> {
+			cmd.init(this);
+			String[] names = cmd.getClass().getAnnotation(Command.class).names();
+			for (String n : names)
+				registerCommand(n, cmd);
+		});
 
 		output("Iceshell. Type /help");
 
@@ -94,11 +83,21 @@ public class ConsoleAppState extends IcemoonAppState<IcemoonAppState<?>> {
 		}
 	}
 
+	public boolean isAutoHide() {
+		return autoHide;
+	}
+
+	public void setAutoHide(boolean autoHide) {
+		this.autoHide = autoHide;
+		if (console != null)
+			console.setHideOnLoseFocus(autoHide);
+	}
+
 	public void registerCommand(String cmdName, ConsoleCommand cmd) {
+		LOG.info(String.format("Registering comment %s (%s)", cmdName, cmd.getDescription()));
 		commands.put(cmdName, cmd);
 	}
 
-	// public void setVisible(boolean visible) {
 	// if (visible && !console.getIsVisible()) {
 	// parent.unregisterAllInput();
 	// gameInputRegistered = false;
@@ -117,15 +116,13 @@ public class ConsoleAppState extends IcemoonAppState<IcemoonAppState<?>> {
 	// }
 	// }
 	public boolean isVisible() {
-		return console.getIsVisible();
+		return console.isVisible();
 	}
 
 	@Override
 	protected final void onCleanup() {
-		app.removeListener(appListener);
-		if (console.getIsVisible()) {
-			console.hideWithEffect();
-		}
+		screen.removeScreenListener(screenEventListener);
+		console.hide();
 		showOnInit = false;
 	}
 
@@ -203,13 +200,13 @@ public class ConsoleAppState extends IcemoonAppState<IcemoonAppState<?>> {
 		if (console == null) {
 			showOnInit = true;
 		} else {
-			console.showWithEffect();
+			console.show();
 		}
 	}
 
 	public void showForOneCommand() {
 		showOnce = true;
-		console.showWithEffect();
+		console.show();
 	}
 
 	public void hide() {
@@ -217,7 +214,7 @@ public class ConsoleAppState extends IcemoonAppState<IcemoonAppState<?>> {
 		if (console == null) {
 			showOnInit = false;
 		} else {
-			console.hideWithEffect();
+			console.hide();
 		}
 	}
 
@@ -231,5 +228,22 @@ public class ConsoleAppState extends IcemoonAppState<IcemoonAppState<?>> {
 
 	public Map<String, ConsoleCommand> getCommands() {
 		return commands;
+	}
+
+	public static void toggle(Preferences prefs, AppStateManager stateManager) {
+
+		ConsoleAppState state = stateManager.getState(ConsoleAppState.class);
+		if (state == null) {
+			state = new ConsoleAppState(prefs);
+			state.show();
+			stateManager.attach(state);
+
+		} else {
+			if (state.isVisible())
+				state.hide();
+			else
+				state.show();
+		}
+
 	}
 }

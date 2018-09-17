@@ -1,7 +1,5 @@
 package org.icescene.props;
 
-import icemoon.iceloader.ServerAssetManager;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -14,7 +12,6 @@ import java.util.prefs.Preferences;
 
 import org.apache.commons.io.IOUtils;
 import org.icelib.SceneryItem;
-import org.icescene.Alarm;
 import org.icescene.IcesceneApp;
 import org.icescene.entities.EntityContext;
 
@@ -25,6 +22,9 @@ import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.scene.Node;
+
+import icemoon.iceloader.ServerAssetManager;
+import icetone.core.utils.Alarm;
 
 /**
  * While most props will be {@link XMLProp} instances, sometimes we want special

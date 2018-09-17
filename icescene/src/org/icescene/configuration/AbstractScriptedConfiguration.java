@@ -1,7 +1,5 @@
 package org.icescene.configuration;
 
-import icemoon.iceloader.BaseConfiguration;
-
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -9,6 +7,8 @@ import java.util.StringTokenizer;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+
+import icemoon.iceloader.BaseConfiguration;
 
 /**
  * Parses Squirrel script data files.

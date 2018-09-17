@@ -10,9 +10,10 @@ import org.icelib.ChannelType;
 import org.icelib.Icelib;
 import org.icescene.IcesceneApp;
 import org.iceui.ChatChannel;
+import org.iceui.IceUI;
 import org.iceui.XChatBox;
 import org.iceui.XChatWindow;
-import org.iceui.controls.SelectableItem;
+import org.iceui.controls.ElementStyle;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.input.KeyInput;
@@ -22,12 +23,15 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 import icemoon.iceloader.ServerAssetManager;
+import icetone.controls.buttons.SelectableItem;
+import icetone.controls.containers.Panel;
 import icetone.controls.lists.ComboBox;
+import icetone.controls.lists.FloatRangeSpinnerModel;
 import icetone.controls.lists.IntegerRangeSpinnerModel;
 import icetone.controls.lists.Spinner;
 import icetone.controls.text.Label;
-import icetone.controls.windows.Panel;
-import icetone.core.ElementManager;
+import icetone.core.BaseScreen;
+import icetone.core.Orientation;
 import icetone.core.layout.mig.MigLayout;
 
 public class TestXChatWindow extends IcesceneApp {
@@ -39,7 +43,6 @@ public class TestXChatWindow extends IcesceneApp {
 
 	private Spinner<Integer> sp;
 	private ComboBox<String> f;
-	private boolean adjusting;
 	private XChatWindow xcw;
 
 	public TestXChatWindow() {
@@ -48,7 +51,6 @@ public class TestXChatWindow extends IcesceneApp {
 
 	@Override
 	public void onSimpleInitApp() {
-		adjusting = true;
 		flyCam.setMoveSpeed(10);
 		flyCam.setDragToRotate(true);
 
@@ -70,8 +72,30 @@ public class TestXChatWindow extends IcesceneApp {
 			@Override
 			public void onSendChatMsg(XChatBox tab, Object o, String text) {
 				super.onSendChatMsg(tab, o, text);
-				System.out.println("On send: " + text);
-				receiveMsg("Player", null, (ChannelType) o, text);
+				ChannelType currentChannel = (ChannelType) o;
+				if (text.startsWith("/")) {
+					int sp = text.indexOf(' ');
+					String chan = text.substring(1);
+					if (sp != -1) {
+						chan = text.substring(1, sp);
+						text = text.substring(sp + 1);
+					} else
+						text = "";
+					try {
+						setChannelByCommand(currentChannel = ChannelType.valueOf(chan.toUpperCase()));
+						System.out.println("Channell now " + currentChannel);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				if (text.length() > 0) {
+					System.out.println("On send: " + text);
+					receiveMsg("Player", null, currentChannel, text);
+				}
+			}
+
+			protected ColorRGBA getColorForChannelCommand(XChatBox tab, Object command) {
+				return IceUI.toRGBA(((ChannelType) command).getColor());
 			}
 
 			@Override
@@ -149,41 +173,47 @@ public class TestXChatWindow extends IcesceneApp {
 		Panel p = new Panel(screen);
 		p.setLayoutManager(new MigLayout(screen, "wrap 2", "[][fill, grow]", "[]"));
 		// Font
-		p.addChild(new Label("Font", screen));
-		f = new ComboBox<String>(screen) {
-
-			@Override
-			public void onChange(int selectedIndex, String value) {
-				if (!adjusting) {
-					setFontOnScroller(value);
-					setToolTipText(value);
-				}
-			}
-		};
+		p.addElement(new Label("Font", screen));
+		f = new ComboBox<String>(screen);
 		for (String fntName : ((ServerAssetManager) assetManager).getAssetNamesMatching(".*\\.fnt")) {
 			f.addListItem(Icelib.getBaseFilename(fntName), fntName);
 		}
-		f.setSelectedByValue(xcw.getChatFont() == null ? screen.getStyle("ChatBox").getString("defaultFont") : xcw.getChatFont(),
-				false);
-		p.addChild(f);
+		if (xcw.getChatFont() != null)
+			f.setSelectedByValue(xcw.getChatFont());
+		f.onChange(evt -> {
+			if (!evt.getSource().isAdjusting()) {
+				setFontOnScroller(evt.getNewValue());
+				f.setToolTipText(evt.getNewValue());
+			}
+		});
+		p.addElement(f);
 
 		// Font size
-		p.addChild(new Label("Font Size", screen));
-		sp = new Spinner<Integer>(screen, Spinner.Orientation.HORIZONTAL, false) {
-			@Override
-			public void onChange(Integer value) {
-				if (!adjusting) {
-					setFontSizeOnScroller(value);
-				}
+		p.addElement(new Label("Font Size", screen));
+		sp = new Spinner<Integer>(screen, Orientation.HORIZONTAL, false);
+		sp.setSpinnerModel(new IntegerRangeSpinnerModel(1, 64, 1, 8));
+		sp.onChange(evt -> {
+			if (!evt.getSource().isAdjusting()) {
+				setFontSizeOnScroller(evt.getNewValue());
 			}
-		};
-		sp.setSpinnerModel(new IntegerRangeSpinnerModel(1, 64, 1, (int) screen.getStyle("ChatBox").getFloat("fontSize")));
-		p.addChild(sp, "");
+		});
+		p.addElement(sp, "");
+
+		// Alpha
+		p.addElement(new Label("Alpha", screen));
+		Spinner<Float> spf = new Spinner<Float>(screen, Orientation.HORIZONTAL, false);
+		spf.setSpinnerModel(new FloatRangeSpinnerModel(0, 1, 0.1f, 1f));
+		spf.onChange(evt -> {
+			if (!evt.getSource().isAdjusting()) {
+				setAlphaOnScroller(evt.getNewValue());
+			}
+		});
+		p.addElement(spf, "");
+
 		p.sizeToContent();
 		screen.addElement(p);
 
 		xcw.show();
-		adjusting = false;
 
 	}
 
@@ -195,8 +225,12 @@ public class TestXChatWindow extends IcesceneApp {
 		xcw.setChatFontSize(value);
 	}
 
-	SelectableItem createPanel(ElementManager screen, String n) {
-		SelectableItem p = new SelectableItem(screen, n);
+	private void setAlphaOnScroller(float value) {
+		xcw.setLocalAlpha(value);
+	}
+
+	SelectableItem createPanel(BaseScreen screen, String n) {
+		SelectableItem p = new SelectableItem(screen);
 		p.setIgnoreMouse(true);
 		MigLayout l = new MigLayout(screen, "ins 0, wrap 1, fill", "[grow, fill]", "");
 		p.setLayoutManager(l);
@@ -204,14 +238,14 @@ public class TestXChatWindow extends IcesceneApp {
 		Label l1 = new Label(screen, "Label1" + n);
 		l1.setText(n);
 		l1.setIgnoreMouse(true);
-		l1.setFontSize(screen.getStyle("Common").getFloat("mediumFontSize"));
-		p.addChild(l1);
+		ElementStyle.medium(l1);
+		p.addElement(l1);
 
 		Label l2 = new Label(screen, "Label1X" + n);
 		l2.setTextVAlign(BitmapFont.VAlign.Top);
 		l2.setText("Label 2 for " + n);
 		l2.setIgnoreMouse(true);
-		p.addChild(l2);
+		p.addElement(l2);
 		return p;
 	}
 

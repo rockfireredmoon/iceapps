@@ -7,26 +7,22 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 import org.icescene.ui.XHTMLAlertBox;
-import org.iceui.UIConstants;
-import org.iceui.controls.ElementStyle;
-import org.iceui.controls.FancyAlertBox.AlertType;
 import org.iceui.controls.UIUtil;
-import org.iceui.controls.XScreen;
-import org.iceui.effects.EffectHelper;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.font.BitmapFont;
-import com.jme3.font.LineWrapMode;
 import com.jme3.math.Vector2f;
 
+import icetone.controls.buttons.Button;
 import icetone.controls.text.Label;
-import icetone.core.Container;
+import icetone.core.BaseElement;
+import icetone.core.BaseScreen;
+import icetone.core.StyledContainer;
 import icetone.core.Element;
-import icetone.core.Screen;
-import icetone.core.Element.ZPriority;
-import icetone.effects.Effect;
+import icetone.core.ZPriority;
+import icetone.core.layout.mig.MigLayout;
+import icetone.extras.windows.AlertBox.AlertType;
 
 /**
  * Displays error, warning and information messages in the upper third of the
@@ -41,30 +37,71 @@ import icetone.effects.Effect;
  */
 public class HUDMessageAppState extends AbstractAppState {
 
+	public static final int MAX_MESSAGES_ON_SCREEN = 10;
+
+	public enum Channel {
+		INFORMATION, WARNING, ERROR, BROADCAST;
+
+		public static Channel levelToChannel(Level level) {
+			if (level.equals(Level.SEVERE)) {
+				return Channel.ERROR;
+			} else if (level.equals(Level.WARNING)) {
+				return Channel.WARNING;
+			}
+			return Channel.INFORMATION;
+		}
+
+		public String getStyleClass() {
+			switch (this) {
+			case ERROR:
+				return "color-error";
+			case WARNING:
+				return "color-warning";
+			case BROADCAST:
+				return "color-success";
+			default:
+				return "color-information";
+			}
+		}
+	}
+
 	private IcesceneApp app;
 	private List<Message> messages = new ArrayList<Message>();
-	private Screen screen;
-	private Element layer;
+	private BaseScreen screen;
+	private BaseElement layer;
 	private List<Listener> listeners = new ArrayList<Listener>();
 	private XHTMLAlertBox popupWindow;
 
 	public interface Listener {
-		void message(final Level level, final String message, final Exception exception);
+		void message(Channel channel, final String message, final Exception exception);
 	}
 
-	class Message {
+	class Message extends Element {
 
-		Level level;
 		String message;
 		Exception exception;
-		Label label;
 		float time = 0;
 
-		Message(Level level, String message, Exception exception, Label label) {
-			this.level = level;
+		Message(Channel channel, String message, Exception exception) {
 			this.message = message;
 			this.exception = exception;
-			this.label = label;
+			setStyleClass("hud-message hud-message-" + channel.name().toLowerCase());
+			setLayoutManager(new MigLayout(screen, "ins 0, fill", "push[shrink 0][]push"));
+			addElement(new Button(screen) {
+				{
+					setStyleClass("hud-message-action");
+				}
+			});
+			addElement(new Label(getMessageText(), screen) {
+				{
+					setStyleClass("message-text " + channel.getStyleClass());
+				}
+			});
+			setDestroyOnHide(true);
+		}
+
+		private String getMessageText() {
+			return exception == null ? message : message + " " + exception.getMessage();
 		}
 	}
 
@@ -76,49 +113,56 @@ public class HUDMessageAppState extends AbstractAppState {
 		listeners.add(listener);
 	}
 
+	@Deprecated
 	public void message(Level level, String message) {
 		message(level, message, null);
 	}
 
+	@Deprecated
 	public void message(final Level level, final String message, final Exception exception) {
+		message(Channel.levelToChannel(level), message, exception);
+	}
+
+	public void message(final Channel channel, final String message) {
+		message(channel, message, null);
+	}
+
+	public void message(final Channel channel, final String message, final Exception exception) {
 		if (!app.isSceneThread()) {
 			app.enqueue(new Callable<Void>() {
 				public Void call() throws Exception {
-					message(level, message, exception);
+					message(channel, message, exception);
 					return null;
 				}
 			});
 			return;
 		}
+		Message msg = new Message(channel, message, exception);
+		System.out.println("New message: " + message + " / "  +channel);
 
 		// Create new message and add it to screen
-		Label newLabel = new Label(getMessageText(message, exception), screen);
-		ElementStyle.mediumOutline(screen, newLabel);
-		if (Level.SEVERE.equals(level)) {
-			newLabel.setFontColor(screen.getStyle("Common").getColorRGBA("errorColor"));
-		} else if (Level.WARNING.equals(level)) {
-			newLabel.setFontColor(screen.getStyle("Common").getColorRGBA("warningColor"));
-		} else if (Level.INFO.equals(level)) {
-			newLabel.setFontColor(screen.getStyle("Common").getColorRGBA("infoColor"));
-		}
-		newLabel.setTextAlign(BitmapFont.Align.Center);
-		newLabel.setTextWrap(LineWrapMode.Word);
-		Vector2f pref = new Vector2f(screen.getWidth(), screen.getStyle("Label").getVector2f("defaultSize").y);
-		Vector2f pos = new Vector2f(0, screen.getHeight() * 0.25f);
-		newLabel.setPosition(pos);
-		newLabel.setDimensions(pref);
-		layer.addChild(newLabel);
-		UIUtil.toFront(layer);
-		messages.add(new Message(level, message, exception, newLabel));
+		Vector2f pos = new Vector2f(0, screen.getHeight() * 0.33f);
+		msg.setPosition(pos);
+		Vector2f pref = msg.calcPreferredSize();
+		pref.x = screen.getWidth();
+		msg.setDimensions(pref);
+		layer.addElement(msg);
+		messages.add(msg);
 
 		// Shift up any existing messages
-		for (Message m : messages) {
-			m.label.setY(m.label.getY() + pref.y);
-			// m.time = 0;
+		for (Iterator<Message> mIt = messages.iterator(); mIt.hasNext();) {
+			Message m = mIt.next();
+			float ny = m.getY() - pref.y;
+			if(ny > 0)
+				m.setY(ny);
+			else {
+				mIt.remove();
+				m.destroy();
+			}
 		}
 
 		for (int i = listeners.size() - 1; i >= 0; i--) {
-			listeners.get(i).message(level, message, exception);
+			listeners.get(i).message(channel, message, exception);
 		}
 	}
 
@@ -133,7 +177,7 @@ public class HUDMessageAppState extends AbstractAppState {
 			return;
 		}
 		if (popupWindow != null) {
-			popupWindow.hideWindow();
+			popupWindow.hide();
 			popupWindow = null;
 		}
 	}
@@ -148,7 +192,7 @@ public class HUDMessageAppState extends AbstractAppState {
 			});
 			return;
 		}
-		XScreen screen = app.getScreen();
+		BaseScreen screen = app.getScreen();
 		popupWindow = XHTMLAlertBox.alert(screen, "Alert", message, AlertType.INFORMATION);
 	}
 
@@ -159,14 +203,14 @@ public class HUDMessageAppState extends AbstractAppState {
 		this.screen = this.app.getScreen();
 
 		// Layer
-		layer = new Container(screen);
-		this.app.getLayers(ZPriority.FOREGROUND).addChild(layer);
+		layer = new StyledContainer(screen);
+		this.app.getLayers(ZPriority.FOREGROUND).addElement(layer);
 	}
 
 	@Override
 	public void cleanup() {
 		super.cleanup();
-		this.app.getLayers(ZPriority.FOREGROUND).removeChild(layer);
+		this.app.getLayers(ZPriority.FOREGROUND).removeElement(layer);
 	}
 
 	@Override
@@ -178,15 +222,9 @@ public class HUDMessageAppState extends AbstractAppState {
 				m.time += tpf;
 				if (m.time > SceneConstants.HUD_MESSAGE_TIMEOUT) {
 					mIt.remove();
-					new EffectHelper()
-							.effect(m.label, Effect.EffectType.FadeOut, Effect.EffectEvent.Hide, UIConstants.UI_EFFECT_TIME * 5)
-							.setDestroyOnHide(true);
+					m.hide();
 				}
 			}
 		}
-	}
-
-	private String getMessageText(String text, Exception exception) {
-		return exception == null ? text : text + " " + exception.getMessage();
 	}
 }

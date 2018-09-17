@@ -1,0 +1,13 @@
+# 
+# A simple Panel with a single Lael
+#
+
+---
+!panel
+id: simplePanel1
+style: simplePanel
+layout: !borderLayout
+stylesheet: /layouts/SimpleWindow.css
+children:
+- !label
+  text: Hello World! This is a simple Panel with a single Lael 

@@ -1,0 +1,25 @@
+# 
+# A login window
+#
+
+---
+!fancyWindow
+title: Login
+resizable: true
+layout: !fillLayout
+children:
+- !scrollPanel
+  children:
+  - !splitPanel
+    children:
+    - !label
+      text: Left panel
+    - !label
+      text: right panel
+  - !label
+    text: A Label
+  - !textField
+    text: A Text Field
+  - !button
+    text: A Button
+  - !password    

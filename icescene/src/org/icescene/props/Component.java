@@ -1,7 +1,5 @@
 package org.icescene.props;
 
-import icemoon.iceloader.BaseConfiguration;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +14,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+
+import icemoon.iceloader.BaseConfiguration;
 
 public class Component extends BaseConfiguration<ComponentDefinition> {
 
@@ -46,18 +46,19 @@ public class Component extends BaseConfiguration<ComponentDefinition> {
 			final String meshClassName = atts.getProperty("meshClass");
 			Class<Spatial> meshClass = null;
 			try {
-				meshClass = (Class<Spatial>) (meshClassName == null ? null : Class.forName(meshClassName, true, getClass()
-						.getClassLoader()));
+				meshClass = (Class<Spatial>) (meshClassName == null ? null
+						: Class.forName(meshClassName, true, getClass().getClassLoader()));
 			} catch (ClassNotFoundException ex) {
 				LOG.warning(String.format("Failed to load mesh class %s", meshClassName));
 			}
 
-			final Entity entity = new Entity(mesh, qf == null ? 0 : Integer.parseInt(qf), vf == null ? 0 : Integer.parseInt(vf));
+			final Entity entity = new Entity(mesh, qf == null ? 0 : Integer.parseInt(qf),
+					vf == null ? 0 : Integer.parseInt(vf));
 			entity.setMeshClass(meshClass);
 			entity.setUnlit(lightExclude);
 
 			// Location
-			entity.setLocation(parseVector3f(p, entity.getLocation()));
+			entity.setTranslation(parseVector3f(p, entity.getTranslation()));
 			entity.setRotation(parseRotation(q, entity.getRotation()));
 			entities.add(entity);
 		}
@@ -81,12 +82,12 @@ public class Component extends BaseConfiguration<ComponentDefinition> {
 
 			String type = atts.getProperty("type");
 			if (type.equalsIgnoreCase("point")) {
-				lights.add(new PointLightConfiguration(parseColor(atts.getProperty("defaultColor"), ColorRGBA.White), parseFloat(
-						atts.getProperty("radius"), 1f)));
+				lights.add(new PointLightConfiguration(parseColor(atts.getProperty("defaultColor"), ColorRGBA.White),
+						parseFloat(atts.getProperty("radius"), 1f)));
 			} else if (type.equalsIgnoreCase("spot")) {
-				lights.add(new SpotLightConfiguration(parseColor(atts.getProperty("defaultColor"), ColorRGBA.White), parseFloat(
-						atts.getProperty("range"), 1f), parseFloat(atts.getProperty("outer"), 1f), parseFloat(
-						atts.getProperty("inner"), 1f)));
+				lights.add(new SpotLightConfiguration(parseColor(atts.getProperty("defaultColor"), ColorRGBA.White),
+						parseFloat(atts.getProperty("range"), 1f), parseFloat(atts.getProperty("outer"), 1f),
+						parseFloat(atts.getProperty("inner"), 1f)));
 			} else {
 				LOG.warning(String.format("Unknown light type %s.", type));
 			}
@@ -94,11 +95,11 @@ public class Component extends BaseConfiguration<ComponentDefinition> {
 
 		for (Properties atts : def.getXrefs()) {
 			XRef xr = new XRef(atts.getProperty("cref"));
-			xr.setFloorAnchor(Integer.parseInt(replaceVariables(atts.getProperty("floorAnchor"),
-					String.valueOf(xr.getFloorAnchor()))));
+			xr.setFloorAnchor(Integer
+					.parseInt(replaceVariables(atts.getProperty("floorAnchor"), String.valueOf(xr.getFloorAnchor()))));
 			String p = atts.getProperty("p"); // position
 			String q = atts.getProperty("q"); // rotation (Quaternion)
-			xr.setLocation(parseVector3f(p, xr.getLocation()));
+			xr.setTranslation(parseVector3f(p, xr.getTranslation()));
 			xr.setRotation(parseRotation(q, xr.getRotation()));
 			xrefs.add(xr);
 		}

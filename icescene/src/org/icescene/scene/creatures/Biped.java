@@ -387,6 +387,8 @@ public class Biped extends AbstractCreatureEntity<CreatureDefinition> {
 			@Override
 			public void configureMaterialKey(ExtendedMaterialListKey mk) {
 				mk.setCache(false);
+				if(fixedLighting != null)
+					mk.setLighting(fixedLighting);
 				mk.setLitMaterialDef("MatDefs/MOB_Lit.j3md");
 				mk.setUnlitMaterialDef("MatDefs/MOB_Unlit.j3md");
 			}
@@ -401,6 +403,8 @@ public class Biped extends AbstractCreatureEntity<CreatureDefinition> {
 			@Override
 			public void configureMaterialKey(ExtendedMaterialListKey mk) {
 				mk.setCache(false);
+				if(fixedLighting != null)
+					mk.setLighting(fixedLighting);
 				mk.setLitMaterialDef("MatDefs/MOB_Lit.j3md");
 				mk.setUnlitMaterialDef("MatDefs/MOB_Unlit.j3md");
 			}
@@ -419,6 +423,8 @@ public class Biped extends AbstractCreatureEntity<CreatureDefinition> {
 			@Override
 			public void configureMaterialKey(ExtendedMaterialListKey mk) {
 				mk.setCache(false);
+				if(fixedLighting != null)
+					mk.setLighting(fixedLighting);
 				mk.setLitMaterialDef("MatDefs/MOB_Lit.j3md");
 				mk.setUnlitMaterialDef("MatDefs/MOB_Unlit.j3md");
 			}
@@ -453,6 +459,8 @@ public class Biped extends AbstractCreatureEntity<CreatureDefinition> {
 					@Override
 					public void configureMaterialKey(ExtendedMaterialListKey mk) {
 						mk.setCache(false);
+						if(fixedLighting != null)
+							mk.setLighting(fixedLighting);
 						mk.setLitMaterialDef("MatDefs/MOB_Lit.j3md");
 						mk.setUnlitMaterialDef("MatDefs/MOB_Unlit.j3md");
 					}

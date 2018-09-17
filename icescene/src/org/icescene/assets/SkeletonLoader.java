@@ -31,8 +31,6 @@
  */
 package org.icescene.assets;
 
-import icemoon.iceloader.ServerAssetManager;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,6 +68,8 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.plugins.ogre.AnimData;
 import com.jme3.util.xml.SAXUtil;
+
+import icemoon.iceloader.ServerAssetManager;
 
 public class SkeletonLoader extends DefaultHandler implements AssetLoader {
 

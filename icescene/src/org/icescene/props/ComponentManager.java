@@ -1,7 +1,5 @@
 package org.icescene.props;
 
-import icemoon.iceloader.ServerAssetManager;
-
 import java.util.Set;
 
 import org.icelib.SceneryItem;
@@ -11,6 +9,8 @@ import org.icescene.assets.ComponentKey;
 
 import com.jme3.app.Application;
 import com.jme3.asset.AssetNotFoundException;
+
+import icemoon.iceloader.ServerAssetManager;
 
 public class ComponentManager {
 

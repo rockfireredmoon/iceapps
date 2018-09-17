@@ -5,7 +5,6 @@ import org.icescene.IcesceneApp;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -13,13 +12,12 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 
+import icetone.controls.containers.Panel;
 import icetone.controls.lists.FloatRangeSliderModel;
 import icetone.controls.lists.Slider;
-import icetone.controls.windows.Panel;
-import icetone.core.Element;
-import icetone.core.layout.BasicLayoutManager;
-import icetone.core.layout.LUtil;
-import icetone.core.utils.UIDUtil;
+import icetone.core.BaseElement;
+import icetone.core.layout.BasicLayout;
+import icetone.core.layout.FlowLayout;
 
 public class TestSpiniCON extends IcesceneApp {
 
@@ -38,19 +36,14 @@ public class TestSpiniCON extends IcesceneApp {
 
 	@Override
 	public void onSimpleInitApp() {
-		screen.setUseCustomCursors(true);
 
 		flyCam.setMoveSpeed(10);
 		flyCam.setDragToRotate(true);
 
-		final Slider<Float> speedSlider = new Slider<Float>(screen, new Vector2f(150, 20), new Vector2f(200, 24),
-				Element.Orientation.HORIZONTAL, true);
+		final Slider<Float> speedSlider = new Slider<Float>(screen);
 		speedSlider.setSliderModel(new FloatRangeSliderModel(0, 50, 1));
 
-		final Element icon = new Element(screen, UIDUtil.getUID(), Vector2f.ZERO, new Vector2f(31, 31), Vector4f.ZERO,
-				"Interface/Styles/Gold/Progress_0.png");
-		icon.setScaleEW(false);
-		icon.setScaleNS(false);
+		final BaseElement icon = new BaseElement(screen, Vector4f.ZERO, "Interface/Styles/Gold/Progress_0.png");
 		icon.addControl(new AbstractControl() {
 			private float rot;
 
@@ -60,7 +53,8 @@ public class TestSpiniCON extends IcesceneApp {
 				if (rot < 0) {
 					rot = FastMath.TWO_PI - tpf;
 				}
-				Quaternion fromAngles = new Quaternion().fromAngles(0, 0, rot -= tpf * (Float) speedSlider.getSelectedValue());
+				Quaternion fromAngles = new Quaternion().fromAngles(0, 0,
+						rot -= tpf * (Float) speedSlider.getSelectedValue());
 				// fromAngles.normalizeLocal();
 				spatial.center().move(icon.getX() + (icon.getWidth() / 2f), icon.getY() + (icon.getHeight() / 2f), 0)
 						.setLocalRotation(fromAngles);
@@ -76,13 +70,12 @@ public class TestSpiniCON extends IcesceneApp {
 			}
 		});
 
-		Element background = new Element(screen, UIDUtil.getUID(), Vector2f.ZERO, LUtil.LAYOUT_SIZE, Vector4f.ZERO,
-				"Interface/bgx.jpg");
-		background.addChild(icon);
+		BaseElement background = new BaseElement(screen, "Interface/bgx.jpg");
+		background.addElement(icon);
 
-		Panel window = new Panel(new BasicLayoutManager());
-		window.addChild(background);
-		window.addChild(speedSlider);
+		Panel window = new Panel(new FlowLayout());
+		window.addElement(background);
+		window.addElement(speedSlider);
 
 		screen.addElement(window);
 		window.show();

@@ -10,7 +10,9 @@ public class ClutterProp extends XMLProp {
 		super(name, app);
 	}
 
+	@Override
 	protected void configureMeshMaterialKey(ExtendedMaterialListKey mk) {
+		super.configureMeshMaterialKey(mk);
 		mk.setLighting(context.getPreferences().getBoolean(SceneConfig.TERRAIN_LIT, SceneConfig.TERRAIN_LIT_DEFAULT) ? ExtendedMaterialListKey.Lighting.LIT
 				: ExtendedMaterialListKey.Lighting.UNLIT);
 	}

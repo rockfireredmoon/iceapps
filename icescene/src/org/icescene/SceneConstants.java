@@ -34,7 +34,7 @@ public class SceneConstants {
 	/**
 	 * Default Tonegodgui Style Map
 	 */
-	public static String UI_DEFAULT_THEME = "Interface/Styles/Gold/style_map.gui.xml";
+	public static String UI_DEFAULT_THEME = "Interface/Styles/Gold/Gold.css";
 	/**
 	 * A fake delay for "cog" testing
 	 */
@@ -108,7 +108,7 @@ public class SceneConstants {
 	/**
 	 * Global max radius (terrain, clutter, props)
 	 */
-	public static int GLOBAL_MAX_LOAD = Integer.parseInt(System.getProperty("icescene.globalMaxRadius", "1"));
+	public static int GLOBAL_MAX_LOAD = Integer.parseInt(System.getProperty("icescene.globalMaxRadius", "2"));
 	/**
 	 * Maximum distance of possibly visible worlds units. This value is
 	 * appropriate
@@ -125,7 +125,7 @@ public class SceneConstants {
 	/**
 	 * Repeat interval of keyboard actions (where used)
 	 */
-	public static float KEYBOARD_REPEAT_INTERVAL = 0.2f;
+	public static float KEYBOARD_REPEAT_INTERVAL = 0.025f;
 
 	/**
 	 * When fading audio, fade by how much per interval (as a base value).

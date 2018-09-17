@@ -1,0 +1,11 @@
+Frame {
+	min-width: 300px;
+	min-height: 100px;
+	top: 100px;
+	left: 100px;
+}
+
+Frame .dragBar {
+	background-color: green;
+	font-size: 32px;
+}

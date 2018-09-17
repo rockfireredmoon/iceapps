@@ -1,7 +1,8 @@
 package org.icescene.tools;
 
+import org.icelib.beans.AbstractPropertyChangeSupport;
 
-public abstract class ToolElement {
+public abstract class ToolElement extends AbstractPropertyChangeSupport {
     protected String name;
     protected String help;
     protected int weight;

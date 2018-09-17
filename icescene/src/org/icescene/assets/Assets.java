@@ -1,10 +1,5 @@
 package org.icescene.assets;
 
-import icemoon.iceloader.AssetIndex;
-import icemoon.iceloader.ServerAssetManager;
-import icemoon.iceloader.locators.AssetCacheLocator;
-import icemoon.iceloader.locators.ServerLocator;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -21,6 +16,11 @@ import org.apache.commons.vfs2.VFS;
 import org.icescene.IcesceneApp;
 
 import com.jme3.asset.AssetLoadException;
+
+import icemoon.iceloader.AssetIndex;
+import icemoon.iceloader.ServerAssetManager;
+import icemoon.iceloader.locators.AssetCacheLocator;
+import icemoon.iceloader.locators.ServerLocator;
 
 /**
  * Configures the custom asset locators / loaders and contains helpers for

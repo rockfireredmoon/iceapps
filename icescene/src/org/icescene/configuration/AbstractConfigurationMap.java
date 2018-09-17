@@ -1,13 +1,13 @@
 package org.icescene.configuration;
 
-import icemoon.iceloader.ServerAssetManager;
-
 import java.util.Map;
 
 import org.icelib.beans.MappedMap;
 import org.icescripting.Scripts;
 
 import com.jme3.asset.AssetManager;
+
+import icemoon.iceloader.ServerAssetManager;
 
 public abstract class AbstractConfigurationMap<K, V> extends MappedMap<K, V> {
 	private static final long serialVersionUID = 1L;

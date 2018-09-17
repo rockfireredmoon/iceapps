@@ -1,11 +1,11 @@
 package org.icescene.help;
 
-import icetone.core.ElementManager;
-import icetone.xhtml.TGGUserAgent;
+import icetone.core.BaseScreen;
+import icetone.xhtml.XHTMLUserAgent;
 
-public class HelpUserAgent extends TGGUserAgent {
+public class HelpUserAgent extends XHTMLUserAgent {
 
-	public HelpUserAgent(ElementManager screen) {
+	public HelpUserAgent(BaseScreen screen) {
 		super(screen);
 	}
 }

@@ -7,6 +7,7 @@ import org.icescene.EditDirection;
 import org.icescene.entities.EntityContext;
 import org.icescene.io.ModifierKeysAppState;
 import org.icescene.io.MouseManager;
+import org.icescene.materials.MaterialUtil;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResults;
@@ -21,7 +22,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
-import com.jme3.shader.VarType;
 
 /**
  * Control that when attached to a spatial will attach a <b>Manipulator</b> to
@@ -38,9 +38,6 @@ public class ObjectManipulatorControl extends AbstractControl implements MouseMa
 	static final Logger LOG = Logger.getLogger(ObjectManipulatorControl.class.getName());
 	// TODO I have NO idea why this compensation is needed or if it will work
 	// everwhere
-	private final static float MOVE_X_SPEED = 1f;
-	private final static float MOVE_Z_SPEED = 1f;
-	private final static float MOVE_Y_SPEED = 1f;
 	private final static float ROTATE_SPEED = 10f;
 	private final static float PULSE_SPEED = 5f;
 	private final static ColorRGBA HIGHLIGHT_COLOR = ColorRGBA.White.mult(1.5f);
@@ -93,7 +90,7 @@ public class ObjectManipulatorControl extends AbstractControl implements MouseMa
 		}
 		if (handle != null) {
 			time += tpf * PULSE_SPEED;
-			currentColor.interpolate(targetColor, tpf * PULSE_SPEED);
+			currentColor.interpolateLocal(targetColor, tpf * PULSE_SPEED);
 			if (time >= 1) {
 				time = 0;
 				// Can interpolate no further
@@ -114,7 +111,7 @@ public class ObjectManipulatorControl extends AbstractControl implements MouseMa
 	private void setColorsForDirection(ColorRGBA col, EditDirection dir) {
 		for (Spatial s : manipulator.getSpatialsForDirection(direction)) {
 			final Geometry name1 = (Geometry) (((Node) s).getChild(0));
-			name1.getMaterial().setParam("Color", VarType.Vector4, col);
+			MaterialUtil.setColor(name1, col);
 		}
 	}
 
@@ -205,7 +202,7 @@ public class ObjectManipulatorControl extends AbstractControl implements MouseMa
 	}
 
 	public MouseManager.SelectResult isSelectable(MouseManager manager, Spatial spatial, MouseManager.Action action) {
-		if (spatial.getName().equals("NoDepthShaded") && spatial.getParent() != null
+		if ("NoDepthShaded".equals(spatial.getName()) && spatial.getParent() != null
 				&& spatial.getParent().getName().startsWith("EditCursor-")) {
 			return MouseManager.SelectResult.AS_PRIORITY;
 		}
@@ -223,8 +220,8 @@ public class ObjectManipulatorControl extends AbstractControl implements MouseMa
 		checkSelectedSpatial(spatial);
 	}
 
-	public void click(MouseManager manager, Spatial spatial, ModifierKeysAppState mods, int startModsMask, Vector3f contactPoint,
-			CollisionResults results, float tpf, boolean repeat) {
+	public void click(MouseManager manager, Spatial spatial, ModifierKeysAppState mods, int startModsMask,
+			Vector3f contactPoint, CollisionResults results, float tpf, boolean repeat) {
 	}
 
 	public void defaultSelect(MouseManager manager, ModifierKeysAppState mods, CollisionResults collision, float tpf) {
@@ -236,7 +233,8 @@ public class ObjectManipulatorControl extends AbstractControl implements MouseMa
 		dragPlane = null;
 	}
 
-	public void dragStart(Vector3f click3d, MouseManager manager, Spatial spatial, ModifierKeysAppState mods, Vector3f lookDir) {
+	public void dragStart(Vector3f click3d, MouseManager manager, Spatial spatial, ModifierKeysAppState mods,
+			Vector3f lookDir) {
 		dragJustStarted = true;
 		Spatial ds = getDraggableSpatial(manager, spatial);
 		if (direction == null && ds == null) {
@@ -272,14 +270,14 @@ public class ObjectManipulatorControl extends AbstractControl implements MouseMa
 		return where;
 	}
 
-	public void drag(MouseManager manager, Spatial spatial, ModifierKeysAppState mods, Vector3f click3d, Vector3f lastClick3d,
-			float tpf, int startModsMask, CollisionResults results, Vector3f lookDir) {
+	public void drag(MouseManager manager, Spatial spatial, ModifierKeysAppState mods, Vector3f click3d,
+			Vector3f lastClick3d, float tpf, int startModsMask, CollisionResults results, Vector3f lookDir) {
 		Vector3f camLoc = app.getCamera().getLocation();
 		Vector3f spcLoc = spatial.getWorldTranslation();
 		float len = spcLoc.subtract(camLoc).length();
 		if (LOG.isLoggable(Level.FINE)) {
-			LOG.fine("Drag " + click3d + " - " + lastClick3d + " = " + spatial + " cam loc: " + camLoc + " spcLoc: " + spcLoc
-					+ " len:" + len);
+			LOG.fine("Drag " + click3d + " - " + lastClick3d + " = " + spatial + " cam loc: " + camLoc + " spcLoc: "
+					+ spcLoc + " len:" + len);
 		}
 
 		if (dragJustStarted) {

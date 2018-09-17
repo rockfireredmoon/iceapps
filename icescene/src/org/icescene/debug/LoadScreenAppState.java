@@ -8,11 +8,8 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import org.icelib.QueueExecutor;
-import org.icescene.Alarm;
 import org.icescene.IcemoonAppState;
 import org.icescene.IcesceneApp;
-import org.iceui.UIConstants;
-import org.iceui.controls.BusySpinner;
 import org.iceui.controls.ElementStyle;
 
 import com.jme3.asset.AssetEventListener;
@@ -20,17 +17,21 @@ import com.jme3.asset.AssetKey;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector2f;
 
 import icemoon.iceloader.ServerAssetManager;
+import icetone.controls.containers.Panel;
 import icetone.controls.extras.Indicator;
 import icetone.controls.text.Label;
-import icetone.controls.windows.Panel;
-import icetone.core.Container;
-import icetone.core.Element;
-import icetone.core.Element.ZPriority;
+import icetone.core.BaseElement;
+import icetone.core.Orientation;
+import icetone.core.Size;
+import icetone.core.StyledContainer;
+import icetone.core.ZPriority;
+import icetone.core.layout.Border;
 import icetone.core.layout.BorderLayout;
 import icetone.core.layout.mig.MigLayout;
+import icetone.core.utils.Alarm;
+import icetone.extras.controls.BusySpinner;
 
 public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 		implements ServerAssetManager.DownloadingListener, AssetEventListener, QueueExecutor.Listener {
@@ -83,7 +84,7 @@ public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 	}
 
 	private boolean showing;
-	private Element loadScreen;
+	private BaseElement loadScreen;
 	private Label loadText;
 	private Indicator overallProgress;
 	private Indicator fileProgress;
@@ -140,54 +141,53 @@ public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 			LOG.info("Showing load screen");
 			if (app != null) {
 
-				loadScreen = new Element(screen);
+				loadScreen = new BaseElement(screen);
 				loadScreen.setIgnoreGlobalAlpha(true);
-				loadScreen.setIgnoreMouse(false);
 				loadScreen.setGlobalAlpha(1);
 				loadScreen.setLayoutManager(
 						new MigLayout(screen, "fill, wrap 1", "push[400:600:800]push", "push[:140:]"));
 
 				// Progress title bar
-				Container progressTitle = new Container(screen);
+				StyledContainer progressTitle = new StyledContainer(screen);
 				progressTitle.setLayoutManager(new BorderLayout());
 				Label l = new Label("Loading", screen);
-				ElementStyle.altColor(screen, l);
-				ElementStyle.medium(screen, l);
+				ElementStyle.altColor(l);
+				ElementStyle.medium(l);
 				l.setTextAlign(BitmapFont.Align.Left);
 				l.setTextWrap(LineWrapMode.Word);
-				progressTitle.addChild(l, BorderLayout.Border.WEST);
+				progressTitle.addElement(l, Border.WEST);
 				final BusySpinner busySpinner = new BusySpinner(screen);
-				busySpinner.setSpeed(UIConstants.SPINNER_SPEED);
-				progressTitle.addChild(busySpinner, BorderLayout.Border.EAST);
+				busySpinner.setSpeed(BusySpinner.DEFAULT_SPINNER_SPEED);
+				progressTitle.addElement(busySpinner, Border.EAST);
 
 				// Progress window
 				Panel progress = new Panel(screen);
 				progress.setLayoutManager(new MigLayout(screen, "fill, wrap 1", "[]", "[][]"));
-				progress.setIsResizable(false);
-				progress.setIsMovable(false);
-				progress.addChild(progressTitle, "growx, wrap");
-				overallProgress = new Indicator(screen, Element.Orientation.HORIZONTAL);
+				progress.setResizable(false);
+				progress.setMovable(false);
+				progress.addElement(progressTitle, "growx, wrap");
+				overallProgress = new Indicator(screen, Orientation.HORIZONTAL);
 				overallProgress.setMaxValue(0);
 				overallProgress.setCurrentValue(0);
-				progress.addChild(overallProgress, "shrink 0, growx, wrap");
-				loadScreen.addChild(progress, "growx");
+				progress.addElement(overallProgress, "shrink 0, growx, wrap");
+				loadScreen.addElement(progress, "growx");
 
 				// Bottom progress
-				Container bottom = new Container(screen);
+				StyledContainer bottom = new StyledContainer(screen);
 				bottom.setLayoutManager(new BorderLayout());
 				loadText = new Label("Busy", screen);
 				loadText.setTextAlign(BitmapFont.Align.Left);
-				ElementStyle.normal(screen, loadText, false, false, true);
-				bottom.addChild(loadText, BorderLayout.Border.CENTER);
-				fileProgress = new Indicator(screen, Element.Orientation.HORIZONTAL);
+				ElementStyle.normal(loadText, false, false, true);
+				bottom.addElement(loadText, Border.CENTER);
+				fileProgress = new Indicator(screen, Orientation.HORIZONTAL);
 				fileProgress.setIndicatorColor(ColorRGBA.Green);
-				fileProgress.setPreferredDimensions(new Vector2f(150, 20));
+				fileProgress.setPreferredDimensions(new Size(150, 20));
 				fileProgress.setMaxValue(100);
 				fileProgress.setCurrentValue(0);
-				bottom.addChild(fileProgress, BorderLayout.Border.EAST);
-				progress.addChild(bottom, "growx");
+				bottom.addElement(fileProgress, Border.EAST);
+				progress.addElement(bottom, "growx");
 
-				app.getLayers(ZPriority.FOREGROUND).addChild(loadScreen);
+				app.getLayers(ZPriority.FOREGROUND).addElement(loadScreen);
 
 			}
 			showing = true;
@@ -198,7 +198,7 @@ public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 		if (showing) {
 			LOG.info("Hiding load screen");
 			if (app != null) {
-				app.getLayers(ZPriority.FOREGROUND).removeChild(loadScreen);
+				app.getLayers(ZPriority.FOREGROUND).removeElement(loadScreen);
 			}
 			overallProgress.setMaxValue(0);
 			loadScreen.setElementParent(null);
@@ -207,8 +207,6 @@ public class LoadScreenAppState extends IcemoonAppState<IcemoonAppState<?>>
 	}
 
 	public void downloadStarting(final AssetKey key, final long size) {
-		if (key.getName().equals("Common/MatDefs/Gui/Gui.frag"))
-			System.out.println("Break!");
 		app.enqueue(new Callable<Void>() {
 			public Void call() throws Exception {
 				if (autoShowOnDownloads && !showing) {

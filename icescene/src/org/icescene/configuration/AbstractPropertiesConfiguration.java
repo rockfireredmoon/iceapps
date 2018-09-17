@@ -1,7 +1,5 @@
 package org.icescene.configuration;
 
-import icemoon.iceloader.AbstractConfiguration;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,11 +10,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.iceui.controls.UIUtil;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+
+import icemoon.iceloader.AbstractConfiguration;
+import icetone.extras.util.ExtrasUtil;
 
 public abstract class AbstractPropertiesConfiguration<T extends AbstractPropertiesConfiguration> extends AbstractConfiguration<LinkedHashMap<String, String>> {
 
@@ -174,7 +173,7 @@ public abstract class AbstractPropertiesConfiguration<T extends AbstractProperti
         if (val == null) {
             getBackingObject().remove(key);
         } else {
-            getBackingObject().put(key, UIUtil.toHexString(val));
+            getBackingObject().put(key, ExtrasUtil.toHexString(val));
         }
     }
 
@@ -199,7 +198,7 @@ public abstract class AbstractPropertiesConfiguration<T extends AbstractProperti
         try {
             String col = get(key);
             if (col != null) {
-                return UIUtil.fromColorString(col);
+                return ExtrasUtil.fromColorString(col);
             } else {
                 return defaultValue;
             }

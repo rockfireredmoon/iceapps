@@ -1,6 +1,5 @@
 package org.icescene.scene;
 
-import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.Preferences;
 
@@ -19,9 +18,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.debug.Grid;
 
-public class AbstractDebugSceneAppState extends IcemoonAppState<IcemoonAppState> {
+public class AbstractDebugSceneAppState extends IcemoonAppState<IcemoonAppState<?>> {
 
-	private final static Logger LOG = Logger.getLogger(AbstractDebugSceneAppState.class.getName());
 	protected final Node parentNode;
 	protected Geometry gridGeom;
 	protected Node arrowNode;
@@ -53,26 +51,24 @@ public class AbstractDebugSceneAppState extends IcemoonAppState<IcemoonAppState>
 
 		Node node = new Node();
 		Arrow arrow = new Arrow(Vector3f.UNIT_X);
-		arrow.setLineWidth(4);
-		putShape(node, arrow, ColorRGBA.Red);
+		putShape(node, arrow, ColorRGBA.Red, 4);
 
 		arrow = new Arrow(Vector3f.UNIT_Y);
-		arrow.setLineWidth(4);
-		putShape(node, arrow, ColorRGBA.Green);
+		putShape(node, arrow, ColorRGBA.Green, 4);
 
 		arrow = new Arrow(Vector3f.UNIT_Z);
-		arrow.setLineWidth(4);
-		putShape(node, arrow, ColorRGBA.Blue);
+		putShape(node, arrow, ColorRGBA.Blue, 4);
 
 		node.setLocalTranslation(pos);
 
 		return node;
 	}
 
-	protected Geometry putShape(Node node, Mesh shape, ColorRGBA color) {
+	protected Geometry putShape(Node node, Mesh shape, ColorRGBA color, int lineWidth) {
 		Geometry g = new Geometry("coordinate axis", shape);
 		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 		mat.getAdditionalRenderState().setWireframe(true);
+		mat.getAdditionalRenderState().setLineWidth(lineWidth);
 		mat.setColor("Color", color);
 		g.setMaterial(mat);
 		node.attachChild(g);

@@ -4,8 +4,12 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 public class NodeVisitor {
+	public enum VisitResult {
+		END, CONTINUE
+	}
+	
     public interface Visit {
-        void visit(Spatial node);
+        VisitResult visit(Spatial node);
     }
     private final Node root;
     
@@ -18,8 +22,8 @@ public class NodeVisitor {
     }
     
     void visit(Spatial node, Visit visit) {
-        visit.visit(node);
-        if(node instanceof Node) {
+        VisitResult res = visit.visit(node);
+        if(!VisitResult.END.equals(res) && node instanceof Node) {
             for(Spatial n : ((Node)node).getChildren()) {
                 visit(n, visit);
             }

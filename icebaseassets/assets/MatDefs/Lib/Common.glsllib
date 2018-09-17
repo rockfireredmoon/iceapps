@@ -14,7 +14,7 @@ void checkDiffuse(in vec4 diffuseColor) {
     #endif
     
     #ifdef LIMIT_ALPHA
-    float alpha = 1 - diffuseColor.a;
+    float alpha = 1.0 - diffuseColor.a;
     if(alpha >= m_AlphaDiscardLimit) {
     	discard;
     }

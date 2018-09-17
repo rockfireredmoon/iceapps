@@ -1,104 +1,105 @@
 package org.icescene.tools;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import org.icescene.IcesceneApp;
 import org.icescene.SceneConfig;
-import org.iceui.controls.FancyDialogBox;
-import org.iceui.controls.FancyWindow;
-import org.iceui.controls.UIUtil;
-import org.iceui.controls.ZMenu;
+import org.iceui.controls.ElementStyle;
 
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 
-import icetone.controls.buttons.Button;
+import icetone.controls.buttons.ButtonGroup;
 import icetone.controls.buttons.CheckBox;
 import icetone.controls.buttons.RadioButton;
-import icetone.controls.buttons.RadioButtonGroup;
-import icetone.controls.windows.Panel;
-import icetone.core.Element;
-import icetone.core.ElementManager;
-import icetone.core.layout.LUtil;
+import icetone.controls.containers.Panel;
+import icetone.controls.menuing.Menu;
+import icetone.core.BaseElement;
+import icetone.core.BaseScreen;
+import icetone.core.ToolKit;
+import icetone.core.event.MouseUIButtonEvent;
+import icetone.core.layout.ScreenLayoutConstraints;
 import icetone.core.layout.mig.MigLayout;
-import icetone.listeners.MouseButtonListener;
+import icetone.extras.windows.DialogBox;
 
-public class ToolPanel extends Panel implements MouseButtonListener {
+public class ToolPanel extends Panel implements PropertyChangeListener {
 
 	private final static Logger LOG = Logger.getLogger(ToolPanel.class.getName());
 
-	private ZMenu layoutMenu;
+	private Menu<Integer> layoutMenu;
 	private final DragContext dragContext;
 	private final ToolBox toolBox;
 
 	public ToolPanel(final Preferences prefs, DragContext dragContext, final ToolBox toolBox, String toolBoxName,
-			final ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
-		super(screen, UID, position, LUtil.LAYOUT_SIZE,
-				screen.getStyle(toolBox.getStyle().getWindowStyleName()).getVector4f("resizeBorders"),
-				screen.getStyle(toolBox.getStyle().getWindowStyleName()).getString("defaultImg"));
+			final BaseScreen screen) {
+		super(screen, toolBoxName);
 		this.dragContext = dragContext;
 		this.toolBox = toolBox;
-		UIUtil.cleanUpWindow(this);
 		final String lockKey = toolBoxName + SceneConfig.WINDOW_LOCK;
 		final boolean lock = prefs.getBoolean(lockKey, false);
 
 		// Layout Menu
 		if (toolBox.isConfigurable()) {
-			layoutMenu = new ZMenu(screen) {
-			};
+			layoutMenu = new Menu<Integer>(screen);
 			final int[] sizes = new int[] { 1, 8, 2, 4 };
-			CheckBox lockEl = new CheckBox(screen) {
-				@Override
-				public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-					ToolPanel.this.setIsMovable(!toggled);
-					prefs.putBoolean(lockKey, toggled);
-					System.out.println("locked@: " + toggled);
-					layoutMenu.close();
-				}
-			};
-			lockEl.setIsCheckedNoCallback(lock);
-			layoutMenu.addMenuItem("Lock", lockEl, lock);
-			RadioButtonGroup bg = new RadioButtonGroup(screen) {
-				@Override
-				public void onSelect(int paramInt, Button paramButton) {
-					setLayoutManager(new MigLayout(screen, "ins 0, fill, gap 0, gap 0, wrap " + sizes[paramInt]));
-					ToolPanel.this.sizeToContent();
-					toolBox.setHorizontalCells(sizes[paramInt]);
-					layoutMenu.close();
-				}
-			};
+			CheckBox lockEl = new CheckBox(screen);
+			lockEl.setChecked(lock);
+			lockEl.onChange(evt -> {
+				ToolPanel.this.setMovable(!evt.getNewValue());
+				prefs.putBoolean(lockKey, evt.getNewValue());
+				layoutMenu.close();
+			});
+			layoutMenu.addMenuItem("Lock", lockEl, null);
+			ButtonGroup<RadioButton<Integer>> bg = new ButtonGroup<>();
 			for (int sz : sizes) {
-				RadioButton rb = new RadioButton(screen);
-				if (sz == toolBox.getHorizontalCells()) {
-					rb.setIsCheckedNoCallback(true);
-				}
+				RadioButton<Integer> rb = new RadioButton<>(screen, sz);
 				bg.addButton(rb);
-				layoutMenu.addMenuItem(sz + "x" + (8 / sz), rb, sz);
+				int vsz = (8 / sz);
+				if (sz == toolBox.getHorizontalCells() && vsz == toolBox.getVerticalCells()) {
+					rb.setState(true);
+				}
+				layoutMenu.addMenuItem(sz + "x" + vsz, rb, sz);
 			}
 			layoutMenu.setDestroyOnHide(false);
 			screen.addElement(layoutMenu);
+			bg.onChange(evt -> {
+				Integer val = evt.getSource().getSelected().getValue();
+				setLayoutManager(new MigLayout(screen, "ins 0, fill, gap 0, gap 0, wrap " + val));
+				ToolPanel.this.sizeToContent();
+				toolBox.setHorizontalCells(val);
+				layoutMenu.close();
+			});
 		}
 
-		setIsResizable(false);
-		setIsMovable(!lock && toolBox.isMoveable());
+		setResizable(false);
+		setLockToParentBounds(true);
+		setMovable(!lock && toolBox.isMoveable());
 		setLayoutManager(new MigLayout(screen, "ins 0, wrap " + toolBox.getHorizontalCells() + ", fill, gap 0"));
-		// Show menu
 
+		onMouseReleased(evt -> {
+			if (layoutMenu != null) {
+				layoutMenu.showMenu(null, evt.getX(), evt.getY());
+			}
+		}, MouseUIButtonEvent.RIGHT);
+
+		// Watch for changes in the toolbox
+		toolBox.addPropertyChangeListener(this);
 	}
 
 	@Override
-	public void moveTo(float x, float y) {
-		// TODO Auto-generated method stub
-		super.moveTo(x, y);
+	public void controlCleanupHook() {
+		toolBox.removePropertyChangeListener(this);
 	}
 
 	public void addTool(final Tool tool, int s) {
 		if (LOG.isLoggable(Level.FINE)) {
 			LOG.fine(String.format("Adding tool %s", tool == null ? "EMPTY" : tool.getName()));
 		}
-		addChild(new ToolDroppable(dragContext, screen, toolBox, tool, s) {
+		addElement(new ToolDroppable(dragContext, screen, toolBox, tool, s) {
 
 			@Override
 			protected void onDragDropComplete(MouseButtonEvent evt) {
@@ -107,42 +108,43 @@ public class ToolPanel extends Panel implements MouseButtonListener {
 
 			@Override
 			protected boolean doClick(MouseButtonEvent evt) {
-				tool.actionPerformed(new ActionData((IcesceneApp) app, evt.getX(), evt.getY()));
+				tool.actionPerformed(
+						new ActionData((IcesceneApp) ToolKit.get().getApplication(), evt.getX(), evt.getY()));
 				return true;
 			}
 
 			@Override
-			protected boolean doEndDraggableDrag(MouseButtonEvent mbe, Element elmnt) {
+			protected boolean doEndDraggableDrag(MouseButtonEvent mbe, BaseElement elmnt) {
 				// Look at what is at target element
 				final ToolDroppable thisTool = this;
 				if (elmnt == null) {
 					if (getTool().isTrashable()) {
-						final FancyDialogBox dialog = new FancyDialogBox(screen, new Vector2f(15, 15), FancyWindow.Size.LARGE,
-								true) {
+						final DialogBox dialog = new DialogBox(screen, new Vector2f(15, 15), true) {
+							{
+								setStyleClass("large");
+							}
+
 							@Override
 							public void onButtonCancelPressed(MouseButtonEvent evt, boolean toggled) {
-								hideWindow();
+								hide();
 							}
 
 							@Override
 							public void onButtonOkPressed(MouseButtonEvent evt, boolean toggled) {
 								getToolBox().trash(getTool());
 								screen.removeElement(thisTool.getDraggable());
-								hideWindow();
+								hide();
 							}
 						};
 						dialog.setDestroyOnHide(true);
-						dialog.getDragBar().setFontColor(screen.getStyle("Common").getColorRGBA("warningColor"));
+						ElementStyle.warningColor(dialog.getDragBar());
 						dialog.setWindowTitle("Trash Tool");
 						dialog.setButtonOkText("Trash");
-						dialog.setMsg("Are you sure you want to trash " + getTool().getName());
-						dialog.sizeToContent();
-						dialog.setIsResizable(false);
-						dialog.setIsMovable(false);
-						dialog.sizeToContent();
-						UIUtil.center(screen, dialog);
-						screen.addElement(dialog, null, true);
-						dialog.showAsModal(true);
+						dialog.setText("Are you sure you want to trash " + getTool().getName());
+						dialog.setResizable(false);
+						dialog.setMovable(false);
+						dialog.setModal(true);
+						screen.showElement(dialog, ScreenLayoutConstraints.center);
 
 						return false;
 					}
@@ -160,26 +162,17 @@ public class ToolPanel extends Panel implements MouseButtonListener {
 		});
 	}
 
-	public void onMouseLeftPressed(MouseButtonEvent evt) {
-	}
-
-	public void onMouseLeftReleased(MouseButtonEvent evt) {
-	}
-
-	public void onMouseRightPressed(MouseButtonEvent evt) {
-	}
-
-	public void onMouseRightReleased(MouseButtonEvent evt) {
-		if (layoutMenu != null) {
-			layoutMenu.showMenu(null, evt.getX(), evt.getY());
-		}
-	}
-
 	protected void onToolDragDropComplete(MouseButtonEvent evt) {
 	}
 
 	@Override
-	public String toString() {
-		return "ToolPanel [toolBox=" + toolBox + "]";
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName().equals(ToolBox.PROP_VISIBLE)) {
+			if (Boolean.TRUE.equals(evt.getNewValue()))
+				show();
+			else
+				hide();
+		}
 	}
+
 }

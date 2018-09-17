@@ -14,13 +14,12 @@ import org.icelib.AttachmentItem;
 import org.icelib.AttachmentPoint;
 import org.icelib.EntityKey;
 import org.icelib.EquipType;
-import org.icelib.Icelib;
 import org.icelib.RGB;
 import org.icelib.Slot;
+import org.icescene.SceneConfig;
 import org.icescene.ServiceRef;
 import org.icescene.assets.ExtendedMaterialListKey;
 import org.icescene.assets.ExtendedOgreMeshKey;
-import org.icescene.assets.ExtendedMaterialListKey.Lighting;
 import org.icescene.configuration.attachments.AttachableDef;
 import org.icescene.configuration.attachments.AttachmentPlace;
 import org.icescene.configuration.attachments.AttachmentPoints;
@@ -51,7 +50,8 @@ public abstract class AbstractCreatureEntity<C extends AbstractCreatureDefinitio
 	@ServiceRef
 	protected static AttachableDef attachableDef;
 
-	public AbstractCreatureEntity(EntityContext context, AbstractCreature creature, String path, String entityInstanceId) {
+	public AbstractCreatureEntity(EntityContext context, AbstractCreature creature, String path,
+			String entityInstanceId) {
 		super(context, creature, path, entityInstanceId);
 	}
 
@@ -76,6 +76,8 @@ public abstract class AbstractCreatureEntity<C extends AbstractCreatureDefinitio
 			@Override
 			public void configureMaterialKey(ExtendedMaterialListKey mk) {
 				mk.setCache(false);
+				if (fixedLighting != null)
+					mk.setLighting(fixedLighting);
 				mk.setLitMaterialDef("MatDefs/MOB_Lit.j3md");
 				mk.setUnlitMaterialDef("MatDefs/MOB_Unlit.j3md");
 			}
@@ -140,6 +142,8 @@ public abstract class AbstractCreatureEntity<C extends AbstractCreatureDefinitio
 			LOG.warning(String.format("No skeleton for %s", getCreatureMeshPath()));
 		} else {
 			try {
+				skeletonControl.setHardwareSkinningPreferred(context.getPreferences()
+						.getBoolean(SceneConfig.SCENE_HARDWARE_SKINNING, SceneConfig.SCENE_HARDWARE_SKINNING_DEFAULT));
 				skel = skeletonControl.getSkeleton();
 				if (isShowingNameplate()) {
 					addNameplate();

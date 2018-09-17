@@ -1,8 +1,5 @@
 package org.icescene.audio;
 
-import icemoon.iceloader.locators.AbstractServerLocator;
-import icemoon.iceloader.locators.AssetCacheLocator;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -13,6 +10,9 @@ import java.util.logging.Logger;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
+
+import icemoon.iceloader.locators.AbstractServerLocator;
+import icemoon.iceloader.locators.AssetCacheLocator;
 
 public class ExternalAudioStreamLocator extends AbstractServerLocator {
 

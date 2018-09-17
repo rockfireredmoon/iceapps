@@ -16,22 +16,22 @@ import java.util.prefs.Preferences;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileNotFoundException;
 import org.icelib.QueueExecutor;
+import org.icescene.HUDMessageAppState;
 import org.icescene.IcemoonAppState;
 import org.icescene.SceneConfig;
 import org.icescene.configuration.AudioConfiguration;
 import org.icescene.configuration.AudioConfiguration.Sound;
-import org.iceui.HPosition;
-import org.iceui.VPosition;
-import org.iceui.controls.BusySpinner;
-import org.iceui.controls.FancyPositionableWindow;
-import org.iceui.controls.FancyWindow;
-import org.iceui.controls.UIUtil;
 
-import com.jme3.math.Vector2f;
+import com.jme3.font.BitmapFont.Align;
+import com.jme3.font.BitmapFont.VAlign;
 
 import icetone.controls.text.Label;
+import icetone.core.Size;
+import icetone.core.layout.Border;
 import icetone.core.layout.BorderLayout;
-import icetone.core.layout.LUtil;
+import icetone.core.layout.ScreenLayoutConstraints;
+import icetone.extras.controls.BusySpinner;
+import icetone.extras.windows.PositionableFrame;
 
 public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 
@@ -41,6 +41,7 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 			AudioQueue.class);
 	private static AudioAppState instance;
 	ExecutorService executor;
+	private boolean reindex;
 
 	public static AudioAppState get() {
 		return instance;
@@ -59,7 +60,7 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 					String.format("Could not find sound configuration for %s, no audio will be removed", soundName));
 		} else {
 			if (queue == null) {
-				queue = sound.getChannel();
+				queue = sound.getQueue();
 			}
 			AudioQueueHandler qh = getQueue(queue);
 			qh.fadeAndRemove(sound.getPath());
@@ -78,7 +79,7 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 					String.format("Could not find sound configuration for %s, no audio will be played", soundName));
 		} else {
 			if (queue == null) {
-				queue = sound.getChannel();
+				queue = sound.getQueue();
 			}
 			QueuedAudio music = new QueuedAudio(owner, sound.getPath(), interval, sound.isLoop(), queue,
 					sound.getGain() * gain);
@@ -132,9 +133,15 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 		if (LOG.isLoggable(Level.FINE))
 			LOG.fine("Queueing " + music);
 		AudioQueueHandler qh = getQueue(music.getQueue());
-		if (qh.queue(music)) {
-			LOG.fine("Queue is idle, playing (" + qh + ")");
-			qh.playNextInQueue();
+		try {
+			qh.queue(music);
+		} catch (IllegalStateException ise) {
+			LOG.log(Level.SEVERE, "Failed to queue audio.", ise);
+			HUDMessageAppState ham = app.getStateManager().getState(HUDMessageAppState.class);
+			if (ham != null) {
+				ham.message(Level.SEVERE, "Failed to queue audio.", ise);
+			}
+
 		}
 	}
 
@@ -199,11 +206,10 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 		return qh;
 	}
 
-	@Override
-	protected void postInitialize() {
+	protected void onStateAttached() {
 
 		executor = Executors.newSingleThreadExecutor(new QueueExecutor.DaemonThreadFactory("AudioQueue"));
-		boolean reindex = app.getAssets().isUpdateIndexes();
+		reindex = app.getAssets().isUpdateIndexes();
 		if (!reindex) {
 			try {
 				AudioConfiguration.loadIndex(assetManager);
@@ -214,23 +220,22 @@ public class AudioAppState extends IcemoonAppState<IcemoonAppState<?>> {
 				reindex = true;
 			}
 		}
-		if (reindex) {
+	}
 
-			FancyPositionableWindow c = new FancyPositionableWindow(screen, "ExitPopup", 0, VPosition.MIDDLE,
-					HPosition.CENTER, LUtil.LAYOUT_SIZE, FancyWindow.Size.SMALL, true) {
-			};
+	@Override
+	protected void postInitialize() {
+		if (reindex) {
+			PositionableFrame c = new PositionableFrame(screen, "ExitPopup", 0, VAlign.Center, Align.Center, null,
+					true);
 			c.setWindowTitle("Re-indexing");
-			c.setIsMovable(false);
-			c.setIsResizable(false);
-			c.setIsModal(true);
+			c.setMovable(false);
+			c.setResizable(false);
+			c.setModal(true);
 			c.getContentArea().setLayoutManager(new BorderLayout());
-			c.getContentArea().addChild(new Label("Indexing audio. Please wait ...", screen));
-			c.getContentArea().addChild(new BusySpinner(screen, new Vector2f(31, 31)).setSpeed(10f),
-					BorderLayout.Border.EAST);
-			c.sizeToContent();
-			UIUtil.center(screen, c);
-			app.getScreen().addElement(c, null, true);
-			c.showAsModal(true);
+			c.getContentArea().addElement(new Label("Indexing audio. Please wait ...", screen));
+			c.getContentArea().addElement(new BusySpinner(screen, new Size(31, 31)).setSpeed(10f), Border.EAST);
+			c.setModal(true);
+			screen.showElement(c, ScreenLayoutConstraints.center);
 			executor.execute(new Runnable() {
 
 				@Override

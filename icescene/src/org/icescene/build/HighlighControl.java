@@ -1,6 +1,7 @@
 package org.icescene.build;
 
 import org.icescene.NodeVisitor;
+import org.icescene.NodeVisitor.VisitResult;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Geometry;
@@ -45,10 +46,12 @@ public class HighlighControl extends Emitter {
 			nv.visit(new NodeVisitor.Visit() {
 				
 				@Override
-				public void visit(Spatial spatial) {
+				public VisitResult visit(Spatial spatial) {
 					if(spatial != null && spatial instanceof Geometry) {
 						setShape(((Geometry)spatial).getMesh());
+						return VisitResult.END;
 					}
+					return VisitResult.CONTINUE;
 				}
 			});
 		}

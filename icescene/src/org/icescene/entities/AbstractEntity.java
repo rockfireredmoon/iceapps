@@ -3,6 +3,7 @@ package org.icescene.entities;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.icescene.assets.ExtendedMaterialListKey.Lighting;
 import org.icescene.configuration.MeshConfiguration;
 
 import com.jme3.asset.AssetManager;
@@ -13,12 +14,22 @@ import com.jme3.texture.Texture;
 
 public abstract class AbstractEntity {
 
+	protected Lighting fixedLighting;
+	
 	private static final Logger LOG = Logger.getLogger(AbstractEntity.class.getName());
 
 	public AbstractEntity() {
 	}
 
 	public abstract Spatial getSpatial();
+
+	public Lighting getFixedLighting() {
+		return fixedLighting;
+	}
+
+	public void setFixedLighting(Lighting fixedLighting) {
+		this.fixedLighting = fixedLighting;
+	}
 
 	protected boolean loadToKey(AssetManager assetManager, MeshConfiguration meshConfig, MeshConfiguration.TextureDefinition def,
 			Material material, String key) {

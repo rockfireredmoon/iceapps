@@ -6,44 +6,44 @@ import org.iceui.IceUI;
 import com.jme3.math.ColorRGBA;
 
 public class WaterWaterFilter implements WaterFilterCapable {
-    
-    public ColorRGBA getColor() {
-        return IceUI.toRGBA(new Color(155, 234, 234));
-    }
 
-    public ColorRGBA getDeepWaterColor() {
-        return IceUI.toRGBA(new Color(60, 103, 102));
-    }
+	public ColorRGBA getColor() {
+		return IceUI.toRGBA(new Color(155, 234, 234));
+	}
 
-    public float getTransparency() {
-        return .3f;
-    }
+	public ColorRGBA getDeepWaterColor() {
+		return IceUI.toRGBA(new Color(60, 103, 102));
+	}
 
-    public float getMaxAmplitude() {
-       return 5;
-    }
+	public float getTransparency() {
+		return .3f;
+	}
 
-    public float getWaveScale() {
-        return 0.005f;
-    }
+	public float getMaxAmplitude() {
+		return 5;
+	}
 
-    public float getSunScale() {
-        return 3;
-    }
+	public float getWaveScale() {
+		return 0.005f;
+	}
 
-    public ColorRGBA getSunColor() {
-        return null;
-    }
+	public float getSunScale() {
+		return 3;
+	}
 
-    public float getShininess() {
-        return 0.7f;
-    }
+	public ColorRGBA getSunColor() {
+		return null;
+	}
 
-    public float getSpeed() {
-        return 1.0f;
-    }
+	public float getShininess() {
+		return 0.7f;
+	}
 
-    public float getRefraction() {
-        return 0f;
-    }
+	public float getSpeed() {
+		return 1.0f;
+	}
+
+	public float getRefraction() {
+		return 0f;
+	}
 }

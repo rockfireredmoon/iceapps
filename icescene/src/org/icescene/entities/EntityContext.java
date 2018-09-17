@@ -2,13 +2,14 @@ package org.icescene.entities;
 
 import java.util.prefs.Preferences;
 
-import org.icescene.Alarm;
 import org.icescene.IcesceneApp;
 import org.icescene.props.ComponentManager;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+
+import icetone.core.utils.Alarm;
 
 public interface EntityContext {
 

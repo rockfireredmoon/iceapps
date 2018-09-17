@@ -6,9 +6,9 @@
 	<description>A playground for testing things.</description>
 	<parent>
 		<groupId>org.icemoon</groupId>
-		<artifactId>ice</artifactId>
+		<artifactId>iceapps</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../ice</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -52,15 +52,25 @@
 		</dependency>
 		<dependency>
 			<groupId>org.icemoon</groupId>
+			<artifactId>icetone-theme-paranoid</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.icemoon</groupId>
+			<artifactId>icetone-theme-steampunk</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.icemoon</groupId>
 			<artifactId>iceassets</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- <dependency>
-			<groupId>tonegod</groupId>
-			<artifactId>icetone.xhtml.examples</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+		<dependency>
+			<groupId>org.icemoon</groupId>
+			<artifactId>iceclient-app</artifactId>
+			<version>${project.version}</version>
 			<scope>provided</scope>
-		</dependency> -->
+		</dependency>
 	</dependencies>
 </project>

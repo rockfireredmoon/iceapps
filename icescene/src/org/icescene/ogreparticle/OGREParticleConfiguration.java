@@ -1,8 +1,5 @@
 package org.icescene.ogreparticle;
 
-import icemoon.iceloader.AbstractConfiguration;
-import icemoon.iceloader.ServerAssetManager;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +29,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 
 import emitter.EmitterMesh.DirectionType;
+import icemoon.iceloader.AbstractConfiguration;
+import icemoon.iceloader.ServerAssetManager;
 
 /**
  * Creates particle emitters from OGRE particle scripts.

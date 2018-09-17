@@ -5,7 +5,8 @@ material NoDepthShaded
 	{
 		pass
 		{
-			ambient 0 0 0
+			// TODO the original had ambient 0 0 0 .. but this doesnt work well. Investigate 
+			ambient 1 1 1
 			emissive 0.5 0.5 0.5
 			diffuse 1 1 1
 			specular 0 0 0 1
@@ -25,7 +26,8 @@ material NoDepthShaded
 		}
 		pass
 		{
-			ambient 0 0 0
+			// TODO the original had ambient 0 0 0 .. but this doesnt work well. Investigate
+			ambient 1 1 1
 			emissive 0.5 0.5 0.5
 			diffuse 1 1 1
 			specular 0 0 0 1

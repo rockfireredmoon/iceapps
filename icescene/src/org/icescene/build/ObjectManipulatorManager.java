@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.icelib.Icelib;
 import org.icescene.io.ModifierKeysAppState;
 import org.icescene.io.MouseManager;
 import org.icescene.scene.AbstractBuildableControl;
@@ -98,7 +99,7 @@ public class ObjectManipulatorManager<T extends Buildable, S extends AbstractBui
 
                 @Override
                 protected void rotateSpatial(float x, float y, float z) {
-                	System.err.println("x: " + x + " y: " + y + " z: " +z);
+                	Icelib.removeMe("x: " + x + " y: " + y + " z: " +z);
                     buildable.rotateBuildable(x, y, z);
                 }
 

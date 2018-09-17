@@ -16,17 +16,12 @@ import org.icescene.audio.AudioQueue;
 import org.icescene.audio.QueuedAudio;
 import org.icescene.props.EntityFactory;
 import org.icescene.ui.PreviewModelView;
-import org.iceui.controls.FancyButton;
-import org.iceui.controls.FancyWindow;
-import org.iceui.controls.FancyWindow.Size;
 import org.iceui.controls.ImageFieldControl;
 import org.iceui.controls.SoundFieldControl;
 import org.iceui.controls.SoundFieldControl.Type;
-import org.iceui.controls.chooser.ChooserDialog;
 import org.iceui.controls.chooser.SoundSourceDialog;
 import org.iceui.controls.chooser.SoundSourceDialog.Source;
 
-import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
@@ -34,22 +29,21 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 import icemoon.iceloader.ServerAssetManager;
-import icetone.core.Element;
+import icetone.controls.buttons.PushButton;
+import icetone.controls.containers.Frame;
+import icetone.core.BaseElement;
+import icetone.core.ToolKit;
 import icetone.core.layout.mig.MigLayout;
+import icetone.extras.chooser.ChooserDialog;
+import icetone.extras.chooser.StringChooserModel;
 
 public class TestImageChooser extends IcesceneApp {
 
 	public static void main(String[] args) throws Exception {
 		AppInfo.context = TestImageChooser.class;
-
-		// Parse command line
 		Options opts = createOptions();
 		Assets.addOptions(opts);
-
 		CommandLine cmdLine = parseCommandLine(opts, args);
-
-		// A single argument must be supplied, the URL (which is used to
-		// deterime router, which in turn locates simulator)
 		TestImageChooser app = new TestImageChooser(cmdLine);
 		startApp(app, cmdLine, AppInfo.getName() + " - " + AppInfo.getVersion(), SceneConstants.APPSETTINGS_NAME);
 	}
@@ -80,19 +74,19 @@ public class TestImageChooser extends IcesceneApp {
 
 		rootNode.attachChild(geom);
 
-		FancyWindow win = new FancyWindow(screen, new Vector2f(200, 200), Size.LARGE, true);
-		win.getDragBar().setText("Fancy Window!");
-		Element el = win.getContentArea();
-		el.setLayoutManager(new MigLayout(screen, "gap 0, ins 0 0 0 0, wrap 1", "[grow, fill]", "[][][]"));
-		ImageFieldControl ifc = new ImageFieldControl(screen, null, imageResources,
+		Frame win = new Frame(screen, new Vector2f(200, 200), true);
+		win.getDragBar().setText("Choosers");
+		BaseElement el = win.getContentArea();
+		el.setLayoutManager(new MigLayout(screen, "wrap 1", "[grow, fill]", "[][][]"));
+		ImageFieldControl ifc = new ImageFieldControl(screen, null, new StringChooserModel(imageResources),
 				Preferences.userRoot().node("icescenetests")) {
 			@Override
 			protected void onResourceChosen(String newResource) {
 			}
 		};
-		el.addChild(ifc);
+		el.addElement(ifc);
 		SoundFieldControl sfc = new SoundFieldControl(screen, Type.ALL, "http://ai-radio.org/radio.opus.m3u?stream",
-				oggResources, Preferences.userRoot().node("icescenetests")) {
+				new StringChooserModel(oggResources), Preferences.userRoot().node("icescenetests")) {
 			@Override
 			protected void onResourceChosen(String newResource) {
 			}
@@ -100,13 +94,13 @@ public class TestImageChooser extends IcesceneApp {
 			@Override
 			protected void stopAudio() {
 				((SoundSourceDialog) chooser).setStopAvailable(false);
-				AudioAppState as = app.getStateManager().getState(AudioAppState.class);
+				AudioAppState as = ToolKit.get().getApplication().getStateManager().getState(AudioAppState.class);
 				as.stopAudio(false, AudioQueue.PREVIEWS);
 			}
 
 			@Override
 			protected void playURL(Source source, String path) {
-				AudioAppState as = app.getStateManager().getState(AudioAppState.class);
+				AudioAppState as = ToolKit.get().getApplication().getStateManager().getState(AudioAppState.class);
 				as.stopAudio(false, AudioQueue.PREVIEWS);
 				final QueuedAudio queuedAudio = new QueuedAudio(this, path, 0, false, AudioQueue.PREVIEWS, 1f);
 				queuedAudio.setStream(Source.STREAM_URL.equals(source));
@@ -116,28 +110,19 @@ public class TestImageChooser extends IcesceneApp {
 			}
 
 		};
-		el.addChild(sfc);
+		el.addElement(sfc);
 
 		final EntityFactory pf = new EntityFactory(this, rootNode);
 
-		FancyButton fb = new FancyButton(screen) {
-			@Override
-			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-				ChooserDialog chooser = new ChooserDialog(screen, "Choose Model", csmResources,
-						Preferences.userRoot().node("icescenetests"), new PreviewModelView(screen, pf)) {
-					@Override
-					public boolean onChosen(String path) {
-						return true;
-					}
-				};
-
-				chooser.pack(false);
-				screen.addElement(chooser);
-			}
-		};
+		PushButton fb = new PushButton(screen);
+		fb.onMouseReleased(evt -> {
+			screen.addElement(
+					new ChooserDialog<String>(screen, null, "Choose Model", new StringChooserModel(csmResources),
+							Preferences.userRoot().node("icescenetests"), new PreviewModelView(screen, pf)));
+		});
 		fb.setText("Model");
 
-		el.addChild(fb);
+		el.addElement(fb);
 
 		stateManager.attach(new AudioAppState(prefs));
 

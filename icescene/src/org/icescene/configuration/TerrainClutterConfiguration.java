@@ -1,7 +1,5 @@
 package org.icescene.configuration;
 
-import icemoon.iceloader.AbstractConfiguration;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,6 +13,8 @@ import java.util.Map;
 import org.icescene.SceneConstants;
 
 import com.jme3.asset.AssetManager;
+
+import icemoon.iceloader.AbstractConfiguration;
 
 public class TerrainClutterConfiguration extends AbstractConfiguration<INIFile> {
 
@@ -79,7 +79,6 @@ public class TerrainClutterConfiguration extends AbstractConfiguration<INIFile> 
 		super(resourceName, classLoader, new INIFile());
 		INIFile file = getBackingObject();
 		for (String section : file.getAllSectionNames()) {
-			float density = 0.1f;
 			ClutterDefinition def = new ClutterDefinition(section);
 			for (String s : file.getPropertyNames(section)) {
 				if (s.equals("Density")) {

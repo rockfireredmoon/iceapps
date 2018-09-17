@@ -1,20 +1,12 @@
 package org.icescene.props;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-
 import org.icescene.propertyediting.Property;
-import org.icescene.scene.Buildable;
 
 import com.google.common.base.Objects;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
-public class Entity implements Buildable {
-	public static final String ATTR_ROTATION = "Rotation";
+public class Entity extends AbstractComponentPiece {
 	public static final String ATTR_SCALE = "Scale";
-	public static final String ATTR_TRANSLATION = "Translation";
 	public static final String ATTR_UNLIT = "Unlit";
 	public static final String ATTR_MESH = "Mesh";
 	public static final String ATTR_QF = "QF";
@@ -24,11 +16,8 @@ public class Entity implements Buildable {
 	private int qf;
 	private int vf;
 	private Class<Spatial> meshClass;
-	private Quaternion rotation = Quaternion.IDENTITY.clone();
-	private Vector3f location = new Vector3f(Vector3f.ZERO);
+	private Class<Spatial> physicsMeshClass;
 	private boolean unlit;
-
-	protected transient PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
 	public Entity(String mesh) {
 		this(mesh, 0, 0);
@@ -41,15 +30,9 @@ public class Entity implements Buildable {
 	}
 
 	public Entity clone() {
-		return new Entity(mesh, qf, vf);
-	}
-
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		changeSupport.addPropertyChangeListener(listener);
-	}
-
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		changeSupport.removePropertyChangeListener(listener);
+		Entity entity = new Entity(mesh, qf, vf);
+		populateClone(entity);
+		return entity;
 	}
 
 	@Property(label = "Mesh", weight = 0)
@@ -64,6 +47,14 @@ public class Entity implements Buildable {
 			this.mesh = mesh;
 			changeSupport.firePropertyChange(ATTR_MESH, old, mesh);
 		}
+	}
+
+	public void setPhysicsMeshClass(Class<Spatial> physicsMeshClass) {
+		this.physicsMeshClass = physicsMeshClass;
+	}
+
+	public Class<Spatial> getPhysicsMeshClass() {
+		return physicsMeshClass;
 	}
 
 	public Class<Spatial> getMeshClass() {
@@ -117,7 +108,8 @@ public class Entity implements Buildable {
 
 	@Override
 	public String toString() {
-		return "Entity{" + "mesh=" + mesh + ", qf=" + qf + ", vf=" + vf + ", meshClass=" + meshClass + '}';
+		return "Entity [mesh=" + mesh + ", qf=" + qf + ", vf=" + vf + ", meshClass=" + meshClass + ", physicsMeshClass="
+				+ physicsMeshClass + ", rotation=" + rotation + ", location=" + translation + ", unlit=" + unlit + "]";
 	}
 
 	@Property
@@ -132,41 +124,14 @@ public class Entity implements Buildable {
 		return unlit;
 	}
 
-	@Property(label = "Location", weight = 10, hint = Property.Hint.WORLD_POSITION)
-	public Vector3f getLocation() {
-		return location;
-	}
-
-	@Property
-	public void setLocation(Vector3f location) {
-		Vector3f oldLoc = this.location;
-		if (!Objects.equal(oldLoc, location)) {
-			this.location.set(location);
-			changeSupport.firePropertyChange(ATTR_TRANSLATION, oldLoc, rotation);
-		}
-	}
-
-	@Property
-	public void setRotation(Quaternion rotation) {
-		Quaternion oldRot = this.rotation;
-		if (!Objects.equal(oldRot, rotation)) {
-			this.rotation = rotation;
-			changeSupport.firePropertyChange(ATTR_ROTATION, oldRot, rotation);
-		}
-	}
-
-	@Property(label = "Rotation", weight = 30, hint = Property.Hint.ROTATION_DEGREES)
-	public Quaternion getRotation() {
-		return rotation;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((translation == null) ? 0 : translation.hashCode());
 		result = prime * result + ((mesh == null) ? 0 : mesh.hashCode());
 		result = prime * result + ((meshClass == null) ? 0 : meshClass.hashCode());
+		result = prime * result + ((physicsMeshClass == null) ? 0 : physicsMeshClass.hashCode());
 		result = prime * result + qf;
 		result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
 		result = prime * result + (unlit ? 1231 : 1237);
@@ -183,10 +148,10 @@ public class Entity implements Buildable {
 		if (getClass() != obj.getClass())
 			return false;
 		Entity other = (Entity) obj;
-		if (location == null) {
-			if (other.location != null)
+		if (translation == null) {
+			if (other.translation != null)
 				return false;
-		} else if (!location.equals(other.location))
+		} else if (!translation.equals(other.translation))
 			return false;
 		if (mesh == null) {
 			if (other.mesh != null)
@@ -197,6 +162,11 @@ public class Entity implements Buildable {
 			if (other.meshClass != null)
 				return false;
 		} else if (!meshClass.equals(other.meshClass))
+			return false;
+		if (physicsMeshClass == null) {
+			if (other.physicsMeshClass != null)
+				return false;
+		} else if (!physicsMeshClass.equals(other.physicsMeshClass))
 			return false;
 		if (qf != other.qf)
 			return false;

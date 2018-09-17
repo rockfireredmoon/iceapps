@@ -1,0 +1,30 @@
+# 
+# A login window
+#
+
+---
+!fancyWindow
+title: Login
+resizable: true
+movable: true
+layout: !migLayout
+  constraints: "wrap 2, fill"
+  column: "[][fill,grow]"
+  row: "[shrink 0][]"
+children:
+- !xhtmlLabel
+  constraints: "span 2, growx"
+  text: "Welcome to <b>My Game!</b>, please give your <i>username</i> and <i>password</i>"
+- !label
+  text: Username
+- !textField
+- !label
+  text: Password
+- !password
+- !fancyButton
+  text: Login
+  toolTipText: Left click to login, Right click for something else
+  id: login
+- !fancyButton
+  id: close
+  text: Close

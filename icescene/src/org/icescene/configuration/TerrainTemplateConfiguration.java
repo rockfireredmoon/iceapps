@@ -29,22 +29,46 @@ public class TerrainTemplateConfiguration extends AbstractPropertiesConfiguratio
 
 	public final static String PAGE_SOURCE_HEIGHTMAP = "Heightmap";
 
+	public enum LiquidPlane {
+		NONE, WATER_PLANE, LAVA, TROPICAL, SHARD, SWAMP_WATER, TAR;
+
+		public String toString() {
+			return Icelib.toEnglish(name(), true);
+		}
+
+		public String toWaterPlaneName() {
+			return toString().replace(" ", "");
+		}
+
+		public String toMaterialName() {
+			return toWaterPlaneName().replace("Plane", "");
+		}
+
+		public static LiquidPlane fromWaterPlaneName(String liquidPlaneName) {
+			for (LiquidPlane p : values()) {
+				if (p.toString().replace(" ", "").equals(liquidPlaneName))
+					return p;
+			}
+			throw new IllegalArgumentException(String.format("Invalid liquid plane name %s.", liquidPlaneName));
+		}
+	}
+
 	public static class LiquidPlaneConfiguration {
 
 		private float elevation;
-		private String material;
+		private LiquidPlane material;
 		private float defaultElevation;
-		private String defaultMaterial;
+		private LiquidPlane defaultMaterial;
 
 		private LiquidPlaneConfiguration() {
 		}
 
-		public LiquidPlaneConfiguration(float elevation, String material) {
+		public LiquidPlaneConfiguration(float elevation, LiquidPlane material) {
 			this.elevation = this.defaultElevation = elevation;
 			this.material = this.defaultMaterial = material;
 		}
 
-		public String getMaterial() {
+		public LiquidPlane getMaterial() {
 			return material;
 		}
 
@@ -61,7 +85,7 @@ public class TerrainTemplateConfiguration extends AbstractPropertiesConfiguratio
 			this.material = defaultMaterial;
 		}
 
-		public void setMaterial(String material) {
+		public void setMaterial(LiquidPlane material) {
 			this.material = material;
 		}
 
@@ -144,7 +168,8 @@ public class TerrainTemplateConfiguration extends AbstractPropertiesConfiguratio
 		this(assetManager, resourceName, (TerrainTemplateConfiguration) null);
 	}
 
-	public TerrainTemplateConfiguration(AssetManager assetManager, String resourceName, TerrainTemplateConfiguration base) {
+	public TerrainTemplateConfiguration(AssetManager assetManager, String resourceName,
+			TerrainTemplateConfiguration base) {
 		super(assetManager, resourceName, base);
 
 		// Set up either a new property sheet or copy the defaults
@@ -169,7 +194,8 @@ public class TerrainTemplateConfiguration extends AbstractPropertiesConfiguratio
 		} catch (AssetNotFoundException anfe) {
 			LOG.log(Level.FINE, "Failed to load terrain script.", anfe);
 		} catch (IllegalStateException ioe) {
-			throw new RuntimeException(String.format("I/O error reading environment configuration script %s.", envConfig), ioe);
+			throw new RuntimeException(
+					String.format("I/O error reading environment configuration script %s.", envConfig), ioe);
 		}
 	}
 
@@ -277,14 +303,16 @@ public class TerrainTemplateConfiguration extends AbstractPropertiesConfiguratio
 		if (getBackingObject().containsKey("WaterPlane.Material")) {
 			String material = get("WaterPlane.Material");
 			if (StringUtils.isNotBlank(material)) {
-				liquidPlane = new LiquidPlaneConfiguration(getFloat("WaterPlane.Elevation"), material);
+				liquidPlane = new LiquidPlaneConfiguration(getFloat("WaterPlane.Elevation"),
+						LiquidPlane.fromWaterPlaneName(material));
 			}
 		}
 	}
 
 	public void setBaseTemplateName(String newBaseTemplateName) {
 		// TODO move TerrainCOnstants.TEXTURE_PATH
-		assetPath = String.format("%1$s/Terrain-%2$s/Terrain-%2$s.cfg", SceneConstants.TERRAIN_PATH, newBaseTemplateName);
+		assetPath = String.format("%1$s/Terrain-%2$s/Terrain-%2$s.cfg", SceneConstants.TERRAIN_PATH,
+				newBaseTemplateName);
 		textureBaseFormat = newBaseTemplateName + "_Base_x%dy%d.jpg";
 		textureCoverageFormat = newBaseTemplateName + "_Coverage_x%dy%d.png";
 		heightmapImageFormat = newBaseTemplateName + "_Height_x%dy%d.png";
@@ -550,7 +578,7 @@ public class TerrainTemplateConfiguration extends AbstractPropertiesConfiguratio
 		if (base != null) {
 			// Only for per page config
 			if (liquidPlane != null) {
-				put("WaterPlane.Material", liquidPlane.getMaterial());
+				put("WaterPlane.Material", liquidPlane.getMaterial().toString());
 				put("WaterPlane.Elevation", liquidPlane.getElevation());
 			} else {
 				getBackingObject().remove("WaterPlane.Material");

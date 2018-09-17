@@ -59,6 +59,7 @@ import com.jme3.scene.plugins.ogre.matext.MaterialExtensionLoader;
 import com.jme3.scene.plugins.ogre.matext.MaterialExtensionSet;
 import com.jme3.scene.plugins.ogre.matext.OgreMaterialKey;
 import com.jme3.texture.Texture;
+import com.jme3.texture.Texture.Type;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.PlaceholderAssets;
@@ -92,15 +93,12 @@ public class MaterialLoader implements AssetLoader {
 	private boolean disabled;
 	private float depthBias;
 	private String name;
-
+	private boolean flipTextureY;
 	private int lod;
 	private int pass;
 	private boolean grass;
-
 	private boolean pointSprite;
-
 	private int priorityBias;
-
 	private float slopeScaleBias;
 
 	private ColorRGBA readColor(String content) {
@@ -162,7 +160,9 @@ public class MaterialLoader implements AssetLoader {
 
 			TextureKey texKey = new TextureKey(folderName + path, false);
 			texKey.setGenerateMips(genMips);
-			texKey.setAsCube(cubic);
+			if(cubic)
+				texKey.setTextureTypeHint(Type.CubeMap);
+			texKey.setFlipY(flipTextureY);
 
 			try {
 				Texture loadedTexture = assetManager.loadTexture(texKey);
@@ -188,7 +188,7 @@ public class MaterialLoader implements AssetLoader {
 		}
 	}
 
-	private void readTextureUnitStatement(Statement statement) {
+	private void readTextureUnitStatement(Statement statement, AssetKey key) {
 		String[] split = statement.getLine().split(" ", 2);
 		String keyword = split[0];
 		if (keyword.equals("texture")) {
@@ -226,11 +226,11 @@ public class MaterialLoader implements AssetLoader {
 			int amount = Integer.parseInt(split[1]);
 			textures[texUnit].setAnisotropicFilter(amount);
 		} else {
-			logger.log(Level.WARNING, "Unsupported texture_unit directive: {0}", keyword);
+			logger.log(Level.WARNING, "Unsupported texture_unit directive: {0} (line {1}, {2})", new Object[] { keyword, statement.getLineNumber(), key.getName() });
 		}
 	}
 
-	private void readTextureUnit(Statement statement) {
+	private void readTextureUnit(Statement statement, AssetKey key) {
 		String[] split = statement.getLine().split(" ", 2);
 		// name is optional
 		if (split.length == 2) {
@@ -241,7 +241,7 @@ public class MaterialLoader implements AssetLoader {
 
 		textures[texUnit] = new Texture2D();
 		for (Statement texUnitStat : statement.getContents()) {
-			readTextureUnitStatement(texUnitStat);
+			readTextureUnitStatement(texUnitStat, key);
 		}
 		if (textures[texUnit] != null) {
 			texUnit++;
@@ -251,7 +251,7 @@ public class MaterialLoader implements AssetLoader {
 		}
 	}
 
-	private void readPassStatement(Statement statement) {
+	private void readPassStatement(Statement statement, AssetKey key) {
 		// read until newline
 		String[] split = statement.getLine().split(" ", 2);
 		String keyword = split[0];
@@ -289,7 +289,7 @@ public class MaterialLoader implements AssetLoader {
 				shinines = unknown;
 			}
 		} else if (keyword.equals("texture_unit")) {
-			readTextureUnit(statement);
+			readTextureUnit(statement, key);
 		} else if (keyword.equals("scene_blend")) {
 			String mode = split[1];
 			if (pass < 1) {
@@ -302,10 +302,10 @@ public class MaterialLoader implements AssetLoader {
 				} else if (mode.equals("modulate")) {
 					blend = BlendMode.Modulate;
 				} else {
-					logger.log(Level.WARNING, "Unsupported blend function: {0}", mode);
+					logger.log(Level.WARNING, "Unsupported blend function: {0} (line {1}, {2})", new Object[] { mode, statement.getLineNumber(), key.getName() });
 				}
 			} else {
-				logger.log(Level.WARNING, "Ignoring blend mode in secondary pass: {0}", mode);
+				logger.log(Level.WARNING, "Ignoring blend mode in secondary pass: {0} (line {1}, {2})", new Object[] { mode, statement.getLineNumber(), key.getName() });
 			}
 		} else if (keyword.equals("alpha_rejection")) {
 			String op = split[1];
@@ -313,7 +313,7 @@ public class MaterialLoader implements AssetLoader {
 				split = split[1].split("\\s+");
 				alphaRejection = Integer.parseInt(split[1]);
 			} else {
-				logger.log(Level.WARNING, "Unsupported alpha_rejection function: {0}", split[1]);
+				logger.log(Level.WARNING, "Unsupported alpha_rejection function: {0} (line {1}, {2})", new Object[] { split[1], statement.getLineNumber(), key.getName() });
 			}
 		} else if (keyword.equals("cull_hardware")) {
 			String mode = split[1];
@@ -324,7 +324,7 @@ public class MaterialLoader implements AssetLoader {
 			if (split[1].equals("VP_Grass")) {
 				grass = true;
 			} else {
-				logger.log(Level.WARNING, "Unsupported pass directive: {0}", statement.getLine());
+				logger.log(Level.WARNING, "Unsupported pass directive: {0} (line {1}, {2})", new Object[] { split[1], statement.getLineNumber(), key.getName() });
 			}
 
 			// vertex_program_ref VP_Grass
@@ -338,19 +338,29 @@ public class MaterialLoader implements AssetLoader {
 			// }
 		} else if (keyword.equals("depth_bias")) {
 			/*
-			 * When polygons are coplanar, you can get problems with 'depth fighting' where the pixels from the two polys compete for the same screen pixel. This is particularly a problem for decals (polys attached to another surface to represent details such as bulletholes etc.). 
-			* A way to combat this problem is to use a depth bias to adjust the depth buffer value used for the decal such that it is slightly higher than the true value, ensuring that the decal appears on top. There are two aspects to the biasing, a constant bias value and a slope-relative biasing value, which varies according to the maximum depth slope relative to the camera, ie:
-			*
-			* finalBias = maxSlope * slopeScaleBias + constantBias
-			*			
-			* Note that slope scale bias, whilst more accurate, may be ignored by old hardware. 
+			 * When polygons are coplanar, you can get problems with 'depth
+			 * fighting' where the pixels from the two polys compete for the
+			 * same screen pixel. This is particularly a problem for decals
+			 * (polys attached to another surface to represent details such as
+			 * bulletholes etc.). A way to combat this problem is to use a depth
+			 * bias to adjust the depth buffer value used for the decal such
+			 * that it is slightly higher than the true value, ensuring that the
+			 * decal appears on top. There are two aspects to the biasing, a
+			 * constant bias value and a slope-relative biasing value, which
+			 * varies according to the maximum depth slope relative to the
+			 * camera, ie:
+			 *
+			 * finalBias = maxSlope * slopeScaleBias + constantBias
+			 * 
+			 * Note that slope scale bias, whilst more accurate, may be ignored
+			 * by old hardware.
 			 */
 			String[] vals = split[1].split("\\s+");
 			depthBias = Float.parseFloat(vals[0]);
-		  	if(vals.length > 1)
-		  		slopeScaleBias = Float.parseFloat(vals[1]);
-		  	else
-		  		slopeScaleBias = 0.0f;
+			if (vals.length > 1)
+				slopeScaleBias = Float.parseFloat(vals[1]);
+			else
+				slopeScaleBias = 0.0f;
 		} else if (keyword.equals("depth_write")) {
 			depthWrite = !split[1].equalsIgnoreCase("off");
 		} else if (keyword.equals("depth_check")) {
@@ -368,11 +378,11 @@ public class MaterialLoader implements AssetLoader {
 				noLight = true;
 			}
 		} else {
-			logger.log(Level.WARNING, "Unsupported pass directive: {0}", keyword);
+			logger.log(Level.WARNING, "Unsupported pass directive: {0} (line {1}, {2})", new Object[] { keyword, statement.getLineNumber(), key.getName() });
 		}
 	}
-
-	private void readPass(Statement statement) {
+	
+	private void readPass(Statement statement, AssetKey key) {
 		String name;
 		String[] split = statement.getLine().split(" ", 2);
 		if (split.length == 1) {
@@ -383,12 +393,12 @@ public class MaterialLoader implements AssetLoader {
 		}
 
 		for (Statement passStat : statement.getContents()) {
-			readPassStatement(passStat);
+			readPassStatement(passStat, key);
 		}
 		pass++;
 	}
 
-	private void readTechnique(Statement statement) {
+	private void readTechnique(Statement statement, AssetKey key) {
 		String[] split = statement.getLine().split(" ", 2);
 		pass = 0;
 		if (split.length == 1) {
@@ -397,6 +407,7 @@ public class MaterialLoader implements AssetLoader {
 		} else {
 			name = split[1];
 		}
+
 		for (Statement techStat : statement.getContents()) {
 			if (techStat.getLine().startsWith("lod_index")) {
 				split = techStat.getLine().split(" ", 2);
@@ -407,17 +418,19 @@ public class MaterialLoader implements AssetLoader {
 			} else if (techStat.getLine().startsWith("disabled")) {
 				split = techStat.getLine().split(" ", 2);
 				disabled = split[1].equals("true");
+			} else if (techStat.getLine().startsWith("pass")) {
+				readPass(techStat, key);
 			} else {
-				readPass(techStat);
+				logger.log(Level.WARNING, "Unsupported technique directive: {0} (line {1}, {2})", new Object[] { techStat.getLine(), techStat.getLineNumber(), key.getName() });
 			}
 		}
 
 		texUnit = 0;
 	}
 
-	private void readMaterialStatement(Statement statement) {
+	private void readMaterialStatement(Statement statement, AssetKey key) {
 		if (statement.getLine().startsWith("technique")) {
-			readTechnique(statement);
+			readTechnique(statement, key);
 		} else if (statement.getLine().startsWith("receive_shadows")) {
 			String isOn = statement.getLine().split("\\s")[1];
 			if (isOn != null && isOn.equals("true")) {
@@ -425,9 +438,9 @@ public class MaterialLoader implements AssetLoader {
 		}
 	}
 
-	private void readMaterial(Statement statement) {
+	private void readMaterial(Statement statement, AssetKey key) {
 		for (Statement materialStat : statement.getContents()) {
-			readMaterialStatement(materialStat);
+			readMaterialStatement(materialStat, key);
 		}
 	}
 
@@ -523,8 +536,8 @@ public class MaterialLoader implements AssetLoader {
 					mat.setFloat("Shininess", shinines);
 				} else {
 					mat.setFloat("Shininess", 1f); // set shininess to some
-													 // value
-													 // anyway..
+													// value
+													// anyway..
 				}
 
 				if (vcolor)
@@ -580,7 +593,7 @@ public class MaterialLoader implements AssetLoader {
 				// mat.setBoolean("Invert", true);
 
 				// mat.setFloat("FadeEnd", 500);
-				// mat.setBoolean("FadeEnabled", true);
+//				 mat.setBoolean("FadeEnabled", true);
 				// mat.setFloat("FadeRange", 250);
 				// mat.setBoolean("UseAlpha", true);
 				// mat.setFloat("AlphaDiscardLimit", 0.70588f);
@@ -610,6 +623,7 @@ public class MaterialLoader implements AssetLoader {
 			alphaRejection = -1;
 			texUnit = 0;
 			separateTexCoord = false;
+			flipTextureY = false;
 			return mat;
 		} catch (IllegalArgumentException iae) {
 			throw new RuntimeException(String.format("Failed to load material %s (%s)", key, matKey), iae);
@@ -618,11 +632,12 @@ public class MaterialLoader implements AssetLoader {
 
 	private void setAllTextures(String diffuseMatName, String glowMatName, ExtendedMaterialListKey key, Material mat) {
 
-		/* Set the actual textures into the material if the material
-		 * specifies an image. If the texture doesn't specify it, then
-		 * add the alias and the material parameter name to use to the
-		 * 'texture alias' map, which the MeshLoader then uses to populate
-		 * the remaining textures when it reads them.
+		/*
+		 * Set the actual textures into the material if the material specifies
+		 * an image. If the texture doesn't specify it, then add the alias and
+		 * the material parameter name to use to the 'texture alias' map, which
+		 * the MeshLoader then uses to populate the remaining textures when it
+		 * reads them.
 		 */
 
 		// Do any specific DiffuseMap or LightMap first
@@ -659,12 +674,13 @@ public class MaterialLoader implements AssetLoader {
 		// Do we have a texture already?
 		if (textures[i] != null && textures[i].getImage() != null) {
 			if (logger.isLoggable(Level.FINE))
-				logger.fine(String.format("Setting material texture %s for key %s (%d) on %s", textures[i].getKey(), key.toString(),
-						i, matKey));
+				logger.fine(String.format("Setting material texture %s for key %s (%d) on %s", textures[i].getKey(),
+						key.toString(), i, matKey));
 			mat.setTexture(matKey, textures[i]);
 		} else {
 			if (logger.isLoggable(Level.FINE))
-				logger.fine(String.format("Deferring setting material texture %s (%d) on %s. ", key.toString(), i, matKey));
+				logger.fine(
+						String.format("Deferring setting material texture %s (%d) on %s. ", key.toString(), i, matKey));
 		}
 
 		// Store the alias in the map for the mesh to populate the rest
@@ -716,8 +732,8 @@ public class MaterialLoader implements AssetLoader {
 				}
 
 				if (matExts == null) {
-					throw new IOException(
-							"Must specify MaterialExtensionSet when loading\n" + "Ogre3D materials with extended materials");
+					throw new IOException("Must specify MaterialExtensionSet when loading\n"
+							+ "Ogre3D materials with extended materials");
 				}
 
 				list = new MaterialExtensionLoader().load(assetManager, key, matExts, statements);
@@ -728,7 +744,9 @@ public class MaterialLoader implements AssetLoader {
 				}
 				String[] split = statement.getLine().split(" ", 2);
 				matName = split[1].trim();
-				readMaterial(statement);
+				flipTextureY = ((ExtendedMaterialListKey) key).isFlipTextureY();
+				;
+				readMaterial(statement, key);
 				Material mat = compileMaterial((ExtendedMaterialListKey) key, matName);
 				list.put(matName, mat);
 			}

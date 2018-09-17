@@ -1,23 +1,19 @@
 package org.icescene.tools;
 
-import com.jme3.app.state.AppState;
-
 public class Tool extends ToolElement {
 
 	private String icon;
 	protected ToolCategory category;
-	private final Class<? extends AppState>[] appStates;
 	private boolean mayDrag = true;
 	private String[] defaultToolBox;
 	private boolean trashable;
 
-	public Tool(String icon, String name, String help, int weight, Class<? extends AppState>... appStates) {
-		this(null, icon, name, help, weight, appStates);
+	public Tool(String icon, String name, String help, int weight) {
+		this(null, icon, name, help, weight);
 	}
 
-	public Tool(ToolCategory category, String icon, String name, String help, int weight, Class<? extends AppState>... appStates) {
+	public Tool(ToolCategory category, String icon, String name, String help, int weight) {
 		super(name, help, weight);
-		this.appStates = appStates;
 		this.icon = icon;
 		this.category = category;
 	}
@@ -29,10 +25,6 @@ public class Tool extends ToolElement {
 	public Tool setDefaultToolBox(String... defaultToolBox) {
 		this.defaultToolBox = defaultToolBox;
 		return this;
-	}
-
-	public Class<? extends AppState>[] getAppStates() {
-		return appStates;
 	}
 
 	public Tool setTrashable(boolean trashable) {

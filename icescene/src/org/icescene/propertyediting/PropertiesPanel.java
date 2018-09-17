@@ -2,8 +2,6 @@ package org.icescene.propertyediting;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +15,6 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import org.icelib.Icelib;
-import org.icelib.UndoManager;
 import org.icescene.SceneConfig;
 import org.icescene.audio.AudioField;
 import org.icescene.audio.AudioQueue;
@@ -30,16 +27,10 @@ import org.iceui.controls.ElementStyle;
 import org.iceui.controls.ImageFieldControl;
 import org.iceui.controls.QuaternionControl;
 import org.iceui.controls.SoundFieldControl;
-import org.iceui.controls.Vector2fControl;
-import org.iceui.controls.Vector3fControl;
-import org.iceui.controls.Vector4fControl;
-import org.iceui.controls.Vector4fControl.Type;
-import org.iceui.controls.color.ColorFieldControl;
 
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
-import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -49,16 +40,27 @@ import com.jme3.math.Vector4f;
 
 import icemoon.iceloader.ServerAssetManager;
 import icetone.controls.buttons.CheckBox;
-import icetone.controls.form.Form;
 import icetone.controls.lists.ComboBox;
 import icetone.controls.lists.FloatRangeSpinnerModel;
 import icetone.controls.lists.IntegerRangeSpinnerModel;
 import icetone.controls.lists.Spinner;
 import icetone.controls.text.Label;
 import icetone.controls.text.TextField;
+import icetone.core.BaseElement;
+import icetone.core.BaseScreen;
+import icetone.core.Form;
+import icetone.core.Orientation;
 import icetone.core.Element;
-import icetone.core.ElementManager;
+import icetone.core.ToolKit;
 import icetone.core.layout.mig.MigLayout;
+import icetone.core.undo.UndoManager;
+import icetone.core.undo.UndoableCommand;
+import icetone.extras.chooser.ColorFieldControl;
+import icetone.extras.chooser.StringChooserModel;
+import icetone.extras.controls.Vector2fControl;
+import icetone.extras.controls.Vector3fControl;
+import icetone.extras.controls.Vector4fControl;
+import icetone.extras.controls.Vector4fControl.Type;
 
 public class PropertiesPanel<T extends PropertyBean> extends Element implements PropertyChangeListener {
 
@@ -66,17 +68,20 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 	private TreeMap<String, PropertyInfo<T>> properties;
 	private T prop;
 	private Form propertyForm;
-	protected Map<String, Element> propertyComponents = new TreeMap<String, Element>();
-	private boolean adjustingProperties;
+	protected Map<String, BaseElement> propertyComponents = new TreeMap<String, BaseElement>();
 	private final Preferences prefs;
 	private UndoManager undoManager;
-	private boolean adjusting;
 
-	public PropertiesPanel(ElementManager screen, Preferences prefs) {
+	public PropertiesPanel(BaseScreen screen, Preferences prefs, UndoManager undoManager) {
+		this(screen, prefs);
+		this.undoManager = undoManager;
+	}
+
+	public PropertiesPanel(BaseScreen screen, Preferences prefs) {
 		super(screen);
 		this.prefs = prefs;
 		setAsContainerOnly();
-		setLayoutManager(new MigLayout(screen, "", "[][]", "[]"));
+		setLayoutManager(new MigLayout(screen, "", "[][]", "[shrink 0]"));
 	}
 
 	public void setUndoManager(UndoManager undoManager) {
@@ -88,7 +93,6 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 	}
 
 	public void setObject(T prop) {
-		PropertyChangeSupport p;
 		if (this.prop != null) {
 			this.prop.removePropertyChangeListener(this);
 		}
@@ -151,7 +155,7 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 			}
 		} else if (info.isReadable()) {
 			if (info.getHint().equals(Hint.LABEL)) {
-				ElementStyle.small(screen, addValueLabel(info, "span 2, wrap"), true, false);
+				ElementStyle.normal(addValueLabel(info, "span 2, wrap"), true, false);
 			} else {
 				addLabel(info);
 				addValueLabel(info);
@@ -262,13 +266,14 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 	private void addLabel(PropertyInfo info) {
 		Label label = new Label(getScreen());
 		label.setText(info.getLabel().equals("") ? getComponentId(info) : info.getLabel());
-		ElementStyle.small(screen, label);
-		addChild(label);
+		ElementStyle.normal(label);
+		addElement(label);
 	}
 
 	@Override
-	public void addChild(Element el, Object constraints) {
-		super.addChild(el, constraints);
+	public BaseElement addElement(BaseElement el, Object constraints) {
+		super.addElement(el, constraints);
+		return this;
 
 		// TODO no idea why this is required, but without it the panel does not
 		// get
@@ -291,9 +296,9 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 			valueLabel.setText("Error!");
 		}
 		valueLabel.setTextWrap(LineWrapMode.Character);
-		ElementStyle.small(screen, valueLabel);
+		ElementStyle.normal(valueLabel);
 		propertyComponents.put(getComponentId(info), valueLabel);
-		addChild(valueLabel, contraints);
+		addElement(valueLabel, contraints);
 		return valueLabel;
 	}
 
@@ -306,9 +311,10 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 			final String root = chooserInfo == null ? "" : chooserInfo.root();
 
 			String val = (String) info.getGetter().invoke(prop);
-			Set<String> images = ((ServerAssetManager) app.getAssetManager()).getAssetNamesMatching(pattern);
-			AudioField col = new AudioField(screen, org.iceui.controls.SoundFieldControl.Type.ALL, val, true, true, images, prefs,
-					AudioQueue.PREVIEWS) {
+			Set<String> images = ((ServerAssetManager) ToolKit.get().getApplication().getAssetManager())
+					.getAssetNamesMatching(pattern);
+			AudioField col = new AudioField(screen, org.iceui.controls.SoundFieldControl.Type.ALL, val, true, true,
+					new StringChooserModel(images), prefs, AudioQueue.PREVIEWS) {
 				@Override
 				protected String getChooserPathFromValue() {
 					if (root.equals("")) {
@@ -348,8 +354,8 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 			};
 			col.addToForm(propertyForm);
 			propertyComponents.put(getComponentId(info), col);
-			ElementStyle.small(screen, col);
-			addChild(col, "growx, wrap");
+			ElementStyle.normal(col);
+			addElement(col, "growx, wrap");
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
 			addValueLabel(info);
@@ -374,8 +380,9 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 			final String root = chooserInfo == null ? "" : chooserInfo.root();
 
 			String val = (String) info.getGetter().invoke(prop);
-			Set<String> images = ((ServerAssetManager) app.getAssetManager()).getAssetNamesMatching(pattern);
-			ImageFieldControl col = new ImageFieldControl(screen, val, images, prefs) {
+			Set<String> images = ((ServerAssetManager) ToolKit.get().getApplication().getAssetManager())
+					.getAssetNamesMatching(pattern);
+			ImageFieldControl col = new ImageFieldControl(screen, val, new StringChooserModel(images), prefs) {
 				@Override
 				protected String getChooserPathFromValue() {
 					if (root.equals("")) {
@@ -414,8 +421,8 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 			};
 			col.addToForm(propertyForm);
 			propertyComponents.put(getComponentId(info), col);
-			ElementStyle.small(screen, col);
-			addChild(col, "growx, wrap");
+			ElementStyle.normal(col);
+			addElement(col, "growx, wrap");
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
 			addValueLabel(info);
@@ -437,31 +444,29 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 
 		try {
 			ColorRGBA val = (ColorRGBA) info.getGetter().invoke(prop);
-			ColorFieldControl col = new ColorFieldControl(screen, val, false) {
-				@Override
-				protected void onChangeColor(ColorRGBA newValue) {
-					if (undoManager != null) {
-						undoManager.storeAndExecute(new SetPropertyCommand(prop, info, getValue()) {
-							@Override
-							protected void updateUIValue(Object value) {
-								setValue((ColorRGBA) value);
-								setAvailable();
-							}
-						});
-					} else {
-						try {
-							info.getSetter().invoke(prop, getValue());
+			ColorFieldControl col = new ColorFieldControl(screen, val, false);
+			col.onChange(evt -> {
+				if (undoManager != null) {
+					undoManager.storeAndExecute(new SetPropertyCommand(prop, info, evt.getNewValue()) {
+						@Override
+						protected void updateUIValue(Object value) {
+							evt.getSource().setValue((ColorRGBA) value);
 							setAvailable();
-						} catch (Exception ex) {
-							LOG.log(Level.SEVERE, "Failed to set value.", ex);
 						}
+					});
+				} else {
+					try {
+						info.getSetter().invoke(prop, evt.getNewValue());
+						setAvailable();
+					} catch (Exception ex) {
+						LOG.log(Level.SEVERE, "Failed to set value.", ex);
 					}
 				}
-			};
+			});
 			col.addToForm(propertyForm);
 			propertyComponents.put(getComponentId(info), col);
-			ElementStyle.small(screen, col);
-			addChild(col, "growx, wrap");
+			ElementStyle.normal(col);
+			addElement(col, "growx, wrap");
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
 			addValueLabel(info);
@@ -473,17 +478,17 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 		try {
 			String val = (String) info.getGetter().invoke(prop);
 			TextField sp = new TextField(screen) {
+
+				{
+					onKeyboardFocusLost(evt -> setValue());
+				}
+
 				@Override
 				public void onKeyRelease(KeyInputEvent evt) {
 					super.onKeyRelease(evt);
 					if (evt.getKeyCode() == KeyInput.KEY_RETURN) {
 						setValue();
 					}
-				}
-
-				@Override
-				public void controlTextFieldResetTabFocusHook() {
-					setValue();
 				}
 
 				private void setValue() {
@@ -505,9 +510,9 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 			};
 			sp.setText(val == null ? "" : val);
 			propertyComponents.put(getComponentId(info), sp);
-			ElementStyle.small(screen, sp);
+			ElementStyle.normal(sp);
 			propertyForm.addFormElement(sp);
-			addChild(sp, "growx, wrap");
+			addElement(sp, "growx, wrap");
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
 			addValueLabel(info);
@@ -515,47 +520,44 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 		}
 	}
 
-	private void setProperty(final PropertyInfo info, Object value)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		adjusting = true;
-		try {
-			info.getSetter().invoke(prop, value);
+	private void setProperty(final PropertyInfo info, Object value) {
+		runAdjusting(() -> {
+			try {
+				info.getSetter().invoke(prop, value);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 			setAvailable();
-		} finally {
-			adjusting = false;
-		}
+		});
 	}
 
 	private void addBooleanControl(final PropertyInfo info) {
 		try {
 			Boolean val = (Boolean) info.getGetter().invoke(prop);
-			CheckBox sp = new CheckBox(screen) {
-				@Override
-				public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-					super.onButtonMouseLeftUp(evt, toggled);
-					if (undoManager != null) {
-						undoManager.storeAndExecute(new SetPropertyCommand(prop, info, getIsChecked()) {
-							@Override
-							protected void updateUIValue(Object value) {
-								setIsCheckedNoCallback((Boolean) value);
-								setAvailable();
-							}
-						});
-					} else {
-						try {
-							setProperty(info, getIsChecked());
-						} catch (Exception e) {
-							LOG.log(Level.SEVERE, "Failed to set property.", e);
+			CheckBox sp = new CheckBox(screen);
+			sp.setChecked(val);
+			sp.onChange(evt -> {
+				if (undoManager != null) {
+					undoManager.storeAndExecute(new SetPropertyCommand(prop, info, evt.getNewValue()) {
+						@Override
+						protected void updateUIValue(Object value) {
+							evt.getSource().runAdjusting(() -> evt.getSource().setState((Boolean) value));
+							setAvailable();
 						}
+					});
+				} else {
+					try {
+						setProperty(info, evt.getNewValue());
+					} catch (Exception e) {
+						LOG.log(Level.SEVERE, "Failed to set property.", e);
 					}
 				}
-			};
+			});
 			propertyComponents.put(getComponentId(info), sp);
-			sp.setLabelText(info.getLabel().equals("") ? getComponentId(info) : info.getLabel());
-			sp.setIsCheckedNoCallback(val);
+			sp.setText(info.getLabel().equals("") ? getComponentId(info) : info.getLabel());
 			propertyForm.addFormElement(sp);
-			ElementStyle.small(screen, sp);
-			addChild(sp, "span 2, growx, wrap");
+			ElementStyle.normal(sp);
+			addElement(sp, "span 2, growx, wrap");
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
 			addValueLabel(info);
@@ -599,33 +601,30 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 
 		try {
 			int val = (Integer) info.getGetter().invoke(prop);
-			Spinner<Integer> sp = new Spinner<Integer>(screen, Orientation.HORIZONTAL, false) {
-				@SuppressWarnings("serial")
-				@Override
-				public void onChange(Integer newValue) {
-					if (!adjustingProperties) {
-						if (undoManager != null) {
-							undoManager.storeAndExecute(new SetPropertyCommand(prop, info, newValue) {
-								@Override
-								protected void updateUIValue(Object value) {
-									setSelectedValue((Integer) value);
-								}
-							});
-						} else {
-							try {
-								setProperty(info, newValue);
-							} catch (Exception e) {
-								LOG.log(Level.SEVERE, "Failed to set property.", e);
+			Spinner<Integer> sp = new Spinner<Integer>(screen, Orientation.HORIZONTAL, false);
+			sp.onChange(evt -> {
+				if (isAdjusting()) {
+					if (undoManager != null) {
+						undoManager.storeAndExecute(new SetPropertyCommand(prop, info, evt.getNewValue()) {
+							@Override
+							protected void updateUIValue(Object value) {
+								evt.getSource().setSelectedValue((Integer) value);
 							}
+						});
+					} else {
+						try {
+							setProperty(info, evt.getNewValue());
+						} catch (Exception e) {
+							LOG.log(Level.SEVERE, "Failed to set property.", e);
 						}
 					}
 				}
-			};
-			ElementStyle.small(screen, sp);
+			});
+			ElementStyle.normal(sp);
 			propertyForm.addFormElement(sp);
 			propertyComponents.put(getComponentId(info), sp);
 			sp.setSpinnerModel(new IntegerRangeSpinnerModel(min, max, incr, val));
-			addChild(sp, "growx, wrap");
+			addElement(sp, "growx, wrap");
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
 			addValueLabel(info);
@@ -665,33 +664,31 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 
 		try {
 			float val = (Float) info.getGetter().invoke(prop);
-			Spinner<Float> sp = new Spinner<Float>(screen, Orientation.HORIZONTAL, false) {
-				@Override
-				public void onChange(Float newValue) {
-					if (!adjustingProperties) {
-						if (undoManager != null) {
-							undoManager.storeAndExecute(new SetPropertyCommand(prop, info, newValue) {
-								@Override
-								protected void updateUIValue(Object value) {
-									setSelectedValue((Float) value);
-									setAvailable();
-								}
-							});
-						} else {
-							try {
-								setProperty(info, newValue);
-							} catch (Exception e) {
-								LOG.log(Level.SEVERE, "Failed to set property.", e);
+			Spinner<Float> sp = new Spinner<Float>(screen, Orientation.HORIZONTAL, false);
+			sp.onChange(evt -> {
+				if (!isAdjusting()) {
+					if (undoManager != null) {
+						undoManager.storeAndExecute(new SetPropertyCommand(prop, info, evt.getNewValue()) {
+							@Override
+							protected void updateUIValue(Object value) {
+								evt.getSource().setSelectedValue((Float) value);
+								setAvailable();
 							}
+						});
+					} else {
+						try {
+							setProperty(info, evt.getNewValue());
+						} catch (Exception e) {
+							LOG.log(Level.SEVERE, "Failed to set property.", e);
 						}
 					}
 				}
-			};
-			ElementStyle.small(screen, sp);
+			});
+			ElementStyle.normal(sp);
 			propertyForm.addFormElement(sp);
 			propertyComponents.put(getComponentId(info), sp);
 			sp.setSpinnerModel(new FloatRangeSpinnerModel(min, max, incr, val));
-			addChild(sp, "growx, wrap");
+			addElement(sp, "growx, wrap");
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
 			addValueLabel(info);
@@ -702,37 +699,35 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 	private void addSelectControl(final PropertyInfo info) {
 		try {
 			String val = (String) info.getGetter().invoke(prop);
-			ComboBox<String> sp = new ComboBox<String>(screen) {
-				@Override
-				public void onChange(int selectedIndex, String value) {
-					if (!adjustingProperties) {
+			ComboBox<String> sp = new ComboBox<String>(screen);
+			sp.onChange(evt -> {
+				if (!isAdjusting()) {
 
-						if (undoManager != null) {
-							undoManager.storeAndExecute(new SetPropertyCommand(prop, info, value) {
-								@Override
-								protected void updateUIValue(Object value) {
-									setSelectedByValue((String)value, false);
-									setAvailable();
-								}
-							});
-						} else {
-							try {
-								setProperty(info, value);
-							} catch (Exception e) {
-								LOG.log(Level.SEVERE, "Failed to set property.", e);
+					if (undoManager != null) {
+						undoManager.storeAndExecute(new SetPropertyCommand(prop, info, evt.getNewValue()) {
+							@Override
+							protected void updateUIValue(Object value) {
+								PropertiesPanel.this.runAdjusting(() -> sp.setSelectedByValue((String) value));
+								setAvailable();
 							}
+						});
+					} else {
+						try {
+							setProperty(info, evt.getNewValue());
+						} catch (Exception e) {
+							LOG.log(Level.SEVERE, "Failed to set property.", e);
 						}
 					}
 				}
-			};
+			});
 			final List<String> optionsX = info.getOptions();
 			for (String opt : optionsX) {
 				sp.addListItem(opt, opt);
 			}
 			propertyForm.addFormElement(sp);
 			propertyComponents.put(getComponentId(info), sp);
-			ElementStyle.small(screen, sp);
-			addChild(sp, "growx, wrap");
+			ElementStyle.normal(sp);
+			addElement(sp, "growx, wrap");
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
 			addValueLabel(info);
@@ -791,36 +786,35 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 
 		try {
 			Vector4f val = (Vector4f) info.getGetter().invoke(prop);
-			Vector4fControl v4 = new Vector4fControl(screen, min, max, incr, val, cycle, all) {
-				@Override
-				protected void onChangeVector(Vector4f newValue) {
-					if (!adjustingProperties) {
-						if (undoManager != null) {
-							undoManager.storeAndExecute(new SetPropertyCommand(prop, info, getValue().clone()) {
-								@Override
-								protected void updateUIValue(Object value) {
-									setValue((Vector4f) value);
-									setAvailable();
-								}
-							});
-						} else {
-							try {
-								setProperty(info, newValue);
-							} catch (Exception e) {
-								LOG.log(Level.SEVERE, "Failed to set property.", e);
+			Vector4fControl v4 = new Vector4fControl(screen, min, max, incr, val, cycle, all);
+			v4.onChange(evt -> {
+
+				if (!isAdjusting()) {
+					if (undoManager != null) {
+						undoManager.storeAndExecute(new SetPropertyCommand(prop, info, evt.getNewValue().clone()) {
+							@Override
+							protected void updateUIValue(Object value) {
+								v4.setValue((Vector4f) value);
+								setAvailable();
 							}
+						});
+					} else {
+						try {
+							setProperty(info, evt.getNewValue());
+						} catch (Exception e) {
+							LOG.log(Level.SEVERE, "Failed to set property.", e);
 						}
 					}
 				}
-			};
+			});
 			v4.setType(type);
 			propertyComponents.put(getComponentId(info), v4);
 			v4.addToForm(propertyForm);
 			if (snapToIncr) {
 				v4.snapToIncr(true);
 			}
-			ElementStyle.small(screen, v4);
-			addChild(v4, "growx, wrap");
+			ElementStyle.normal(v4);
+			addElement(v4, "growx, wrap");
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
 			addValueLabel(info);
@@ -854,45 +848,44 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 
 			if (info.getHint() == Hint.ROTATION_DEGREES) {
 				Vector3f rotVal = IceUI.toEulerDegrees(val, incr);
-				Vector3fControl v3 = new Vector3fControl(screen, min, max, incr, rotVal, cycle, all) {
-					@Override
-					protected void onChangeVector(Vector3f newValue) {
-						if (!adjustingProperties) {
-							Quaternion newVal = IceUI.fromEulerDegrees(newValue);
-							if (undoManager != null) {
-								undoManager.storeAndExecute(new SetPropertyCommand(prop, info, newVal) {
-									@Override
-									protected void updateUIValue(Object value) {
-										float[] ang = ((Quaternion) value).toAngles(null);
-										Vector3f rotVal = new Vector3f(ang[0] * FastMath.RAD_TO_DEG, ang[1] * FastMath.RAD_TO_DEG,
-												ang[2] * FastMath.RAD_TO_DEG);
-										setValue(rotVal);
-										setAvailable();
-									}
-								});
-							} else {
-								try {
-									setProperty(info, newVal);
-								} catch (Exception e) {
-									LOG.log(Level.SEVERE, "Failed to set property.", e);
+				Vector3fControl v3 = new Vector3fControl(screen, min, max, incr, rotVal, cycle, all);
+				v3.onChange(evt -> {
+
+					if (!isAdjusting()) {
+						Quaternion newVal = IceUI.fromEulerDegrees(evt.getNewValue());
+						if (undoManager != null) {
+							undoManager.storeAndExecute(new SetPropertyCommand(prop, info, newVal) {
+								@Override
+								protected void updateUIValue(Object value) {
+									float[] ang = ((Quaternion) value).toAngles(null);
+									Vector3f rotVal = new Vector3f(ang[0] * FastMath.RAD_TO_DEG,
+											ang[1] * FastMath.RAD_TO_DEG, ang[2] * FastMath.RAD_TO_DEG);
+									v3.setValue(rotVal);
+									setAvailable();
 								}
+							});
+						} else {
+							try {
+								setProperty(info, newVal);
+							} catch (Exception e) {
+								LOG.log(Level.SEVERE, "Failed to set property.", e);
 							}
 						}
 					}
-				};
+				});
 				propertyComponents.put(getComponentId(info), v3);
 				v3.addToForm(propertyForm);
 				if (snapToIncr) {
 					v3.snapToIncr(true);
 				}
-				ElementStyle.small(screen, v3);
-				addChild(v3, "growx, wrap");
+				ElementStyle.normal(v3);
+				addElement(v3, "growx, wrap");
 			} else {
 
 				QuaternionControl v4 = new QuaternionControl(screen, min, max, incr, val, cycle, all) {
 					@Override
 					protected void onChangeVector(Quaternion newValue) {
-						if (!adjustingProperties) {
+						if (!isAdjusting()) {
 							if (undoManager != null) {
 								undoManager.storeAndExecute(new SetPropertyCommand(prop, info, getValue().clone()) {
 									@Override
@@ -917,8 +910,8 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 				if (snapToIncr) {
 					v4.snapToIncr(true);
 				}
-				ElementStyle.small(screen, v4);
-				addChild(v4, "growx, wrap");
+				ElementStyle.normal(v4);
+				addElement(v4, "growx, wrap");
 			}
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
@@ -976,43 +969,47 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 
 		try {
 			Vector3f val = (Vector3f) info.getGetter().invoke(prop);
-			Vector3fControl v3 = new Vector3fControl(screen, min, max, incr, val, cycle, all) {
-				@Override
-				protected void onChangeVector(Vector3f newValue) {
-					if (!adjustingProperties) {
-						if (undoManager != null) {
-							undoManager.storeAndExecute(new SetPropertyCommand(prop, info, getValue().clone()) {
-								@Override
-								protected void updateUIValue(Object value) {
-									setValue((Vector3f) value);
-									setAvailable();
-								}
-							});
-						} else {
-							try {
-								setProperty(info, newValue);
+			Vector3fControl v3 = new Vector3fControl(screen, min, max, incr, val, cycle, all);
+			v3.onChange(evt -> {
+
+				if (!isAdjusting()) {
+					if (undoManager != null) {
+						undoManager.storeAndExecute(new SetPropertyCommand(prop, info, evt.getNewValue().clone()) {
+							@Override
+							protected void updateUIValue(Object value) {
+								v3.setValue((Vector3f) value);
 								setAvailable();
-							} catch (Exception e) {
-								LOG.log(Level.SEVERE, "Failed to set property.", e);
+								propertyUpdate(info, value);
 							}
+						});
+					} else {
+						try {
+							setProperty(info, evt.getNewValue());
+							setAvailable();
+							propertyUpdate(info, evt.getNewValue());
+						} catch (Exception e) {
+							LOG.log(Level.SEVERE, "Failed to set property.", e);
 						}
 					}
 				}
-			};
+			});
 			if (precision != -1)
 				v3.setPrecision(precision);
 			propertyComponents.put(getComponentId(info), v3);
 			v3.addToForm(propertyForm);
 			if (snapToIncr) {
-				v3.snapToIncr(true);
+				v3.snapToIncr(false);
 			}
-			ElementStyle.small(screen, v3);
-			addChild(v3, "growx, wrap");
+			ElementStyle.normal(v3);
+			addElement(v3, "growx, wrap");
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
 			addValueLabel(info);
 
 		}
+	}
+
+	protected void propertyUpdate(PropertyInfo<T> info, Object value) {
 	}
 
 	private void addVector2fControl(final PropertyInfo info) {
@@ -1048,36 +1045,34 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 
 		try {
 			Vector2f val = (Vector2f) info.getGetter().invoke(prop);
-			Vector2fControl v2 = new Vector2fControl(screen, min, max, incr, val, cycle, all) {
-				@Override
-				protected void onChangeVector(Vector2f newValue) {
-					if (!adjustingProperties) {
-						if (undoManager != null) {
-							undoManager.storeAndExecute(new SetPropertyCommand(prop, info, newValue) {
-								@Override
-								protected void updateUIValue(Object value) {
-									setValue((Vector2f) value);
-									setAvailable();
-								}
-							});
-						} else {
-							try {
-								setProperty(info, newValue);
+			Vector2fControl v2 = new Vector2fControl(screen, min, max, incr, val, cycle, all);
+			v2.onChange(evt -> {
+				if (!isAdjusting()) {
+					if (undoManager != null) {
+						undoManager.storeAndExecute(new SetPropertyCommand(prop, info, evt.getNewValue()) {
+							@Override
+							protected void updateUIValue(Object value) {
+								v2.setValue((Vector2f) value);
 								setAvailable();
-							} catch (Exception e) {
-								LOG.log(Level.SEVERE, "Failed to set property.", e);
 							}
+						});
+					} else {
+						try {
+							setProperty(info, evt.getNewValue());
+							setAvailable();
+						} catch (Exception e) {
+							LOG.log(Level.SEVERE, "Failed to set property.", e);
 						}
 					}
 				}
-			};
+			});
 			propertyComponents.put(getComponentId(info), v2);
 			v2.addToForm(propertyForm);
 			if (snapToIncr) {
-				v2.snapToIncr(true);
+				v2.snapToIncr(false);
 			}
-			ElementStyle.small(screen, v2);
-			addChild(v2, "growx, wrap");
+			ElementStyle.normal(v2);
+			addElement(v2, "growx, wrap");
 		} catch (Exception ex) {
 			LOG.log(Level.SEVERE, "Failed to get value.", ex);
 			addValueLabel(info);
@@ -1086,8 +1081,7 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 	}
 
 	public void rebuild() {
-		adjustingProperties = true;
-		try {
+		runAdjusting(() -> {
 			removeAllChildren();
 			gatherPropProperties();
 			propertyForm = new Form(screen);
@@ -1096,69 +1090,65 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 				buildPropertyRow(k);
 			}
 			layoutChildren();
-			updateClippingLayers();
 			setAvailable();
-		} finally {
-			adjustingProperties = false;
-		}
+		});
 	}
 
 	//
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt) {
-		if (adjusting) {
+		if (isAdjusting()) {
 			// Event was the result of a set from this property editor
 			return;
 		}
-		app.enqueue(new Callable<Void>() {
 
-			@Override
-			public Void call() throws Exception {
-				if (evt.getPropertyName().equals(AbstractProp.ATTR_SCENERY_ITEM)) {
-					// || evt.getPropertyName().equals(AbstractProp.ATTR_ASSET))
-					// {
-					rebuild();
-				} else {
-					Element el = propertyComponents.get(evt.getPropertyName());
-					if (el instanceof CheckBox) {
-						((CheckBox) el).setIsCheckedNoCallback((Boolean) evt.getNewValue());
-					} else if (el instanceof Vector4fControl) {
-						((Vector4fControl) el).setValue((Vector4f) evt.getNewValue());
-					} else if (el instanceof QuaternionControl) {
-						((QuaternionControl) el).setValue((Quaternion) evt.getNewValue());
-					} else if (el instanceof Vector3fControl) {
-						if (evt.getNewValue() instanceof Quaternion) {
-							((Vector3fControl) el).setValue(IceUI.toEulerDegrees((Quaternion) evt.getNewValue(), prefs.getFloat(
-									SceneConfig.BUILD_EULER_ROTATION_SNAP, SceneConfig.BUILD_EULER_ROTATION_SNAP_DEFAULT)));
-						} else {
-							((Vector3fControl) el).setValue((Vector3f) evt.getNewValue());
-						}
-					} else if (el instanceof Vector2fControl) {
-						((Vector2fControl) el).setValue((Vector2f) evt.getNewValue());
-					} else if (el instanceof Spinner) {
-						((Spinner) el).setSelectedValue(evt.getNewValue());
-					} else if (el instanceof ColorFieldControl) {
-						((ColorFieldControl) el).setValue((ColorRGBA) evt.getNewValue());
-					} else if (el instanceof SoundFieldControl) {
-						((SoundFieldControl) el).setValue((String) evt.getNewValue());
-					} else if (el instanceof ComboBox) {
-						((ComboBox) el).setSelectedByValue(evt.getNewValue(), false);
-					} else if (el instanceof TextField) {
-						((TextField) el).setText(String.valueOf(evt.getNewValue()));
-					} else if (el instanceof Label) {
-						((Label) el).setText(String.valueOf(evt.getNewValue()));
+		runAdjusting(() -> {
+
+			if (evt.getPropertyName().equals(AbstractProp.ATTR_SCENERY_ITEM)) {
+				// || evt.getPropertyName().equals(AbstractProp.ATTR_ASSET))
+				// {
+				rebuild();
+			} else {
+				BaseElement el = propertyComponents.get(evt.getPropertyName());
+				if (el instanceof CheckBox) {
+					((CheckBox) el).runAdjusting(() -> ((CheckBox) el).setChecked((Boolean) evt.getNewValue()));
+				} else if (el instanceof Vector4fControl) {
+					((Vector4fControl) el).setValue((Vector4f) evt.getNewValue());
+				} else if (el instanceof QuaternionControl) {
+					((QuaternionControl) el).setValue((Quaternion) evt.getNewValue());
+				} else if (el instanceof Vector3fControl) {
+					if (evt.getNewValue() instanceof Quaternion) {
+						((Vector3fControl) el).setValue(IceUI.toEulerDegrees((Quaternion) evt.getNewValue(),
+								prefs.getFloat(SceneConfig.BUILD_EULER_ROTATION_SNAP,
+										SceneConfig.BUILD_EULER_ROTATION_SNAP_DEFAULT)));
 					} else {
-						LOG.warning(String.format("Unknown property update for %s (%s)", evt, el));
+						((Vector3fControl) el).setValue((Vector3f) evt.getNewValue());
 					}
-					setAvailable();
+				} else if (el instanceof Vector2fControl) {
+					((Vector2fControl) el).setValue((Vector2f) evt.getNewValue());
+				} else if (el instanceof Spinner) {
+					((Spinner) el).setSelectedValue(evt.getNewValue());
+				} else if (el instanceof ColorFieldControl) {
+					((ColorFieldControl) el).setValue((ColorRGBA) evt.getNewValue());
+				} else if (el instanceof SoundFieldControl) {
+					((SoundFieldControl) el).setValue((String) evt.getNewValue());
+				} else if (el instanceof ComboBox) {
+					((ComboBox) el).setSelectedByValue(evt.getNewValue());
+				} else if (el instanceof TextField) {
+					((TextField) el).setText(String.valueOf(evt.getNewValue()));
+				} else if (el instanceof Label) {
+					((Label) el).setText(String.valueOf(evt.getNewValue()));
+				} else {
+					LOG.warning(String.format("Unknown property update for %s (%s)", evt, el));
 				}
-				return null;
+				setAvailable();
 			}
 		});
 	}
 
-	abstract class SetPropertyCommand implements UndoManager.UndoableCommand {
+	abstract class SetPropertyCommand implements UndoableCommand {
 
+		private static final long serialVersionUID = 1L;
 		private final T object;
 		private final PropertyInfo<T> info;
 		private final Object value;
@@ -1202,7 +1192,8 @@ public class PropertiesPanel<T extends PropertyBean> extends Element implements 
 				} else if (value instanceof Cloneable) {
 					oldVal = ov.getClass().getDeclaredMethod("clone").invoke(ov);
 				} else {
-					throw new RuntimeException(String.format("Don't know how to clone a %s (%s)", oldVal.getClass(), value));
+					throw new RuntimeException(
+							String.format("Don't know how to clone a %s (%s)", oldVal.getClass(), value));
 				}
 				setProperty(info, value);
 				onPropertyChange(info, object, value);

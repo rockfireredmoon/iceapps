@@ -3,10 +3,13 @@ package org.icescene.tools;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.scene.Spatial;
 
+import icetone.core.BaseElement;
+import icetone.core.BaseScreen;
+import icetone.core.PseudoStyles;
+import icetone.core.StyledContainer;
 import icetone.core.Element;
-import icetone.core.ElementManager;
-import icetone.core.layout.mig.MigLayout;
-import icetone.core.utils.UIDUtil;
+import icetone.core.Layout.LayoutType;
+import icetone.core.layout.FillLayout;
 
 /**
  * Place for (tool-able) inventory items or tools to be dropped.
@@ -17,24 +20,15 @@ public abstract class ToolDroppable extends Element {
 	private final ToolBox toolBox;
 	private final int slot;
 
-	public ToolDroppable(DragContext dragContext, ElementManager screen, ToolBox toolBox, Tool tool, int slot) {
-		super(screen, UIDUtil.getUID(), screen.getStyle(toolBox.getStyle().getDroppableStyleName()).getVector2f("defaultSize"),
-				screen.getStyle(toolBox.getStyle().getDroppableStyleName()).getVector4f("resizeBorders"), screen.getStyle(
-						toolBox.getStyle().getDroppableStyleName()).getString("defaultImg"));
-		setLayoutManager(new MigLayout(screen, "gap 0, ins 0", "[]", "[]"));
+	public ToolDroppable(DragContext dragContext, BaseScreen screen, ToolBox toolBox, Tool tool, int slot) {
+		super(screen);
+		setLayoutManager(new FillLayout());
+		setTextPadding(2, 2, 2, 2);
 		if (tool != null) {
-			ToolDraggable toolDraggable = new ToolDraggable(dragContext, screen, screen.getStyle(
-					toolBox.getStyle().getDroppableStyleName()).getVector2f("toolDefaultSize"), screen.getStyle(
-					toolBox.getStyle().getDroppableStyleName()).getVector4f("toolResizeBorders"), toolBox, tool, slot) {
+			ToolDraggable toolDraggable = new ToolDraggable(dragContext, screen, toolBox, tool, slot) {
 
 				@Override
-				public void onMouseLeftReleased(MouseButtonEvent evt) {
-					super.onMouseLeftReleased(evt);
-					onDragDropComplete(evt);
-				}
-
-				@Override
-				protected boolean doOnDragEnd(MouseButtonEvent mbe, Element elmnt) {
+				protected boolean doOnDragEnd(MouseButtonEvent mbe, BaseElement elmnt) {
 					return doEndDraggableDrag(mbe, elmnt);
 				}
 
@@ -43,17 +37,37 @@ public abstract class ToolDroppable extends Element {
 					return doClick(evt);
 				}
 			};
-			addChild(toolDraggable);
-			
-			toolDraggable.setIsMovable(toolBox.isMoveable() && tool != null && tool.isMayDrag());
-//			toolDraggable.setIsDragDropDropElement(!toolBox.isConfigurable() && tool != null && tool.isMayDrag());
+			toolDraggable.onComplete(evt -> onDragDropComplete(evt));
+			addElement(toolDraggable);
+			toolDraggable.setMovable(toolBox.isMoveable() && tool != null && tool.isMayDrag());
+			toolDraggable.setDragDropDropElement(!toolBox.isConfigurable() && tool != null && tool.isMayDrag());
 		} else {
 			setIgnoreMouseButtons(true);
 		}
-//		setIsDragDropDropElement(toolBox.isConfigurable());
+
+		addElement(new StyledContainer(screen) {
+			{
+				setStyleClass("tool-overlay");
+				setUseParentPseudoStyles(true);
+			}
+		}.setIgnoreMouse(true));
+
+		setFocusRootOnly(false);
+		setHoverable(true);
+//		setMouseFocusable(true);
+		setDragDropDropElement(toolBox.isConfigurable());
 		this.toolBox = toolBox;
 		this.tool = tool;
 		this.slot = slot;
+	}
+
+	@Override
+	protected void onPsuedoStateChange() {
+		/*
+		 * TODO only do this if any children are using parent pseudo styles.
+		 * Button does the same thing
+		 */
+		dirtyLayout(true, LayoutType.styling);
 	}
 
 	public ToolDraggable getDraggable() {
@@ -83,5 +97,5 @@ public abstract class ToolDroppable extends Element {
 
 	protected abstract boolean doClick(MouseButtonEvent evt);
 
-	protected abstract boolean doEndDraggableDrag(MouseButtonEvent mbe, Element elmnt);
+	protected abstract boolean doEndDraggableDrag(MouseButtonEvent mbe, BaseElement elmnt);
 }

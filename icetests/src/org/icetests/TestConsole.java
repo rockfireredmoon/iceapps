@@ -49,15 +49,7 @@ public class TestConsole extends IcesceneApp {
 		getInputManager().addListener(new ActionListener() {
 			public void onAction(String name, boolean isPressed, float tpf) {
 				if (!isPressed) {
-					ConsoleAppState state = stateManager.getState(ConsoleAppState.class);
-					if (state == null) {
-						state = new ConsoleAppState(prefs);
-						state.show();
-						stateManager.attach(state);
-
-					} else {
-						stateManager.detach(state);
-					}
+					ConsoleAppState.toggle(prefs, getStateManager());
 				}
 			}
 		}, "OpenConsole");

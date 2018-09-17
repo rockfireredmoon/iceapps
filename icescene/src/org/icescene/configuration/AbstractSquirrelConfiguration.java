@@ -1,7 +1,5 @@
 package org.icescene.configuration;
 
-import icemoon.iceloader.AbstractConfiguration;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,6 +10,8 @@ import org.icesquirrel.interpreter.SquirrelInterpretedScript;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
+
+import icemoon.iceloader.AbstractConfiguration;
 
 /**
  * Parses Squirrel script data files.

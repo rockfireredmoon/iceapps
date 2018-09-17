@@ -6,140 +6,124 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.icelib.Icelib;
 import org.icescene.controls.Rotator;
 import org.icescene.props.AbstractProp;
 import org.icescene.props.EntityFactory;
-import org.iceui.controls.chooser.ChooserDialog;
-import org.iceui.controls.chooser.ChooserPanel;
 
 import com.jme3.font.BitmapFont;
-import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.light.AmbientLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector4f;
 import com.jme3.scene.Node;
 
-import icetone.controls.buttons.ButtonAdapter;
-import icetone.controls.extras.OSRViewPort;
-import icetone.controls.lists.Table;
-import icetone.core.Container;
+import icetone.controls.buttons.Button;
+import icetone.controls.buttons.PushButton;
+import icetone.controls.containers.OSRViewPort;
+import icetone.controls.table.Table;
+import icetone.controls.table.TableCell;
+import icetone.controls.table.TableRow;
+import icetone.core.BaseElement;
+import icetone.core.BaseScreen;
+import icetone.core.Size;
+import icetone.core.StyledContainer;
 import icetone.core.Element;
-import icetone.core.ElementManager;
 import icetone.core.layout.FlowLayout;
-import icetone.core.layout.LUtil;
 import icetone.core.layout.mig.MigLayout;
-import icetone.core.utils.UIDUtil;
-import icetone.listeners.MouseButtonListener;
+import icetone.extras.chooser.ChooserDialog;
+import icetone.extras.chooser.ChooserPanel;
+import icetone.fontawesome.FontAwesome;
 
 /**
  * {@link ChooserDialog.ChooserView} that lists models resources as names, and
  * previews them in an {@link OSRViewPort}.
  */
-public class PreviewModelView implements ChooserPanel.ChooserView {
-	public final class PreviewTable extends Table implements MouseButtonListener {
-		private final ChooserPanel chooser;
-		private final Vector2f vpSize;
+public class PreviewModelView implements ChooserPanel.ChooserView<String> {
+	public final class PreviewTable extends Table {
 
-		public PreviewTable(ElementManager screen, String UID, Vector2f dimensions, Vector4f resizeBorders, String defaultImg,
-				ChooserPanel chooser, Vector2f vpSize) {
-			super(screen, UID, Vector2f.ZERO, dimensions, resizeBorders, defaultImg);
-			this.chooser = chooser;
-			this.vpSize = vpSize;
-		}
-
-		@Override
-		public void onChange() {
-			TableRow row = getSelectedRow();
-			if (row == null) {
-				vp.setOSRBridge(new Node(), (int) vpSize.x, (int) vpSize.y);
-			} else {
-				TableCell cell = row.getCell(0);
-				String propName = String.format("%s/%s", cwd, (String) cell.getValue());
-
-				try {
-					prop = propFactory.getPropForResourcePath(propName);
-					prop.getSpatial().rotate(0, -FastMath.HALF_PI, 0);
-					prop.getSpatial().move(0, -0.5f, 0);
-					prop.getSpatial().scale(0.25f);
-
-					Node n = new Node();
-					AmbientLight al = new AmbientLight();
-					al.setColor(ColorRGBA.White.mult(3));
-					n.addLight(al);
-					n.attachChild(prop.getSpatial());
-
-					vp.setOSRBridge(n, (int) vpSize.x, (int) vpSize.y);
-				} catch (IOException e) {
-					LOG.log(Level.SEVERE, "Failed to load.", e);
+		public PreviewTable(BaseScreen screen, ChooserPanel<String> chooser, Size vpSize) {
+			super(screen);
+			setPreferredDimensions(vpSize);
+			onMouseReleased(evt -> {
+				TableRow row = getSelectedRow();
+				if (row != null && evt.getClicks() == 2) {
+					chooser.choose(getPath((String) row.getCell(0).getValue()));
 				}
+			});
+			onChanged(evt -> {
 
-			}
+				TableRow row = getSelectedRow();
+				if (row == null) {
+					vp.setOSRBridge(new Node(), (int) vpSize.x, (int) vpSize.y);
+				} else {
+					TableCell cell = row.getCell(0);
+					String propName = String.format("%s/%s", cwd, (String) cell.getValue());
+
+					try {
+						prop = propFactory.getPropForResourcePath(propName);
+						prop.getSpatial().rotate(0, -FastMath.HALF_PI, 0);
+						prop.getSpatial().move(0, -0.5f, 0);
+						prop.getSpatial().scale(0.25f);
+
+						Node n = new Node();
+						AmbientLight al = new AmbientLight();
+						al.setColor(ColorRGBA.White);
+						n.addLight(al);
+						n.attachChild(prop.getSpatial());
+
+						vp.setOSRBridge(n, (int) vpSize.x, (int) vpSize.y);
+					} catch (IOException e) {
+						LOG.log(Level.SEVERE, "Failed to load.", e);
+					}
+
+				}
+			});
 		}
 
-		@Override
-		public void onMouseLeftReleased(MouseButtonEvent evt) {
-			TableRow row = getSelectedRow();
-			if (row != null && LUtil.isDoubleClick(evt)) {
-				chooser.choose(getPath((String) row.getCell(0).getValue()));
-			}
-		}
-
-		@Override
-		public void onMouseLeftPressed(MouseButtonEvent evt) {
-		}
-
-		@Override
-		public void onMouseRightPressed(MouseButtonEvent evt) {
-		}
-
-		@Override
-		public void onMouseRightReleased(MouseButtonEvent evt) {
-		}
 	}
 
 	final static Logger LOG = Logger.getLogger(PreviewModelView.class.getName());
 
-	private final ElementManager screen;
+	private final BaseScreen screen;
 	private String cwd;
 	private Table table;
 	private OSRViewPort vp;
 	private final EntityFactory propFactory;
 	private AbstractProp prop;
-	private ButtonAdapter rotateLeft;
-	private ButtonAdapter rotateRight;
+	private Button rotateLeft;
+	private Button rotateRight;
 
-	public PreviewModelView(ElementManager screen, EntityFactory propFactory) {
+	public PreviewModelView(BaseScreen screen, EntityFactory propFactory) {
 		this.screen = screen;
 		this.propFactory = propFactory;
 	}
 
-	public void setEnabled(boolean enabled) {
-		table.setIsEnabled(enabled);
-		rotateLeft.setIsEnabled(enabled);
-		rotateRight.setIsEnabled(enabled);
+	public void setIsEnabled(boolean enabled) {
+		table.setEnabled(enabled);
+		rotateLeft.setEnabled(enabled);
+		rotateRight.setEnabled(enabled);
 	}
 
-	public Element createView(final ChooserPanel chooser) {
+	public BaseElement createView(final ChooserPanel<String> chooser) {
 
-		final Vector2f vpSize = new Vector2f(200, 200);
-		Element container = new Element(screen, UIDUtil.getUID(), Vector2f.ZERO, LUtil.LAYOUT_SIZE,
-				screen.getStyle("Menu").getVector4f("resizeBorders"), screen.getStyle("Menu").getString("defaultImg"));
+		final Size vpSize = new Size(200, 200);
+
+		Element container = new Element(screen);
 		container.setIgnoreMouse(true);
 		container.setLayoutManager(new MigLayout(screen, "", "[fill, grow,:50%:][fill, grow,:50%:]", "[fill, grow]"));
 
-		table = new PreviewTable(screen, UIDUtil.getUID(), Vector2f.ZERO, Vector4f.ZERO, null, chooser, vpSize);
+		table = new PreviewTable(screen, chooser, vpSize);
 		table.setSelectionMode(Table.SelectionMode.ROW);
 		table.setHeadersVisible(false);
 		table.setColumnResizeMode(Table.ColumnResizeMode.AUTO_ALL);
 		table.addColumn("Name");
-		container.addChild(table);
+		container.addElement(table);
 
 		// Preview panel
-		Container previewContainer = new Container(screen);
-		previewContainer.setLayoutManager(new MigLayout(screen, "gap 0, ins 0, wrap 1", "push[]push", "push[shrink 200][]push"));
-		vp = new OSRViewPort(screen, Vector2f.ZERO, vpSize, Vector4f.ZERO, null) {
+		Element previewContainer = new Element(screen);
+		previewContainer.setLayoutManager(
+				new MigLayout(screen, "gap 0, ins 0, wrap 1", "push[]push", "push[shrink 200][]push"));
+		vp = new OSRViewPort(screen, vpSize) {
 			@Override
 			public void controlHideHook() {
 				if (getOSRBridge() != null && getOSRBridge().getViewPort() != null) {
@@ -154,56 +138,47 @@ public class PreviewModelView implements ChooserPanel.ChooserView {
 				}
 			}
 		};
-		vp.setDocking(null);
 		vp.setIgnoreMouseWheel(false);
 		vp.setIgnoreMouse(false);
 		vp.setIgnoreMouseButtons(false);
-		vp.setScaleEW(false);
-		vp.setScaleNS(false);
-		previewContainer.addChild(vp);
+		previewContainer.addElement(vp);
 
-		Container buttonsContainer = new Container(screen);
+		StyledContainer buttonsContainer = new StyledContainer(screen);
 		buttonsContainer.setLayoutManager(new FlowLayout(0, BitmapFont.Align.Center));
 
-		rotateLeft = new ButtonAdapter(screen, screen.getStyle("RotateLeftButton").getVector2f("defaultSize")) {
-			@Override
-			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
-				if (prop != null) {
-					prop.getSpatial().addControl(new Rotator(-3f));
-				}
+		rotateLeft = new PushButton(screen);
+		FontAwesome.ROTATE_LEFT.button(24, rotateLeft);
+		rotateLeft.onMousePressed(evt -> {
+			if (prop != null) {
+				prop.getSpatial().addControl(new Rotator(-3f));
 			}
-
-			@Override
-			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-				if (prop != null) {
-					prop.getSpatial().removeControl(Rotator.class);
-				}
+		});
+		rotateLeft.setStyleClass("rotate-left");
+		rotateLeft.onMouseReleased(evt -> {
+			if (prop != null) {
+				prop.getSpatial().removeControl(Rotator.class);
 			}
-		};
-		rotateLeft.setStyles("RotateLeftButton");
-		buttonsContainer.addChild(rotateLeft);
+		});
+		buttonsContainer.addElement(rotateLeft);
 
-		rotateRight = new ButtonAdapter(screen, screen.getStyle("RotateRightButton").getVector2f("defaultSize")) {
-			@Override
-			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
-				if (prop != null) {
-					prop.getSpatial().addControl(new Rotator(3f));
-				}
+		rotateRight = new PushButton(screen);
+		FontAwesome.ROTATE_RIGHT.button(24, rotateRight);
+		rotateRight.setStyleClass("rotate-right");
+		rotateRight.onMousePressed(evt -> {
+			if (prop != null) {
+				prop.getSpatial().addControl(new Rotator(3f));
 			}
-
-			@Override
-			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-				if (prop != null) {
-					prop.getSpatial().removeControl(Rotator.class);
-				}
+		});
+		rotateRight.onMouseReleased(evt -> {
+			if (prop != null) {
+				prop.getSpatial().removeControl(Rotator.class);
 			}
-		};
-		rotateRight.setStyles("RotateRightButton");
-		buttonsContainer.addChild(rotateRight);
+		});
+		buttonsContainer.addElement(rotateRight);
 
-		previewContainer.addChild(buttonsContainer, "ax 50%");
+		previewContainer.addElement(buttonsContainer, "ax 50%");
 
-		container.addChild(previewContainer);
+		container.addElement(previewContainer);
 
 		return container;
 	}
@@ -218,10 +193,10 @@ public class PreviewModelView implements ChooserPanel.ChooserView {
 		});
 
 		for (final String s : filesNames) {
-			final Table.TableRow tableRow = new Table.TableRow(screen, table);
+			final TableRow tableRow = new TableRow(screen, table);
 			screen.getApplication().enqueue(new Callable<Void>() {
 				public Void call() throws Exception {
-					tableRow.addCell(s, s);
+					tableRow.addCell(Icelib.getBaseFilename(s), s);
 					table.addRow(tableRow);
 					return null;
 				}

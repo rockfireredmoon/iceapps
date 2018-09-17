@@ -16,9 +16,11 @@ import org.icescene.configuration.AudioConfiguration;
 import org.icescene.configuration.AudioConfiguration.Sound;
 import org.icescene.controls.SynchronizingPhysicsControl;
 import org.icescene.entities.EntityContext;
+import org.icescene.io.MouseManager;
 import org.icescene.ogreparticle.OGREParticleConfiguration;
 import org.icescene.ogreparticle.OGREParticleEmitter;
 import org.icescene.ogreparticle.OGREParticleScript;
+import org.icescene.scene.Buildable;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -39,12 +41,13 @@ import emitter.Emitter;
 public abstract class AbstractXMLProp extends AbstractProp {
 
 	private final static Logger LOG = Logger.getLogger(AbstractXMLProp.class.getName());
-	private static final boolean COLLISION_ENABLED = !"true".equals(System.getProperty("icescene.disableBlockingMeshes", "false"));
+	private static final boolean COLLISION_ENABLED = !"true"
+			.equals(System.getProperty("icescene.disableBlockingMeshes", "false"));
 	protected Component component;
 	protected Spatial propSpatial;
 	private List<Spatial> physicsMeshesToAddOnAttachment = new ArrayList<Spatial>();
 	private List<Spatial> physicsMeshesToRemove = new ArrayList<Spatial>();
-	private Map<Entity, Spatial> entities = new HashMap<Entity, Spatial>();
+	private Map<Buildable, Spatial> entities = new HashMap<Buildable, Spatial>();
 	private List<QueuedAudio> sounds = new ArrayList<QueuedAudio>();
 
 	public AbstractXMLProp(String name, EntityContext app) {
@@ -69,7 +72,7 @@ public abstract class AbstractXMLProp extends AbstractProp {
 				// }
 				if (bullet != null)
 					bullet.getPhysicsSpace().remove(s);
-				s.removeFromParent();
+				// s.removeFromParent();
 			}
 			physicsMeshesToRemove.clear();
 			for (QueuedAudio qa : sounds) {
@@ -151,7 +154,7 @@ public abstract class AbstractXMLProp extends AbstractProp {
 		}
 	}
 
-	public Spatial getMesh(Entity component) {
+	public Spatial getMesh(Buildable component) {
 		return entities.get(component);
 	}
 
@@ -165,53 +168,66 @@ public abstract class AbstractXMLProp extends AbstractProp {
 				try {
 					// Load from mode file
 					String mesh = entity.getMesh();
-					if (!mesh.endsWith(".xml")) {
-						mesh += ".xml";
-					}
-					final String meshPath = resolveSubmesh(mesh);
-					if (LOG.isLoggable(Level.INFO)) {
-						LOG.info(String.format("Loading physics model %s", meshPath));
-					}
-					otherMesh = context.getAssetManager().loadModel(meshPath);
+					if (mesh == null) {
+						if (entity.getPhysicsMeshClass() != null) {
+							LOG.warning("TODO load physics meshes");
+						} else {
+							LOG.severe(String.format("Prop %s is neither a file mesh or a mesh class.", entity));
+						}
+					} else {
+						if (!mesh.endsWith(".xml")) {
+							mesh += ".xml";
+						}
+						final String meshPath = resolveSubmesh(mesh);
+						if (LOG.isLoggable(Level.INFO)) {
+							LOG.info(String.format("Loading physics model %s", meshPath));
+						}
+						otherMesh = context.getAssetManager().loadModel(meshPath);
 
-					/*
-					 * When importing meshes this way, we actually get a Node
-					 * spatial, but because we want to be able to scale physics
-					 * meshes too, we actually need a Geometry. So, we look for
-					 * the geometry in the returned model and use that instead.
-					 * 
-					 * http://hub.jmonkeyengine.org/forum/topic/using-setscale-
-					 * vector3f-on-collisionshapes/
-					 */
+						/*
+						 * When importing meshes this way, we actually get a
+						 * Node spatial, but because we want to be able to scale
+						 * physics meshes too, we actually need a Geometry. So,
+						 * we look for the geometry in the returned model and
+						 * use that instead.
+						 * 
+						 * http://hub.jmonkeyengine.org/forum/topic/using-
+						 * setscale- vector3f-on-collisionshapes/
+						 */
 
-					if (otherMesh instanceof Node) {
-						Node node = (Node) otherMesh;
-						for (Spatial s : node.getChildren()) {
-							if (s instanceof Geometry) {
-								otherMesh = s;
-								break;
+						if (otherMesh instanceof Node) {
+							Node node = (Node) otherMesh;
+							for (Spatial s : node.getChildren()) {
+								if (s instanceof Geometry) {
+									otherMesh = s;
+									break;
+								}
 							}
 						}
-					}
 
-					// otherMesh.setMaterial(MaterialFactory.getManager().getMaterial("Standard/Invisible",
-					// app.getAssetManager()));
-					// otherMesh.setMaterial(new
-					// WireframeWidget(context.getAssetManager(),
-					// entity.isBlocking() ? ColorRGBA.Green
-					// : ColorRGBA.Blue));
-					otherMesh.setCullHint(CullHint.Always);
-					otherMesh.setShadowMode(RenderQueue.ShadowMode.Off);
-					otherMesh.setLocalScale(getScale());
-					entities.put(entity, otherMesh);
+						// otherMesh.setMaterial(MaterialFactory.getManager().getMaterial("Standard/Invisible",
+						// app.getAssetManager()));
 
-					if (spatial.getParent() != null) {
-						;
-						configurePhysicsMesh(otherMesh);
-						spatial.getParent().attachChild(otherMesh);
-					} else {
-						// Defer until attached to parent
-						physicsMeshesToAddOnAttachment.add(otherMesh);
+						// TODO make this configurable somehow (like /sb)
+						// otherMesh.setMaterial(new
+						// WireframeWidget(context.getAssetManager(),
+						// entity.isBlocking() ? ColorRGBA.Green :
+						// ColorRGBA.Blue));
+						// otherMesh.setCullHint(CullHint.Never);
+						otherMesh.setUserData(MouseManager.IGNORE, Boolean.TRUE);
+						otherMesh.setCullHint(CullHint.Always);
+						otherMesh.setShadowMode(RenderQueue.ShadowMode.Off);
+						otherMesh.setLocalScale(getScale());
+						entities.put(entity, otherMesh);
+
+						if (spatial.getParent() != null) {
+							;
+							configurePhysicsMesh(otherMesh);
+							spatial.getParent().attachChild(otherMesh);
+						} else {
+							// Defer until attached to parent
+							physicsMeshesToAddOnAttachment.add(otherMesh);
+						}
 					}
 				} catch (Exception e) {
 					if (LOG.isLoggable(Level.FINE))
@@ -242,7 +258,8 @@ public abstract class AbstractXMLProp extends AbstractProp {
 		if (component.getParticles().size() > 0) {
 			LOG.info(String.format("Component has %d particles", component.getParticles().size()));
 			for (ParticleComponent pc : component.getParticles()) {
-				OGREParticleScript scr = OGREParticleConfiguration.findScript(context.getAssetManager(), pc.getTemplate());
+				OGREParticleScript scr = OGREParticleConfiguration.findScript(context.getAssetManager(),
+						pc.getTemplate());
 				for (OGREParticleEmitter i : scr.getEmitters()) {
 					LOG.info(String.format("Adding particle template %s", i.getScript().getName()));
 					Node n = new Node("Particle-" + i.getScript().getName());
@@ -288,7 +305,7 @@ public abstract class AbstractXMLProp extends AbstractProp {
 				if (s != null) {
 					gain = gain * s.getGain();
 					loop = s.isLoop();
-					queue = s.getChannel();
+					queue = s.getQueue();
 					ref = s.getRefDistance();
 					max = s.getMaxDistance();
 				}
@@ -300,7 +317,8 @@ public abstract class AbstractXMLProp extends AbstractProp {
 		}
 	}
 
-	protected void addSound(String name, boolean loop, AudioQueue channel, float gain, float ref, float max, boolean positional) {
+	protected void addSound(String name, boolean loop, AudioQueue channel, float gain, float ref, float max,
+			boolean positional) {
 		boolean stream = true;
 		boolean streamCache = true;
 		// For backward compatibility, if the name has no '/', it is in
@@ -365,8 +383,8 @@ public abstract class AbstractXMLProp extends AbstractProp {
 
 					} else {
 						// Load a special java spatial
-						propSpatial = entity.getMeshClass().getConstructor(String.class, AssetManager.class).newInstance("Prop",
-								context.getAssetManager());
+						propSpatial = entity.getMeshClass().getConstructor(String.class, AssetManager.class)
+								.newInstance("Prop", context.getAssetManager());
 					}
 				} catch (Exception e) {
 					if (LOG.isLoggable(Level.FINE))
@@ -377,7 +395,7 @@ public abstract class AbstractXMLProp extends AbstractProp {
 
 				if (propSpatial != null) {
 					entities.put(entity, propSpatial);
-					propSpatial.setLocalTranslation(entity.getLocation());
+					propSpatial.setLocalTranslation(entity.getTranslation());
 					if (entity.getRotation() != null) {
 						propSpatial.setLocalRotation(entity.getRotation());
 					}
@@ -391,6 +409,18 @@ public abstract class AbstractXMLProp extends AbstractProp {
 		for (XRef xref : component.getXRefs()) {
 			try {
 				String prop = xref.getCRef();
+
+				// TODO why is this? Par-Candle_Glow1 is referred to without
+				// '-Emitter' on the end,
+				// and the same for 'Par-BigExplosion'. Investigate why, and
+				// make uniform?
+				// NOTE it is appears its because the component ID differs from
+				// the filename in this
+				// case and those are used
+				if (prop.startsWith("Par-") && !prop.endsWith("-Emitter")) {
+					prop = prop + "-Emitter";
+				}
+
 				EntityFactory factory = (EntityFactory) context;
 				propSpatial = factory.getProp(prop).getSpatial();
 			} catch (Exception e) {
@@ -401,7 +431,8 @@ public abstract class AbstractXMLProp extends AbstractProp {
 			}
 
 			if (propSpatial != null) {
-				propSpatial.setLocalTranslation(xref.getLocation());
+				entities.put(xref, propSpatial);
+				propSpatial.setLocalTranslation(xref.getTranslation());
 				if (xref.getRotation() != null) {
 					propSpatial.setLocalRotation(xref.getRotation());
 				}

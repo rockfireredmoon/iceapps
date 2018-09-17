@@ -6,7 +6,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.icelib.Appearance;
-import org.icelib.Icelib;
 import org.icelib.RGB;
 import org.icescene.assets.ExtendedMaterialKey;
 import org.icescene.assets.ImageLoader;

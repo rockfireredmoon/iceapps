@@ -117,8 +117,8 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
 
 	private static final Logger logger = Logger.getLogger(com.jme3.scene.plugins.ogre.MeshLoader.class.getName());
 	public static boolean AUTO_INTERLEAVE = true;
-	private static final Type[] TEXCOORD_TYPES = new Type[] { Type.TexCoord, Type.TexCoord2, Type.TexCoord3, Type.TexCoord4,
-			Type.TexCoord5, Type.TexCoord6, Type.TexCoord7, Type.TexCoord8, };
+	private static final Type[] TEXCOORD_TYPES = new Type[] { Type.TexCoord, Type.TexCoord2, Type.TexCoord3,
+			Type.TexCoord4, Type.TexCoord5, Type.TexCoord6, Type.TexCoord7, Type.TexCoord8, };
 	private AssetKey key;
 	private String meshName;
 	private String folderName;
@@ -338,7 +338,8 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
 		}
 	}
 
-	private void startSubMesh(String matName, String usesharedvertices, String use32bitIndices, String opType) throws SAXException {
+	private void startSubMesh(String matName, String usesharedvertices, String use32bitIndices, String opType)
+			throws SAXException {
 		mesh = new Mesh();
 		if (firstMatName == null) {
 			firstMatName = matName;
@@ -535,7 +536,8 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
 			// OgreXMLConverter seems to output this as 'float2' sometimes,
 			// which means '2'.
 			if (value != null && value.startsWith("float")) {
-				System.err.println(String.format("[WARNING] Found %s as value of texture_coord_dimensions_%d", value, i));
+				System.err
+						.println(String.format("[WARNING] Found %s as value of texture_coord_dimensions_%d", value, i));
 				value = value.substring(5);
 			}
 
@@ -720,17 +722,19 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
 		}
 		TextureKey texKey = new TextureKey(name, false);
 
-		/* If there is an existing texture, replace the image so the material determined parameters are
-		 * used
+		/*
+		 * If there is an existing texture, replace the image so the material
+		 * determined parameters are used
 		 */
 		MatParamTexture existingTextureParam = material.getTextureParam(alias);
 		Texture existingTexture = existingTextureParam == null ? null : existingTextureParam.getTextureValue();
 		try {
-			if (existingTexture != null) {
+			if (existingTexture != null && existingTexture.getKey() != null) {
 				if (existingTexture.getKey().equals(texKey)) {
 					if (logger.isLoggable(Level.FINE))
-						logger.fine(String.format("Leaving deferred texture alias %s with name of %s as it is already loaded",
-								alias, name));
+						logger.fine(String.format(
+								"Leaving deferred texture alias %s with name of %s as it is already loaded", alias,
+								name));
 				} else {
 					if (logger.isLoggable(Level.FINE))
 						logger.fine(String.format("Replacing deferred texture alias %s with %s", alias, name));
@@ -1063,12 +1067,19 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
 		if (cachedList.containsKey(path)) {
 			return cachedList.get(path);
 		}
-		ExtendedMaterialListKey materialKey = new ExtendedMaterialListKey(path).setTextureAliases(materialtextureAliases);
+
+		ExtendedMaterialListKey materialKey = new ExtendedMaterialListKey(path)
+				.setTextureAliases(materialtextureAliases);
 		if (key instanceof ExtendedOgreMeshKey) {
 			((ExtendedOgreMeshKey) key).configureMaterialKey(materialKey);
 		}
 		MaterialList list = (MaterialList) assetManager.loadAsset(materialKey);
-		cachedList.put(path, list);
+		if (list != null) {
+			if (key instanceof OgreMeshKey && ((OgreMeshKey) key).getMaterialList() == null) {
+				((OgreMeshKey) key).setMaterialList(list);
+			}
+			cachedList.put(path, list);
+		}
 		return list;
 	}
 }

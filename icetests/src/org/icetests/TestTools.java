@@ -15,6 +15,7 @@ import org.icescene.tools.ToolBox;
 import org.icescene.tools.ToolBoxLayer;
 import org.icescene.tools.ToolCategory;
 import org.icescene.tools.ToolManager;
+import org.icescene.tools.ToolPanel;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.material.Material;
@@ -22,7 +23,11 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
-import icetone.core.ElementManager;
+import icetone.controls.buttons.PushButton;
+import icetone.controls.containers.Frame;
+import icetone.core.BaseScreen;
+import icetone.core.ZPriority;
+import icetone.core.layout.mig.MigLayout;
 
 public class TestTools extends IcesceneApp {
 
@@ -50,7 +55,6 @@ public class TestTools extends IcesceneApp {
 		// // TODO Auto-generated catch block
 		// e.printStackTrace();
 		// }
-		screen.setUseCustomCursors(true);
 
 		flyCam.setMoveSpeed(10);
 		flyCam.setDragToRotate(true);
@@ -77,7 +81,7 @@ public class TestTools extends IcesceneApp {
 			}
 
 			@Override
-			public AbstractToolArea createToolArea(ToolManager toolManager, ElementManager screen) {
+			public AbstractToolArea createToolArea(ToolManager toolManager, BaseScreen screen) {
 				return null;
 			}
 		};
@@ -95,21 +99,31 @@ public class TestTools extends IcesceneApp {
 		buildDialogsCategory.addTool(new TestTool(4, "BuildIcons/Icon-32-Build-CreatureTweak.png"));
 		buildDialogsCategory.addTool(new TestTool(5, "BuildIcons/Icon-32-Build-Clutter.png"));
 
-		toolManager.addToolBox(hudType,
-				new ToolBox("TestQuickbar1", "Quickbar (Ctrl hotkey)", 2, 8).setDefaultVerticalPosition(BitmapFont.VAlign.Top)
-						.setDefaultHorizontalPosition(BitmapFont.Align.Left).setStyle(ToolBox.Style.Tools).setDefaultVisible(true)
-						.setModifiers(ModifierKeysAppState.CTRL_MASK));
-		toolManager.addToolBox(hudType,
-				new ToolBox("TestQuickbar2", "Quickbar (Shift hotkey)", 3, 8).setDefaultVerticalPosition(BitmapFont.VAlign.Top)
-						.setDefaultHorizontalPosition(BitmapFont.Align.Center).setStyle(ToolBox.Style.Tools).setDefaultVisible(true)
-						.setModifiers(ModifierKeysAppState.SHIFT_MASK));
+		ToolBox toolbox = new ToolBox("TestQuickbar1", "Quickbar (Ctrl hotkey)", 2, 8)
+				.setDefaultVerticalPosition(BitmapFont.VAlign.Top);
+		toolManager.addToolBox(hudType, toolbox.setDefaultHorizontalPosition(BitmapFont.Align.Left)
+				.setDefaultVisible(true).setModifiers(ModifierKeysAppState.CTRL_MASK));
 
-		
 		ToolBoxLayer tbl = new ToolBoxLayer(screen, prefs, hudType, toolManager, dragContext);
 		tbl.init();
-//		getLayers().addChild(tbl);
-		screen.addElement(tbl);
+		// getLayers().addChild(tbl);
+		getLayers(ZPriority.NORMAL).addElement(tbl);
 
+		Frame w = new Frame();
+		w.setTitle("A Window");
+		w.setResizable(true);
+		w.setPosition(200, 200);
+		w.getContentArea().setLayoutManager(new MigLayout(screen));
+		w.getContentArea().addElement(new PushButton("Toolbar").onMouseReleased(evt -> {
+			ToolPanel vis = tbl.getTools(toolbox);
+			if (vis.isVisible()) {
+				vis.hide();
+			} else {
+				vis.show();
+			}
+		}));
+		w.sizeToContent();
+		screen.addElement(w);
 	}
 
 	class TestTool extends Tool {

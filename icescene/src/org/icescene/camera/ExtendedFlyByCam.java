@@ -34,6 +34,7 @@ public class ExtendedFlyByCam extends FlyByCamera {
 
 	public void setAllowRiseAndLower(boolean allowRiseAndLower) {
 		this.allowRiseAndLower = allowRiseAndLower;
+		System.out.println("ARL " + allowRiseAndLower);
 	}
 
 	@Override
@@ -45,20 +46,13 @@ public class ExtendedFlyByCam extends FlyByCamera {
 		this.externalDragging = externalDragging;
 	}
 
-	@Override
-	public void onAction(String name, boolean value, float tpf) {
-		if (!enabled) {
-			return;
-		}
-		if (!allowRiseAndLower && (name.equals("FLYCAM_Rise") || name.equals("FLYCAM_Lower"))) {
-			return;
-		}
-		super.onAction(name, value, tpf);
-	}
 
 	@Override
 	public void onAnalog(String name, float value, float tpf) {
 		if (!enabled) {
+			return;
+		}
+		if (!allowRiseAndLower && (name.equals("FLYCAM_Rise") || name.equals("FLYCAM_Lower"))) {
 			return;
 		}
 		if (externalDragging

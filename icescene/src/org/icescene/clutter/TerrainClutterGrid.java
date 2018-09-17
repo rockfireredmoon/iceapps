@@ -56,14 +56,16 @@ public abstract class TerrainClutterGrid extends Node {
 		return loader;
 	}
 
-	public TerrainClutterGrid(IcesceneApp app, TerrainClutterHandler handler, int radius, float terrainCellSize, int clutterCells) {
+	public TerrainClutterGrid(IcesceneApp app, TerrainClutterHandler handler, int radius, float terrainCellSize,
+			int clutterCells) {
 		this(app, handler, radius);
 		this.terrainCellSize = terrainCellSize;
 
 		tileSize = terrainCellSize / (float) clutterCells;
 	}
 
-	public TerrainClutterGrid(IcesceneApp app, TerrainGrid grid, TerrainClutterHandler handler, int clutterCells, int radius) {
+	public TerrainClutterGrid(IcesceneApp app, TerrainGrid grid, TerrainClutterHandler handler, int clutterCells,
+			int radius) {
 		this(app, handler, radius, ((float) grid.getTotalSize() - 1f) / 2f, clutterCells);
 	}
 
@@ -98,24 +100,30 @@ public abstract class TerrainClutterGrid extends Node {
 	public void reload() {
 		if (getControl(ClutterCellControl.class) != null) {
 			lastViewTile = null;
-			viewTile.x = viewTile.y = Float.MIN_VALUE;
-			checkForViewTileChange();
+			synchronized (viewTile) {
+				viewTile.x = viewTile.y = Float.MIN_VALUE;
+				checkForViewTileChange();
+			}
 		} else {
 			LOG.warning("Something tried to reload clutter after it has been closed.");
 		}
 	}
 
-	public void reloadTiles() {
+	public void reloadTiles(Vector2f viewTile) {
 
-		if (viewTile.x > Float.MIN_VALUE && viewTile.y > Float.MIN_VALUE) {
+		if (viewTile.x == Float.MIN_VALUE || viewTile.y == Float.MIN_VALUE) {
+			LOG.warning(String.format("Terrain is not yet ready at %f, %f.", viewTile.x, viewTile.y));
+			return;
+		}
 
-			List<TerrainClutterTile> w = new ArrayList<TerrainClutterTile>();
+		List<TerrainClutterTile> w = new ArrayList<TerrainClutterTile>();
 
-			for (int y = -radius; y <= radius; y += 1) {
-				for (int x = -radius; x <= radius; x += 1) {
+		for (int y = -radius; y <= radius; y += 1) {
+			for (int x = -radius; x <= radius; x += 1) {
+				if (x > -1 && y > -1) {
 					final Vector2f inView = new Vector2f((viewTile.x + x) * tileSize, (viewTile.y + y) * tileSize);
-					final Vector2f inWorld = new Vector2f(inView.x + (terrainCell.x * terrainCellSize), inView.y
-							+ (terrainCell.y * terrainCellSize));
+					final Vector2f inWorld = new Vector2f(inView.x + (terrainCell.x * terrainCellSize),
+							inView.y + (terrainCell.y * terrainCellSize));
 					final Vector2f t = new Vector2f(Math.round(inWorld.x / terrainCellSize),
 							Math.round(inWorld.y / terrainCellSize));
 					final Vector2f v = new Vector2f(Math.round((inWorld.x - (t.x * terrainCellSize)) / tileSize),
@@ -128,42 +136,49 @@ public abstract class TerrainClutterGrid extends Node {
 						w.add(tile);
 					} else {
 						if (LOG.isLoggable(Level.FINE)) {
-							LOG.fine(String.format("No Terrain at %s (%s, %s), will not load clutter here", t, v, inWorld));
+							LOG.fine(String.format("No Terrain at %s (%s, %s), will not load clutter here", t, v,
+									inWorld));
 						}
 					}
 				}
 			}
+		}
 
-			// Unload everything that is now out of the radius
-			for (TerrainClutter el : loader.getLoaded()) {
-				TerrainClutterTile pl = el.getTileLocation();
-				if (!w.contains(pl)) {
-					loader.unload(el.getTileLocation());
-				}
+		// Unload everything that is now out of the radius
+		for (TerrainClutter el : loader.getLoaded()) {
+			TerrainClutterTile pl = el.getTileLocation();
+			if (!w.contains(pl)) {
+				loader.unload(el.getTileLocation());
 			}
-		} else {
-			LOG.warning(String.format("Terrain is not yet ready at %f, %f.", viewTile.x, viewTile.y));
 		}
 	}
 
 	public void checkForViewTileChange() {
-		view = getViewWorldTranslation();
-		if (view != null) {
-			view = view.subtract(new Vector3f(tileSize, 0, tileSize));
+		boolean reload = false;
+		synchronized (viewTile) {
+			view = getViewWorldTranslation();
+			if (view != null) {
+				view = view.subtract(new Vector3f(tileSize, 0, tileSize));
 
-			terrainCell.x = (int) (view.x / terrainCellSize);
-			terrainCell.y = (int) (view.z / terrainCellSize);
+				terrainCell.x = (int) (view.x / terrainCellSize);
+				terrainCell.y = (int) (view.z / terrainCellSize);
 
-			withinCenter = new Vector2f(view.x - (terrainCell.x * terrainCellSize), view.z - (terrainCell.y * terrainCellSize));
+				withinCenter = new Vector2f(view.x - (terrainCell.x * terrainCellSize),
+						view.z - (terrainCell.y * terrainCellSize));
 
-			viewTile.x = (int) (withinCenter.x / tileSize);
-			viewTile.y = (int) (withinCenter.y / tileSize);
-			if (lastViewTile == null || !lastViewTile.equals(viewTile)) {
-				reloadTiles();
-				lastViewTile = viewTile.clone();
+				viewTile.x = (int) (withinCenter.x / tileSize);
+				viewTile.y = (int) (withinCenter.y / tileSize);
+				if (lastViewTile == null || !lastViewTile.equals(viewTile)) {
+					reload = true;
+					lastViewTile = viewTile.clone();
+				}
+			} else {
+				LOG.warning("View position is not known, can't determine if clutter should be loaded");
 			}
-		} else {
-			LOG.warning("View position is not known, can't determine if clutter should be loaded");
+		}
+		
+		if(reload) {
+			reloadTiles(lastViewTile);
 		}
 	}
 

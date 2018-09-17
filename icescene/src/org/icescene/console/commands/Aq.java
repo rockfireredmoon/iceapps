@@ -8,7 +8,7 @@ import org.icescene.console.Command;
 
 @Command(names = { "aq", "audioqueue" })
 public class Aq extends AbstractCommand {
-
+	
 	@Override
 	public boolean run(String cmdName, CommandLine commandLine) {
 		AudioAppState as = app.getStateManager().getState(AudioAppState.class);

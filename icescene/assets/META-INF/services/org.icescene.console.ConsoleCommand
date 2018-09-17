@@ -1,0 +1,7 @@
+org.icescene.console.commands.Aq
+org.icescene.console.commands.Assets
+org.icescene.console.commands.Dev
+org.icescene.console.commands.DumpScene
+org.icescene.console.commands.Get
+org.icescene.console.commands.Help
+org.icescene.console.commands.Set

@@ -1,7 +1,5 @@
 package org.icescene.io;
 
-import icemoon.iceloader.ServerAssetManager;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +19,8 @@ import com.jme3.asset.AssetNotFoundException;
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.Trigger;
+
+import icemoon.iceloader.ServerAssetManager;
 
 /**
  * Manages the mappings between actual key presses and mapping names. Default

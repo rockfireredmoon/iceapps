@@ -1,7 +1,5 @@
 package org.icescene.scripting;
 
-import icemoon.iceloader.ServerAssetManager;
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Set;
@@ -11,6 +9,8 @@ import org.icescripting.ScriptLoader;
 
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
+
+import icemoon.iceloader.ServerAssetManager;
 
 public class ScriptAssetLoader implements ScriptLoader {
 	final static Logger LOG = Logger.getLogger(ScriptAssetLoader.class.getName());

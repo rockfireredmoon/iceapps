@@ -9,6 +9,7 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
+import org.icescene.HUDMessageAppState.Channel;
 import org.icescripting.Scripts;
 
 import com.jme3.app.Application;
@@ -21,11 +22,11 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 
-import icetone.core.ElementManager;
+import icetone.core.BaseScreen;
 
-public abstract class IcemoonAppState<T extends IcemoonAppState> extends AbstractAppState implements PreferenceChangeListener {
+public abstract class IcemoonAppState<T extends IcemoonAppState<?>> extends AbstractAppState implements PreferenceChangeListener {
 
-	private final static Logger LOG = Logger.getLogger(IcemoonAppState.class.getName());
+	protected final static Logger LOG = Logger.getLogger(IcemoonAppState.class.getName());
 	private List<String> keyPatterns = new ArrayList<String>();
 	// private boolean inputRegistered;
 	protected AppStateManager stateManager;
@@ -37,7 +38,7 @@ public abstract class IcemoonAppState<T extends IcemoonAppState> extends Abstrac
 	protected Camera camera;
 	protected AppSettings settings;
 	protected Node guiNode;
-	protected ElementManager screen;
+	protected BaseScreen screen;
 	protected Preferences prefs;
 	protected Scripts scripts;
 
@@ -49,22 +50,40 @@ public abstract class IcemoonAppState<T extends IcemoonAppState> extends Abstrac
 		return prefs;
 	}
 
-	@Override
-	public final void initialize(AppStateManager stateManager, Application app) {
-		super.initialize(stateManager, app);
+    public final void stateAttached(AppStateManager stateManager) {
 
 		scripts = Scripts.get();
-
-		LOG.info(String.format("Initialize %s", getClass().toString()));
-		this.app = (IcesceneApp) app;
-		this.screen = this.app.getScreen();
+		
 		this.stateManager = stateManager;
+		this.app = (IcesceneApp)stateManager.getApplication();
+		this.screen = this.app.getScreen();
 		this.assetManager = this.app.getAssetManager();
 		this.rootNode = this.app.getRootNode();
 		this.inputManager = this.app.getInputManager();
 		this.camera = this.app.getCamera();
 		this.settings = this.app.getContext().getSettings();
 		this.guiNode = this.app.getGuiNode();
+		
+		onStateAttached();
+		
+    }
+    
+    @Override
+	public final void stateDetached(AppStateManager stateManager) {
+    	onStateDetached();
+	}
+
+	protected void onStateAttached() {
+    }
+    
+    protected void onStateDetached() {
+    }
+
+	@Override
+	public final void initialize(AppStateManager stateManager, Application app) {
+		super.initialize(stateManager, app);
+
+		LOG.info(String.format("Initialize %s", getClass().toString()));
 
 		parent = onInitialize(stateManager, this.app);
 		postInitialize();

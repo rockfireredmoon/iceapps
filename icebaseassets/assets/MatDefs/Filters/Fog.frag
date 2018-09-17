@@ -17,9 +17,9 @@ const float LOG2 = 1.442695;
 float computeLinearFogFactor(in float depth, in vec2 frustumNear, in vec2 frustumFar) {
 	float depthS = (2.0 * frustumNear.x) / (frustumNear.y + frustumNear.x * (frustumNear.y - frustumNear.x));
 	float depthE = (2.0 * frustumFar.x) / (frustumFar.y + frustumFar.x * (frustumFar.y - frustumFar.x));
-	float fogDepth =	1.0/((frustumFar) / 
-						(frustumNear - depth *
-						(frustumNear)));
+	float fogDepth =	1.0/((frustumFar.y) / 
+						(frustumNear.y - depth *
+						(frustumNear.y)));
 	float fogFactor;
 	fogFactor = (depthE - fogDepth) / (depthE - depthS);
 	fogFactor = clamp( fogFactor, 0.0, 1.0 );

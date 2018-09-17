@@ -5,14 +5,17 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.prefs.Preferences;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.icescene.IcemoonAppState;
 import org.iceui.UIConstants;
 
-import icetone.core.Container;
-import icetone.core.Element.ZPriority;
+import icetone.core.StyledContainer;
+import icetone.core.ZPriority;
 import icetone.core.layout.mig.MigLayout;
 
 public class ActionBarsAppState extends IcemoonAppState<IcemoonAppState<?>> {
+	final static Log LOG = LogFactory.getLog(ActionBarsAppState.class);
 
 	public static final String TOOL_ACTION_PREFIX = "ToolAction-";
 
@@ -43,19 +46,18 @@ public class ActionBarsAppState extends IcemoonAppState<IcemoonAppState<?>> {
 	private AbstractToolArea mainToolArea;
 	private ToolManager toolManager;
 	private final HudType hudType;
-	private Container mainToolsLayer;
+	private StyledContainer mainToolsLayer;
 
 	public ActionBarsAppState(Preferences prefs, HudType hudType, DragContext dragContext, ToolManager toolManager) {
 		super(prefs);
 		this.hudType = hudType;
-		this.dragContext  =dragContext;
-		this.toolManager =toolManager;
+		this.dragContext = dragContext;
+		this.toolManager = toolManager;
 	}
 
 	public HudType getHudType() {
 		return hudType;
 	}
-
 
 	@Override
 	protected final void postInitialize() {
@@ -65,12 +67,9 @@ public class ActionBarsAppState extends IcemoonAppState<IcemoonAppState<?>> {
 
 			@Override
 			protected void positionToolBox(ToolBox toolBox, String toolBoxName, ToolPanel toolPanel) {
-
-				if (toolBox.getStyle().equals(ToolBox.Style.Tools)) {
+				if (toolBox.getStyle() == null || toolBox.getStyle().startsWith("quickbar")) {
 					super.positionToolBox(toolBox, toolBoxName, toolPanel);
 				} else {
-					toolPanel.setPosition(screen.getStyle(toolBox.getStyle().getWindowStyleName()).getVector2f("defaultPosition"));
-					toolPanel.setDimensions(screen.getStyle(toolBox.getStyle().getWindowStyleName()).getVector2f("defaultSize"));
 					mainToolArea.addToolBar(toolPanel);
 					if (toolBox.isVisible()) {
 						toolPanel.show();
@@ -81,30 +80,34 @@ public class ActionBarsAppState extends IcemoonAppState<IcemoonAppState<?>> {
 			}
 
 		};
-		mainToolsLayer = new Container(screen);
+		mainToolsLayer = new StyledContainer(screen);
 		mainToolsLayer.setLayoutManager(new MigLayout(screen, "ins 0, gap 0", "push[]push", "push[]"));
 
 		// If there is an options or primary abilities toolbar, then show the
 		// main toolbar
 		final List<ToolBox> toolBoxes = toolManager.getToolBoxes(hudType);
-		for (ToolBox t : toolBoxes) {
-			if (t.getStyle().equals(ToolBox.Style.Options) || t.getStyle().equals(ToolBox.Style.PrimaryAbilities) || t.getStyle().equals(ToolBox.Style.BuildTools)) {
-				mainToolArea = hudType.createToolArea(toolManager, screen);
-				mainToolsLayer.addChild(mainToolArea);
-				break;
+		if (toolBoxes == null)
+			LOG.warn(String.format("No toolboxes for %s", hudType));
+		else {
+			for (ToolBox t : toolBoxes) {
+				if (t.getStyle() != null) {
+					mainToolArea = hudType.createToolArea(toolManager, screen);
+					mainToolsLayer.addElement(mainToolArea);
+					break;
+				}
 			}
 		}
 
 		toolLayer.init();
-		
-		screen.addElement(toolLayer);
 
-//		app.getLayers().addChild(mainToolsLayer);
-//		app.getLayers().addChild(toolLayer);
-		
+		app.getLayers(ZPriority.LAYERS).addElement(toolLayer);
+		app.getLayers(ZPriority.LAYERS).addElement(mainToolsLayer);
+
+		// app.getLayers().addChild(toolLayer);
+
 		// TODO something still screwy about zorder
-//		screen.updateZOrder(app.getLayers());
-//		mainToolsLayer.bringToFront();
+		// screen.updateZOrder(app.getLayers());
+		// mainToolsLayer.bringToFront();
 	}
 
 	@Override
@@ -112,20 +115,20 @@ public class ActionBarsAppState extends IcemoonAppState<IcemoonAppState<?>> {
 		toolLayer.close();
 		if (mainToolArea != null) {
 			mainToolArea.destroy();
-			mainToolArea.hideWithEffect();
+			mainToolArea.hide();
 		}
 		try {
 			app.getAlarm().timed(new Callable<Void>() {
 				public Void call() throws Exception {
-					app.getLayers(ZPriority.NORMAL).removeChild(toolLayer);
-					app.getLayers(ZPriority.NORMAL).removeChild(mainToolsLayer);
+					app.getLayers(ZPriority.NORMAL).removeElement(toolLayer);
+					app.getLayers(ZPriority.NORMAL).removeElement(mainToolsLayer);
 					return null;
 				}
 			}, UIConstants.UI_EFFECT_TIME + 0.1f);
 		} catch (RejectedExecutionException ree) {
 			// Happens on shutdown
-			app.getLayers(ZPriority.NORMAL).removeChild(toolLayer);
-			app.getLayers(ZPriority.NORMAL).removeChild(mainToolsLayer);
+			app.getLayers(ZPriority.NORMAL).removeElement(toolLayer);
+			app.getLayers(ZPriority.NORMAL).removeElement(mainToolsLayer);
 		}
 
 	}
