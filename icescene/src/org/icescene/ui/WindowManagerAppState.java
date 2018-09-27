@@ -10,31 +10,30 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import org.icescene.IcemoonAppState;
-import org.iceui.controls.FancyButton;
-import org.iceui.controls.FancyWindow;
-import org.iceui.controls.FancyWindow.Listener;
-import org.iceui.controls.FancyWindow.State;
 
 import com.jme3.font.BitmapFont;
-import com.jme3.input.event.MouseButtonEvent;
 
 import icetone.controls.buttons.Button;
+import icetone.controls.containers.Frame;
+import icetone.controls.containers.Frame.Listener;
+import icetone.controls.containers.Frame.State;
+import icetone.core.BaseElement;
 import icetone.core.Container;
-import icetone.core.Element;
-import icetone.core.Element.ZPriority;
+import icetone.core.ZPriority;
+import icetone.core.layout.Border;
 import icetone.core.layout.BorderLayout;
 import icetone.core.layout.FlowLayout;
 
 public class WindowManagerAppState extends IcemoonAppState<IcemoonAppState<?>> implements Listener {
 	final static Logger LOG = Logger.getLogger(WindowManagerAppState.class.getName());
 
-	private List<FancyWindow> windows = new ArrayList<FancyWindow>();
-	private Map<FancyWindow, Button> restorers = new HashMap<FancyWindow, Button>();
-	private Element windowBar;
+	private List<Frame> windows = new ArrayList<Frame>();
+	private Map<Frame, Button> restorers = new HashMap<Frame, Button>();
+	private BaseElement windowBar;
 	private Container layer;
-	private FancyWindow selectedWindow;
+	private Frame selectedWindow;
 	private boolean used;
-	private Stack<FancyWindow> history = new Stack<FancyWindow>();
+	private Stack<Frame> history = new Stack<Frame>();
 
 	public WindowManagerAppState(Preferences prefs) {
 		super(prefs);
@@ -42,15 +41,15 @@ public class WindowManagerAppState extends IcemoonAppState<IcemoonAppState<?>> i
 
 	@Override
 	protected void postInitialize() {
-		List<FancyWindow> allWindows = FancyWindow.getWindows();
-		for (FancyWindow w : allWindows) {
-			if(w.isManagedHint())
+		List<Frame> allWindows = Frame.getWindows();
+		for (Frame w : allWindows) {
+			if (w.isManagedHint())
 				addWindow(w);
 		}
-		FancyWindow.addGlobalListener(this);
+		Frame.addGlobalListener(this);
 		deselectAllWindows();
 		if (!allWindows.isEmpty()) {
-			allWindows.get(0).setIsSelected(true);
+			allWindows.get(0).setSelected(true);
 		}
 
 		if (used)
@@ -61,14 +60,14 @@ public class WindowManagerAppState extends IcemoonAppState<IcemoonAppState<?>> i
 
 		windowBar = new Container(screen);
 		windowBar.setLayoutManager(new FlowLayout(4, BitmapFont.Align.Right));
-		layer.addChild(windowBar, BorderLayout.Border.SOUTH);
+		layer.addElement(windowBar, Border.SOUTH);
 
-		app.getLayers(ZPriority.MENU).addChild(layer);
+		app.getLayers(ZPriority.MENU).addElement(layer);
 	}
 
 	public void deselectAllWindows() {
-		for (FancyWindow w : windows) {
-			w.setIsSelected(false);
+		for (Frame w : windows) {
+			w.setSelected(false);
 		}
 		selectedWindow = null;
 	}
@@ -77,77 +76,76 @@ public class WindowManagerAppState extends IcemoonAppState<IcemoonAppState<?>> i
 	protected void onCleanup() {
 		used = true;
 
-		app.getLayers(ZPriority.MENU).removeChild(layer);
-		FancyWindow.removeGlobalListener(this);
+		app.getLayers(ZPriority.MENU).removeElement(layer);
+		Frame.removeGlobalListener(this);
 	}
 
-	public FancyWindow getSelectedWindow() {
+	public Frame getSelectedWindow() {
 		return selectedWindow;
 	}
 
-	public List<FancyWindow> getWindows() {
+	public List<Frame> getWindows() {
 		return Collections.unmodifiableList(windows);
 	}
 
 	@Override
-	public void destroyed(FancyWindow window) {
+	public void destroyed(Frame window) {
 		windows.remove(window);
 		restorers.remove(window);
 		history.remove(window);
-		if (window.getState() == FancyWindow.State.MINIMIZED) {
-			for (Element el : windowBar.getElements()) {
+		if (window.getState() == Frame.State.MINIMIZED) {
+			for (BaseElement el : windowBar.getElements()) {
 				if (el.getElementUserData().equals(window)) {
-					windowBar.removeChild(el, false);
+					windowBar.removeElement(el);
 					break;
 				}
 			}
 		}
-		screen.dirtyLayout();
+		screen.dirtyLayout(true);
 		screen.layoutChildren();
 	}
 
 	@Override
-	public void closed(FancyWindow window) {
+	public void closed(Frame window) {
 		if (window == selectedWindow) {
 			if (history.size() > 0)
-				history.pop().setIsSelected(true);
+				history.pop().setSelected(true);
 		}
 	}
 
 	@Override
-	public void stateChanged(FancyWindow window, State oldState, State newState) {
-		if (newState.equals(FancyWindow.State.MINIMIZED)) {
-			FancyButton restorer = new FancyButton(screen) {
-				@Override
-				public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
+	public void stateChanged(Frame window, State oldState, State newState) {
+		if (newState.equals(Frame.State.MINIMIZED)) {
+			Button restorer = new Button(screen);
+			restorer.onMouseReleased((e) -> {
+				if (e.isLeft())
 					window.restore();
-				}
-			};
+			});
 			if (window == selectedWindow) {
 				history.remove(selectedWindow);
 				if (history.size() > 0) {
-					history.pop().setIsSelected(true);
+					history.pop().setSelected(true);
 				}
 				selectedWindow = null;
 			}
 			restorer.setElementUserData(window);
 			restorer.setText(window.getDragBar().getText());
 			restorers.put(window, restorer);
-			windowBar.addChild(restorer);
-			screen.dirtyLayout();
+			windowBar.addElement(restorer);
+			screen.dirtyLayout(true);
 			screen.layoutChildren();
-		} else if (newState.equals(FancyWindow.State.NORMAL)) {
+		} else if (newState.equals(Frame.State.NORMAL)) {
 			Button b = restorers.get(window);
 			if (b != null) {
-				windowBar.removeChild(b);
-				screen.dirtyLayout();
+				windowBar.removeElement(b);
+				screen.dirtyLayout(true);
 				screen.layoutChildren();
 			}
 		}
 	}
 
 	@Override
-	public void windowTitleChanged(FancyWindow window, String oldTitle, String newTitle) {
+	public void windowTitleChanged(Frame window, String oldTitle, String newTitle) {
 		Button b = restorers.get(window);
 		if (b != null) {
 			b.setText(newTitle);
@@ -155,36 +153,36 @@ public class WindowManagerAppState extends IcemoonAppState<IcemoonAppState<?>> i
 	}
 
 	@Override
-	public void selected(FancyWindow window) {
+	public void selected(Frame window) {
 		this.selectedWindow = window;
 		if (window != null) {
 			history.remove(window);
 			history.push(window);
 			LOG.info(String.format("%s is now selected (history is now %d).", window, history.size()));
 		}
-		for (FancyWindow w : windows) {
+		for (Frame w : windows) {
 			if (w != window) {
 				LOG.info(String.format("Deselecting %s", w));
-				w.setIsSelected(false);
+				w.setSelected(false);
 			}
 		}
 	}
 
 	@Override
-	public void created(FancyWindow window) {
-		if(window.isManagedHint())
+	public void created(Frame window) {
+		if (window.isManagedHint())
 			addWindow(window);
 	}
 
 	@Override
-	public void opened(FancyWindow window) {
+	public void opened(Frame window) {
 	}
 
-	protected void removeWindow(FancyWindow window) {
+	protected void removeWindow(Frame window) {
 		windows.remove(window);
 	}
 
-	protected void addWindow(FancyWindow window) {
+	protected void addWindow(Frame window) {
 		if (windows.contains(window)) {
 			LOG.warning(String.format("Window %s is already managed.", window));
 		} else {

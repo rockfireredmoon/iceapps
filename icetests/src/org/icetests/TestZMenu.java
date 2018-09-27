@@ -4,8 +4,6 @@ import org.icelib.AppInfo;
 import org.icescene.IcesceneApp;
 import org.icescene.controls.Rotator;
 
-import com.jme3.font.BitmapFont.Align;
-import com.jme3.font.BitmapFont.VAlign;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;

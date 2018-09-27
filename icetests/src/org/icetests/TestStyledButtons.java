@@ -3,7 +3,6 @@ package org.icetests;
 import org.icelib.AppInfo;
 import org.icescene.IcesceneApp;
 
-import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapFont.Align;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -16,7 +15,6 @@ import icetone.controls.buttons.CheckBox;
 import icetone.controls.buttons.PushButton;
 import icetone.controls.containers.Panel;
 import icetone.controls.lists.ComboBox;
-import icetone.controls.text.Label;
 import icetone.core.StyledContainer;
 import icetone.core.layout.Border;
 import icetone.core.layout.BorderLayout;

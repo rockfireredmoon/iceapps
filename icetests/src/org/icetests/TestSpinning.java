@@ -2,8 +2,6 @@ package org.icetests;
 
 import org.icescene.IcesceneApp;
 
-import com.jme3.math.Vector2f;
-
 import icetone.controls.containers.Panel;
 import icetone.extras.controls.BusySpinner;
 

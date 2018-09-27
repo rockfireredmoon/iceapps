@@ -1,7 +1,5 @@
 package org.icetests;
 
-import java.util.logging.Level;
-
 import org.icelib.AppInfo;
 import org.icescene.HUDMessageAppState;
 import org.icescene.IcesceneApp;
@@ -11,7 +9,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
-import icetone.controls.buttons.Button;
 import icetone.controls.buttons.PushButton;
 import icetone.controls.containers.Panel;
 import icetone.core.BaseElement;

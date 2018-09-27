@@ -11,8 +11,6 @@ import org.icescene.assets.Assets;
 import org.icescene.assets.MeshLoader;
 import org.icescene.environment.EnvironmentLight;
 import org.icescene.environment.PostProcessAppState;
-import org.icescene.fog.FogFilter;
-import org.icescene.fog.FogFilter.FogMode;
 
 import com.jme3.app.state.AppStateManager;
 import com.jme3.light.AmbientLight;

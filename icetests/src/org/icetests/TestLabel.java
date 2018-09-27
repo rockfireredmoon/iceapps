@@ -3,25 +3,11 @@ package org.icetests;
 import org.icelib.AppInfo;
 import org.icescene.IcesceneApp;
 
-import com.jme3.font.LineWrapMode;
-import com.jme3.math.ColorRGBA;
-
-import icetone.controls.buttons.Button;
 import icetone.controls.buttons.PushButton;
 import icetone.controls.containers.Panel;
-import icetone.controls.containers.SplitPanel;
-import icetone.controls.containers.TabControl;
-import icetone.controls.extras.Separator;
-import icetone.controls.scrolling.ScrollPanel;
-import icetone.controls.text.Label;
-import icetone.core.Orientation;
-import icetone.core.Size;
-import icetone.core.layout.FillLayout;
-import icetone.core.layout.ScreenLayoutConstraints;
 import icetone.core.layout.mig.MigLayout;
 import icetone.extras.appstates.PopupMessageAppState;
 import icetone.extras.appstates.PopupMessageAppState.Channel;
-import icetone.extras.debug.GUIExplorerAppState;
 
 public class TestLabel extends IcesceneApp {
 

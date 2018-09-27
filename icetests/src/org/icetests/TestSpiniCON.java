@@ -16,7 +16,6 @@ import icetone.controls.containers.Panel;
 import icetone.controls.lists.FloatRangeSliderModel;
 import icetone.controls.lists.Slider;
 import icetone.core.BaseElement;
-import icetone.core.layout.BasicLayout;
 import icetone.core.layout.FlowLayout;
 
 public class TestSpiniCON extends IcesceneApp {

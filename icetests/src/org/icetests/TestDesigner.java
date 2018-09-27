@@ -8,11 +8,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
-import icetone.controls.containers.Panel;
-import icetone.controls.lists.FloatRangeSpinnerModel;
-import icetone.controls.lists.Spinner;
-import icetone.controls.text.Label;
-import icetone.core.layout.mig.MigLayout;
 import icetone.extras.designer.DesignerAppState;
 
 public class TestDesigner extends IcesceneApp {

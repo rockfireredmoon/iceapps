@@ -7,10 +7,8 @@ import org.icescene.IcesceneApp;
 import org.icescene.ogreparticle.OGREParticleConfiguration;
 import org.icescene.ogreparticle.OGREParticleEmitter;
 import org.icescene.ogreparticle.OGREParticleScript;
-import org.icescene.ogreparticle.OGREParticleScript.BillboardRotation;
 import org.icescene.ogreparticle.OGREParticleScript.BillboardType;
 
-import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;

@@ -12,7 +12,6 @@ import com.jme3.scene.shape.Box;
 import icetone.core.BaseElement;
 import icetone.core.event.MouseUIButtonEvent;
 import icetone.core.layout.loader.MouseButtonTarget;
-import icetone.core.layout.loader.ObjectTargetLayoutContext;
 import icetone.extras.windows.AlertBox.AlertType;
 
 public class TestLayoutFile extends IcesceneApp {

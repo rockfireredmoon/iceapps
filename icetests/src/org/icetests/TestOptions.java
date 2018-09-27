@@ -2,7 +2,6 @@ package org.icetests;
 
 import org.icelib.AppInfo;
 import org.icescene.IcesceneApp;
-import org.icescene.console.ConsoleAppState;
 import org.icescene.options.OptionsAppState;
 
 import com.jme3.input.KeyInput;
